@@ -1,1 +1,0 @@
-APP_KEY = '41dc04ca032b4c9d8f0be1fd7b8c4d0c'
