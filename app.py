@@ -3,13 +3,16 @@ from flask import Flask, render_template, request, flash, redirect, session, g, 
 from flask_debugtoolbar import DebugToolbarExtension
 from functools import wraps
 import requests
+# import wtforms_json
+
+# Initialize wtforms_json
+# wtforms_json.init()
 
 from models import db, connect_db, User,Recipe
+from forms import NutritionTranslatorForm
+from secrets import APP_KEY
 
 CURR_USER_KEY = "curr_user"
-
-app_id = '0d4e7346'
-app_key = 'aff718186734870cfd586adf4bf8887e'
 
 app = Flask(__name__)
 
@@ -63,13 +66,30 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
-@app.route("/api/get-nutrition-food")
-def get_food_nutrition():
-    global app_id
-    global app_key
-    resp = requests.get(f"https://api.edamam.com/api/nutrition-data?app_id={app_id}&app_key={app_key}&ingr=black%20coffee%20with%20milk")
+@app.route("/")
+def homepage():
+    """Show homepage."""
+    return render_template("index.html")
+
+# @app.route("/api/get-nutrition-food", methods=["GET","POST"])
+# def get_food_nutrition():
+#     query = request.form["text"]
+#     resp = requests.get("https://api.edamam.com/api/nutrition-data", params={"app_id":APP_ID,"app_key":APP_KEY,"ingr":query})
+#     return resp.json()
+
+@app.route("/api/get-ingredient-info", methods=["GET","POST"])
+def get_ingredient_info():
+    query = request.get_json()
     # import pdb
     # pdb.set_trace()
-    return resp.json()
+    resp = requests.get(f"https://api.spoonacular.com/food/ingredients/search", params={"apiKey":APP_KEY,"query":query['ing']})
+    res = resp.json()
+    lst = {res['results'][i]["name"]:res['results'][i]["id"] for i in range(len(res['results']))}
+    # import pdb
+    # pdb.set_trace()
+    return jsonify(lst)
+        
+
+
     
 
