@@ -13,6 +13,7 @@ from forms import NutritionTranslatorForm
 from secrets import APP_KEY
 
 CURR_USER_KEY = "curr_user"
+BASE_URL = "https://api.spoonacular.com/food"
 
 app = Flask(__name__)
 
@@ -77,19 +78,34 @@ def homepage():
 #     resp = requests.get("https://api.edamam.com/api/nutrition-data", params={"app_id":APP_ID,"app_key":APP_KEY,"ingr":query})
 #     return resp.json()
 
-@app.route("/api/get-ingredient-info", methods=["GET","POST"])
-def get_ingredient_info():
+@app.route("/api/get-ingredient", methods=['GET','POST'])
+def get_ingredient_id():
     query = request.get_json()
-    # import pdb
-    # pdb.set_trace()
-    resp = requests.get(f"https://api.spoonacular.com/food/ingredients/search", params={"apiKey":APP_KEY,"query":query['ing']})
+    resp = requests.get(f"{BASE_URL}/ingredients/search", params={"apiKey":APP_KEY,"query":query['ing']})
     res = resp.json()
     lst = {res['results'][i]["name"]:res['results'][i]["id"] for i in range(len(res['results']))}
-    # import pdb
-    # pdb.set_trace()
     return jsonify(lst)
-        
+
+@app.route("/api/get-ingredient/<id>")
+def get_ingredient_info(id):
+    resp = requests.get(f'{BASE_URL}/ingredients/{id}/information', params={"apiKey":APP_KEY})
+    res = resp.json()
+    lst = [unit for unit in res['possibleUnits']]
+    category = res['categoryPath']
+    return jsonify(units=lst,img=res['image'],name=res['name'],id=id,category=category)
+
+@app.route("/api/get-ingredient/<id>/nutrifacts", methods=["GET","POST"])
+def get_ingredient_nutrifacts(id):
+    # unit = request.args.get("units")
+    # amount = request.args.get("amount")
+    #price_per_serv = res['estimatedCost']['value']/100
+    query = request.get_json()
+    resp = requests.get(f'{BASE_URL}/ingredients/{id}/information', params={"apiKey":APP_KEY,"amount":query['amount'],"unit":query['unit']})
+    res = resp.json()
+    cost = res['estimatedCost']['value']/100
+    nutrients = res['nutrition']
+    return jsonify(cost=cost,nutrients=nutrients)
 
 
-    
+
 
