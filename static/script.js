@@ -9,6 +9,52 @@ $(".modal").on("hidden.bs.modal", function(){
     $("#back").remove();
 });
 
+$("#search-recipe").on("submit",processRecipe);
+
+async function processRecipe(evt){
+    evt.preventDefault();
+    keyword = $('#search').val();
+    const response = await axios.get(`/api/get-recipe`,{params:{search:keyword}});
+    await handleRecipe(response.data.hits);
+}
+async function handleRecipe(data){
+    for(let rec of data){
+        const calories = rec.recipe.calories;
+        const image = rec.recipe.image;
+        const servings = rec.recipe.yield;
+        const ingredients = rec.recipe.ingredients;
+        const label = rec.recipe.label;
+        const totalDaily = rec.recipe.totalDaily;
+        const totalNutrients = rec.recipe.totalNutrients;
+        const url = rec.recipe.url;
+        const {instructions, prepMins, cookMins} = await getInstructions(url);
+        console.log(calories);
+        console.log(image);
+        console.log(servings);
+        console.log(ingredients);
+        console.log(label);
+        console.log(totalDaily);
+        console.log(totalNutrients);
+        console.log(url);
+        console.log(instructions);
+        console.log(prepMins);
+        console.log(cookMins);
+    }
+}
+
+async function getInstructions(url){
+    const response = await axios.post(`/api/get-instructions`,{url});
+    console.log(response);
+    const instructions = response.data.analyzedInstructions[0].steps;
+    const prepMins = response.data.preparationMinutes;
+    const cookMins = response.data.cookingMinutes;
+    return {
+        instructions,
+        prepMins,
+        cookMins
+    }
+}
+
 
 async function processForm(evt) {
     evt.preventDefault();
@@ -48,7 +94,6 @@ function formNutritionLookUp(img,price,units,name,id,category1,category2){
             </div>
             <div class="row justify-content-center">
                 <div class="col-8 text-center">
-                    <p>Estimated price per ${units[0]}: $${price}</p>
                     <p>Category: ${category1}, ${category2}</p>
                     <p>
                      Would you like to find out Nutritional facts of this product?
@@ -94,5 +139,14 @@ async function getIngredientNutriFacts(evt){
     const unit = $("select#units").val();
     console.log(id,amount,unit);
     const response = await axios.post(`/api/get-ingredient/${id}/nutrifacts`,{amount,unit});
-    handleNutrifacts(response);
+    handleNutrifacts(response.data);
+}
+
+function handleNutrifacts(data){
+    const price = data.cost;
+    const nutrients = data.nutrients;
+    $('#ing-details').append(`<p>Price for ${data.unit}: ${price}</p>`);
+    for(let obj of nutrients){
+        $('#ing-details').append(`<p>${obj.title} : ${obj.amount}</p>`);
+    }
 }

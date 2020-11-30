@@ -10,7 +10,7 @@ import requests
 
 from models import db, connect_db, User,Recipe
 from forms import NutritionTranslatorForm
-from secrets import APP_KEY
+from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
 
 CURR_USER_KEY = "curr_user"
 BASE_URL = "https://api.spoonacular.com/food"
@@ -72,12 +72,6 @@ def homepage():
     """Show homepage."""
     return render_template("index.html")
 
-# @app.route("/api/get-nutrition-food", methods=["GET","POST"])
-# def get_food_nutrition():
-#     query = request.form["text"]
-#     resp = requests.get("https://api.edamam.com/api/nutrition-data", params={"app_id":APP_ID,"app_key":APP_KEY,"ingr":query})
-#     return resp.json()
-
 @app.route("/api/get-ingredient", methods=['GET','POST'])
 def get_ingredient_id():
     query = request.get_json()
@@ -96,15 +90,34 @@ def get_ingredient_info(id):
 
 @app.route("/api/get-ingredient/<id>/nutrifacts", methods=["GET","POST"])
 def get_ingredient_nutrifacts(id):
-    # unit = request.args.get("units")
-    # amount = request.args.get("amount")
-    #price_per_serv = res['estimatedCost']['value']/100
     query = request.get_json()
     resp = requests.get(f'{BASE_URL}/ingredients/{id}/information', params={"apiKey":APP_KEY,"amount":query['amount'],"unit":query['unit']})
     res = resp.json()
-    cost = res['estimatedCost']['value']/100
-    nutrients = res['nutrition']
-    return jsonify(cost=cost,nutrients=nutrients)
+    cost = round(res['estimatedCost']['value']/100,3)
+    nutrients = res['nutrition']['nutrients']
+    unit = res['unit']
+    return jsonify(cost=cost,nutrients=nutrients,unit=unit)
+
+@app.route('/api/get-recipe')
+def get_recipe():
+    query_string = request.args["search"]
+    # import pdb
+    # pdb.set_trace()
+    resp = requests.get('https://api.edamam.com/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly'})
+    # import pdb
+    # pdb.set_trace()
+    return jsonify(resp.json())
+
+@app.route('/api/get-instructions', methods=["POST"])
+def get_instructions():
+    url = request.json.get('url')
+    resp = requests.get('https://api.spoonacular.com/recipes/extract?', params={"apiKey":APP_KEY,"url":url})
+    return jsonify(resp.json())
+
+
+
+
+    
 
 
 
