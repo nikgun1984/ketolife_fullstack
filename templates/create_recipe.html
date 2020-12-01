@@ -1,0 +1,32 @@
+{% extends 'base.html'%}
+
+{% block content %}
+
+<h1 class="display-4 text-center text-light">Create a new recipe</h1>
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col text-center">
+                <form action="/api/create-recipe", method="POST">
+                    {{form.hidden_tag()}}
+                    {% for field in form if field.widget.input_type != 'hidden'%}
+                    <div class="form-group">
+                        {{field.label}}
+                        {% if field.id == 'ingredients' or field.id == 'instructions' %}
+                            {{field}}
+                            <a href="">Next</a>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <p><em class="text-danger"><small>{{ error }}</small></em></p>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    <button class="btn btn-outline-success">Submit</button>                    
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

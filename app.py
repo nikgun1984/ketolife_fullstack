@@ -9,11 +9,12 @@ import requests
 # wtforms_json.init()
 
 from models import db, connect_db, User,Recipe
-from forms import NutritionTranslatorForm
+from forms import NewRecipeForm
 from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
 
 CURR_USER_KEY = "curr_user"
-BASE_URL = "https://api.spoonacular.com/food"
+BASE_URL_SP = "https://api.spoonacular.com"
+BASE_URL_ED = "https://api.edamam.com"
 
 app = Flask(__name__)
 
@@ -27,13 +28,6 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 # toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
-
-# @app.context_processor
-# def context_processor():
-#     """Nutrition Keys"""
-#     app_id = '0d4e7346'
-#     app_key = 'aff718186734870cfd586adf4bf8887e'
-#     return dict(app_id=app_id,app_key=app_key)
 
 @app.before_request
 def add_user_to_g():
@@ -52,6 +46,8 @@ def do_login(user):
     session[CURR_USER_KEY] = user.id
 
 def login_required(f):
+    """Need an authorization to create/delete etc for certain app features"""
+
     @wraps(f)
     def wrap(*args,**kwargs):
         if CURR_USER_KEY in session:
@@ -70,28 +66,65 @@ def do_logout():
 @app.route("/")
 def homepage():
     """Show homepage."""
+
     return render_template("index.html")
 
-@app.route("/api/get-ingredient", methods=['GET','POST'])
+@app.route('/api/create-recipe', methods=['GET','POST'])
+def get_create_recipe_form():
+    form = NewRecipeForm()
+    if form.validate_on_submit():
+        title = form.title.data
+        # gotta handle ingredients and instructions somehow (lists)
+        # //////////////////////////////////////////////////
+        ingredients = form.ingredients.data 
+        instructions = form.instructions.data
+        # /////////////////////////////////////////////////
+        servings = form.servings.data
+        time_prep = form.time_prep.data
+        time_cook = form.time_cook.data
+        image = form.image.data
+        cuisine_type = form.cuisine_type.data
+        dish_type = form.dish_type.data
+        meal_type = form.meal_type.data
+
+        new_recipe = Recipe(title=title,serving=serving,
+                            time_prep=time_prep,
+                            time_cook=time_cook,image=image,
+                            cuisine_type=cuisine_type,dish_type=dish_type,
+                            meal_type=meal_type)
+        db.session.add(new_recipe)
+        db.session.commit()
+        serialized = new_recipe.serialize()
+        return (jsonify(recipe=serialized), 201)
+    return render_template('create_recipe.html',form=form)
+
+@app.route("/api/get-ingredient")
 def get_ingredient_id():
-    query = request.get_json()
-    resp = requests.get(f"{BASE_URL}/ingredients/search", params={"apiKey":APP_KEY,"query":query['ing']})
+    """Need to get ingredient ID in order to access all attributes"""
+
+    query = request.args["text"]
+    resp = requests.get(f"{BASE_URL_SP}/food/ingredients/search?", params={"apiKey":APP_KEY,"query":query})
     res = resp.json()
     lst = {res['results'][i]["name"]:res['results'][i]["id"] for i in range(len(res['results']))}
     return jsonify(lst)
 
 @app.route("/api/get-ingredient/<id>")
 def get_ingredient_info(id):
-    resp = requests.get(f'{BASE_URL}/ingredients/{id}/information', params={"apiKey":APP_KEY})
+    """Resp: name, units, category"""
+
+    resp = requests.get(f'{BASE_URL_SP}/food/ingredients/{id}/information', params={"apiKey":APP_KEY})
     res = resp.json()
     lst = [unit for unit in res['possibleUnits']]
     category = res['categoryPath']
     return jsonify(units=lst,img=res['image'],name=res['name'],id=id,category=category)
 
-@app.route("/api/get-ingredient/<id>/nutrifacts", methods=["GET","POST"])
+@app.route("/api/get-ingredient/<id>/nutrifacts")
 def get_ingredient_nutrifacts(id):
-    query = request.get_json()
-    resp = requests.get(f'{BASE_URL}/ingredients/{id}/information', params={"apiKey":APP_KEY,"amount":query['amount'],"unit":query['unit']})
+    """Nutritional Data of an ingredient"""
+
+    unit = request.args.get('units')
+    amount = request.args.get('amount')
+    resp = requests.get(f'{BASE_URL_SP}/food/ingredients/{id}/information', params={"apiKey":APP_KEY,"amount":amount,"unit":unit})
     res = resp.json()
     cost = round(res['estimatedCost']['value']/100,3)
     nutrients = res['nutrition']['nutrients']
@@ -100,18 +133,18 @@ def get_ingredient_nutrifacts(id):
 
 @app.route('/api/get-recipe')
 def get_recipe():
+    """Get all possible recipes for query"""
+
     query_string = request.args["search"]
-    # import pdb
-    # pdb.set_trace()
-    resp = requests.get('https://api.edamam.com/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly'})
-    # import pdb
-    # pdb.set_trace()
+    resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly'})
     return jsonify(resp.json())
 
-@app.route('/api/get-instructions', methods=["POST"])
+@app.route('/api/get-instructions')
 def get_instructions():
-    url = request.json.get('url')
-    resp = requests.get('https://api.spoonacular.com/recipes/extract?', params={"apiKey":APP_KEY,"url":url})
+    """Get directions and time for preparation and cooking data"""
+
+    url = request.args.get('url')
+    resp = requests.get(f'{BASE_URL_SP}/recipes/extract?', params={"apiKey":APP_KEY,"url":url})
     return jsonify(resp.json())
 
 

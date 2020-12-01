@@ -20,34 +20,21 @@ class Recipe(db.Model):
 
     )
 
-    ingr = db.Column(
-        db.Text,
-        nullable=False
-    )
-
-    url = db.Column(
+    image = db.Column(
         db.Text,
         default="/static/images/default-recipe.png"
-    )
-
-    summary = db.Column(
-        db.Text
     )
 
     no_serv = db.Column(
         db.Integer
     )
 
-    ttime = db.Column(
+    tprep = db.Column(
         db.Integer
     )
 
-    img = db.Column(
-        db.Text
-    )
-
-    prep = db.Column(
-        db.Text
+    tcook = db.Column(
+        db.Integer
     )
 
     cuisine = db.Column(
@@ -61,6 +48,116 @@ class Recipe(db.Model):
     dishtype = db.Column(
         db.Text
     )
+
+    instructions = db.relationship('Instruction',backref=db.backref("recipes"), cascade="all,delete")
+
+    def serialize(self):
+        """Serialize our object recipe to dictionary for json"""
+        return {
+            "id": self.id,
+            "title": self.title,
+            "image": self.image,
+            "servings": self.no_serv,
+            "image": self.image,
+            "tprep": self.tprep,
+            "tcook": self.tcook,
+            "cuisine": self.cuisine,
+            "mealtype": self.mealtype,
+            "dishtype": self.dishtype
+        }
+
+class Ingredient(db.Model):
+
+    __tablename__ = 'ingredients'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    name = db.Column(
+        db.Text,
+        nullable = False
+    )
+
+    image = db.Column(
+        db.Text,
+        default="/static/images/ing.png"
+    )
+
+    recipes = db.relationship('Recipe',secondary='recipe_has_ingredients',backref=db.backref("ingredients"))
+
+class Instruction(db.Model):
+
+    __tablename__ = 'instructions'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    step_no = db.Column(
+        db.Integer,
+        nullable = False
+    )
+    
+    step = db.Column(
+        db.Text,
+        nullable = False
+    )
+
+    recipe_id = db.Column(
+        db.Integer,
+        db.ForeignKey('recipes.id'))
+
+class Unit(db.Model):
+
+    __tablename__ = 'units'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    name = db.Column(
+        db.Text,
+        unique=True,
+        nullable = False
+    )
+
+    abbr = db.Column(
+        db.Text,
+        nullable = False
+    )
+
+class RecipeIngredient(db.Model):
+
+    __tablename__ = 'recipe_has_ingredients'
+
+    recipe_id = db.Column(
+        db.Integer,
+        db.ForeignKey("recipes.id"),
+        primary_key = True,
+        nullable = False
+    )
+
+    ingredient_id = db.Column(
+        db.Integer,
+        db.ForeignKey("ingredients.id"),
+        primary_key = True,
+        nullable = False
+    )
+
+    unit_id = db.Column(
+        db.Integer,
+        db.ForeignKey("units.id"),
+        nullable = False
+    )
+
+    unit = db.relationship('Unit', backref='recipe_has_ingredients')
 
 class User(db.Model):
 

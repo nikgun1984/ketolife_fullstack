@@ -43,7 +43,7 @@ async function handleRecipe(data){
 }
 
 async function getInstructions(url){
-    const response = await axios.post(`/api/get-instructions`,{url});
+    const response = await axios.get(`/api/get-instructions`,{params:{url}});
     console.log(response);
     const instructions = response.data.analyzedInstructions[0].steps;
     const prepMins = response.data.preparationMinutes;
@@ -55,12 +55,11 @@ async function getInstructions(url){
     }
 }
 
-
 async function processForm(evt) {
     evt.preventDefault();
     const ing = $('#text').val();
     console.log(ing)
-    const response = await axios.post('/api/get-ingredient', {ing});
+    const response = await axios.get('/api/get-ingredient', {params:{text:ing}});
     handleResponse(response);
 }
 
@@ -138,7 +137,7 @@ async function getIngredientNutriFacts(evt){
     const amount = $('input[type=number]').val();
     const unit = $("select#units").val();
     console.log(id,amount,unit);
-    const response = await axios.post(`/api/get-ingredient/${id}/nutrifacts`,{amount,unit});
+    const response = await axios.get(`/api/get-ingredient/${id}/nutrifacts`,{params:{amount,units:unit}});
     handleNutrifacts(response.data);
 }
 
