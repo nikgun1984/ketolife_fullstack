@@ -48,7 +48,9 @@ class Recipe(db.Model):
     dishtype = db.Column(
         db.Text
     )
-
+    
+    ingredients = db.relationship('Ingredient',secondary='recipe_has_ingredients',backref=db.backref("recipes"))
+    assignments = db.relationship('RecipeIngredient')
     instructions = db.relationship('Instruction',backref=db.backref("recipes"), cascade="all,delete")
 
     def serialize(self):
@@ -85,8 +87,6 @@ class Ingredient(db.Model):
         db.Text,
         default="/static/images/ing.png"
     )
-
-    recipes = db.relationship('Recipe',secondary='recipe_has_ingredients',backref=db.backref("ingredients"))
 
 class Instruction(db.Model):
 

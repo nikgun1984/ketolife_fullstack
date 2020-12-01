@@ -71,14 +71,14 @@ def homepage():
 
 @app.route('/api/create-recipe', methods=['GET','POST'])
 def get_create_recipe_form():
+    """Create a new recipe and add it to the database"""
     form = NewRecipeForm()
     if form.validate_on_submit():
-        title = form.title.data
         # gotta handle ingredients and instructions somehow (lists)
-        # //////////////////////////////////////////////////
         ingredients = form.ingredients.data 
         instructions = form.instructions.data
-        # /////////////////////////////////////////////////
+        # everything else is str8-forward
+        title = form.title.data
         servings = form.servings.data
         time_prep = form.time_prep.data
         time_cook = form.time_cook.data
@@ -92,10 +92,12 @@ def get_create_recipe_form():
                             time_cook=time_cook,image=image,
                             cuisine_type=cuisine_type,dish_type=dish_type,
                             meal_type=meal_type)
+        new_recipe.ingredients.extend(ingredients)
+        new_recipe.instructions.extend(instructions)
         db.session.add(new_recipe)
         db.session.commit()
         serialized = new_recipe.serialize()
-        return (jsonify(recipe=serialized), 201)
+        return jsonify(recipe=serialized), 201
     return render_template('create_recipe.html',form=form)
 
 @app.route("/api/get-ingredient")
