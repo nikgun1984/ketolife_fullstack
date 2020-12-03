@@ -1,0 +1,17 @@
+{%- macro render_ingredient_form(subform, index) %}
+    <div id="ing-{{ index }}-form" class="{% if index != '_' %}subform{% else %}is-hidden{% endif %}" data-index="{{ index }}">
+        <div>
+            {{ subform.ingredient.label }}
+            {{ subform.ingredient }}
+        </div>
+        <div class="is-hidden">
+            {{ subform.unit.label }}
+            {{ subform.unit}}
+        </div>
+        <div class="is-hidden">
+            {{ subform.amount.label }}
+            {{ subform.amount }}
+        </div>
+        <hr/>
+    </div>
+{%- endmacro %}

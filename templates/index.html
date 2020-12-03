@@ -1,31 +1,28 @@
 {% extends 'base.html'%}
 {% block content %}
-
-    <form action="" id="add_links">
-      <label for="text">
-        Search for ingredient
-        <input type="text" id="text" name="text">
+      <form action="" id="add_links">
+        <label for="text">
+          Search for ingredient
+          <input type="text" id="text" name="text">
+        </label>
+          <button type="submit" class="btn btn-primary show-modal" data-toggle="modal" data-target="#ingredientModal">Submit</button>
+      </form>
+  
+      <form action="" id="search-recipe">
+        <label for="search">Search for recipe
+        <input type="text" id="search" name="search">
       </label>
-        <!-- <textarea name="text"></textarea> -->
-        <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Submit</button>
-    </form>
-
-    <form action="" id="search-recipe">
-      <label for="search">Search for recipe
-      <input type="text" id="search" name="search">
-    </label>
-      <!-- <textarea name="text"></textarea> -->
-      <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Search</button>
-    </form>
-  <br><br>
-  <a href="/api/create-recipe">Create Recipe</a>
+        <button type="submit" class="btn btn-primary show-modal" data-toggle="modal" data-target="#ingredientModal">Search</button>
+      </form>
+    <br><br>
+    <a href="/api/create-recipe">Create Recipe</a>
   
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal hide fade in" id="ingredientModal" tabindex="-1" aria-labelledby="ingredientModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header text-center">
-          <h5 class="modal-title w-100" id="exampleModalLabel">Choose any ingridients</h5>
+          <h5 class="modal-title w-100" id="ingredientModalLabel">Choose any ingridients</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>

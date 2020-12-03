@@ -157,6 +157,11 @@ class RecipeIngredient(db.Model):
         nullable = False
     )
 
+    amount = db.Column(
+        db.Float,
+        nullable = False
+    )
+
     unit = db.relationship('Unit', backref='recipe_has_ingredients')
 
 class User(db.Model):

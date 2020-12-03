@@ -1,0 +1,10 @@
+{%- macro render_instruction_form(subform, index) %}
+    <div id="inst-{{ index }}-form" class="{% if index != '_' %}subform{% else %}is-hidden{% endif %}" data-index="{{ index }}">
+        <div>
+            {{ subform.step.label }}
+            {{ subform.step }}
+        </div>
+        <a class="next" href="#">Next</a>
+        <hr/>
+    </div>
+{%- endmacro %}

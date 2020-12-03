@@ -1,32 +1,88 @@
 {% extends 'base.html'%}
+{% import "/macros/sub_form_ingredients.html" as macros1 %}
+{% import "/macros/sub_form_instructions.html" as macros2 %}
 
 {% block content %}
-
 <h1 class="display-4 text-center text-light">Create a new recipe</h1>
     <div class="jumbotron">
         <div class="row">
             <div class="col text-center">
-                <form action="/api/create-recipe", method="POST">
+                <form action="" id="recipe_title">
+                    {{ form.title.label}}
+                    {{ form.title }}
+                    <button type="submit" class="btn btn-outline-success">Next</button>
+                </form>
+                <hr>
+                <div id="ingr" class="is-hidden">
+                    <h3>Which ingredients?</h3>
+                    <form action="" id="add_links">
+                        <label for="text">
+                          Search for ingredient
+                          <input type="text" id="text" name="text">
+                        </label>
+                          <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#ingredientModal">Submit</button>
+                          <a href="" id="done-ing" class="btn btn-outline-success is-hidden">Next</a>
+                      </form>
+                      {% include 'table_ingredients.html'%}
+                </div>
+                <div id="yield" class="is-hidden">
+                    <form action="" id="serving-form">
+                        <h3>How many servings?</h3>
+                        <input type="number" id="serving" name="serving" min="1" max="200">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <a href="" id="done-yield" class="btn btn-outline-success">Next</a>
+                    </form>
+                </div>
+                <div id="inst" class="is-hidden">
+
+                </div>
+                <!-- <form action="/api/create-recipe", method="POST">
                     {{form.hidden_tag()}}
-                    {% for field in form if field.widget.input_type != 'hidden'%}
-                    <div class="form-group">
-                        {{field.label}}
-                        {% if field.id == 'ingredients' or field.id == 'instructions' %}
-                            {{field}}
-                            <a href="">Next</a>
-                        {% else %}
-                            {{ field }}
-                        {% endif %}
-                        {% for error in field.errors %}
-                            <p><em class="text-danger"><small>{{ error }}</small></em></p>
+                    <div id="title">
+                        <h3>Please choose a title for your recipe</h3>
+                        {{ form.title.label}}
+                        {{ form.title.title }}
+                        <a class="btn btn-outline-success">Next</a>
+                    </div>
+                    <hr>
+                    <div id="ingr" class="is-hidden">
+                        <h3>Which ingredients?</h3>
+                        <form action="" id="ingredient_form">
+                            <label for="text">
+                              Search for ingredient
+                              <input type="text" id="text" name="text">
+                            </label>
+                              <button type="submit" name="text" class="btn btn-primary" data-toggle="modal" data-target="#ingredientModal">Submit</button>
+                          </form>
+                        {% for subform in form.ingredients %}
+                            {{ macros1.render_ingredient_form(subform, loop.index0) }}
                         {% endfor %}
                     </div>
-                    {% endfor %}
-                    <button class="btn btn-outline-success">Submit</button>                    
-                </form>
+                    <br>
+                    <button type="submit" name = "" class="btn btn-outline-success is-hidden">Submit</button>                    
+                </form> -->
             </div>
         </div>
     </div>
 
+    <!-- Modal -->
+  <div class="modal hide fade in" id="ingredientModal" tabindex="-1" aria-labelledby="ingredientModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <h5 class="modal-title w-100" id="ingredientModalLabel">Choose any ingridients</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modbod">
+            <!-- <a href=""></a> -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+    </div>
 
 {% endblock %}

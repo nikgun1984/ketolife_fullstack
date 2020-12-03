@@ -9,7 +9,7 @@ import requests
 # wtforms_json.init()
 
 from models import db, connect_db, User,Recipe
-from forms import NewRecipeForm
+from forms import NewRecipeForm, TitleRecipeForm
 from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
 
 CURR_USER_KEY = "curr_user"
@@ -72,32 +72,35 @@ def homepage():
 @app.route('/api/create-recipe', methods=['GET','POST'])
 def get_create_recipe_form():
     """Create a new recipe and add it to the database"""
-    form = NewRecipeForm()
-    if form.validate_on_submit():
-        # gotta handle ingredients and instructions somehow (lists)
-        ingredients = form.ingredients.data 
-        instructions = form.instructions.data
-        # everything else is str8-forward
-        title = form.title.data
-        servings = form.servings.data
-        time_prep = form.time_prep.data
-        time_cook = form.time_cook.data
-        image = form.image.data
-        cuisine_type = form.cuisine_type.data
-        dish_type = form.dish_type.data
-        meal_type = form.meal_type.data
+    form = TitleRecipeForm()
 
-        new_recipe = Recipe(title=title,serving=serving,
-                            time_prep=time_prep,
-                            time_cook=time_cook,image=image,
-                            cuisine_type=cuisine_type,dish_type=dish_type,
-                            meal_type=meal_type)
-        new_recipe.ingredients.extend(ingredients)
-        new_recipe.instructions.extend(instructions)
-        db.session.add(new_recipe)
-        db.session.commit()
-        serialized = new_recipe.serialize()
-        return jsonify(recipe=serialized), 201
+    if form.title.validate(form):
+        title = form.title.data
+    # if form.validate_on_submit():
+    #     # gotta handle ingredients and instructions somehow (lists)
+    #     ingredients = form.ingredients.data 
+    #     instructions = form.instructions.data
+    #     # everything else is str8-forward
+    #     title = form.title.data
+    #     servings = form.servings.data
+    #     time_prep = form.time_prep.data
+    #     time_cook = form.time_cook.data
+    #     image = form.image.data
+    #     cuisine_type = form.cuisine_type.data
+    #     dish_type = form.dish_type.data
+    #     meal_type = form.meal_type.data
+
+    #     new_recipe = Recipe(title=title,serving=serving,
+    #                         time_prep=time_prep,
+    #                         time_cook=time_cook,image=image,
+    #                         cuisine_type=cuisine_type,dish_type=dish_type,
+    #                         meal_type=meal_type)
+    #     new_recipe.ingredients.extend(ingredients)
+    #     new_recipe.instructions.extend(instructions)
+    #     db.session.add(new_recipe)
+    #     db.session.commit()
+    #     serialized = new_recipe.serialize()
+    #     return jsonify(recipe=serialized), 201
     return render_template('create_recipe.html',form=form)
 
 @app.route("/api/get-ingredient")

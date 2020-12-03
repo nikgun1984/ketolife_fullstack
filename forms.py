@@ -1,13 +1,27 @@
-from wtforms import TextAreaField, StringField, IntegerField, FileField, SelectField
+from wtforms import Form, FormField, StringField, IntegerField, FileField, SelectField, FieldList, TextAreaField, FloatField
 from wtforms.validators import InputRequired, DataRequired, Optional
 from flask_wtf import FlaskForm
 
+class AddIngredientForm(Form):
+    """Subform.
+        CSRF is disabled for this subform (using `Form` as parent class) because
+        it is never used by itself.
+    """
+    ingredient = StringField('Ingredient', validators=[InputRequired("Please Enter the Ingredient Used")])
+    unit = SelectField('Unit', validators=[InputRequired("Select one of the measurement unit")])
+    amount = FloatField('Amount', validators=[InputRequired("Please Enter the Amount Used")])
 
-class NewRecipeForm(FlaskForm):
+class AddInstructionForm(Form):
+    """Subform.
+        CSRF is disabled for this subform (using `Form` as parent class) because
+        it is never used by itself.
+    """
+    step = TextAreaField('Directions', validators=[InputRequired("Please Enter the Directions to prepare your recipe")])
 
+class TitleRecipeForm(FlaskForm):
     title = StringField("Recipe Title", validators=[InputRequired("Please Enter the Recipe Title")])
-    ingredients = StringField('Ingredients', validators=[InputRequired("Please Enter the Ingredients Used")])
-    instructions = StringField('Instructions', validators=[InputRequired("Please Enter the Directions to prepare youe recipe")])
+
+class OtherDetailsForm(Form):
     servings = IntegerField('How many servings', validators=[InputRequired("Please enter the number of servings")])
     time_prep = IntegerField('Time of preparation', validators=[InputRequired("Please enter the time it takes to prepare this recipe")])
     time_cook = IntegerField('Time to cook', validators=[InputRequired("Please enter the time it takes to cook this recipe")])
@@ -16,3 +30,12 @@ class NewRecipeForm(FlaskForm):
                  ('breakfast', 'Breakfast'), ('lunch', 'Lunch'), 
                  ('dinner','Dinner'),('snack', 'Snack'),('teatime','Teatime')
                 ],default=None)
+
+class NewRecipeForm(FlaskForm):
+
+    title = FormField(TitleRecipeForm)
+    ingredients = FieldList(FormField(AddIngredientForm),min_entries=1,max_entries=20)
+    instructions = FieldList(FormField(AddInstructionForm),min_entries=1,max_entries=20)
+    # ingredients = StringField('Ingredients', validators=[InputRequired("Please Enter the Ingredients Used")])
+    # instructions = StringField('Instructions', validators=[InputRequired("Please Enter the Directions to prepare youe recipe")])
+    details = FormField(OtherDetailsForm)
