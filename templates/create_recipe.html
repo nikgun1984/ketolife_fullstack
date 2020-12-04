@@ -3,34 +3,39 @@
 {% import "/macros/sub_form_instructions.html" as macros2 %}
 
 {% block content %}
-<h1 class="display-4 text-center text-light">Create a new recipe</h1>
+<h1 class="display-4 text-center text-light">Create a new recipe</h1> 
     <div class="jumbotron">
-        <div class="row">
-            <div class="col text-center">
-                <form action="" id="recipe_title">
-                    {{ form.title.label}}
-                    {{ form.title }}
-                    <button type="submit" class="btn btn-outline-success">Next</button>
+        <div class="row justify-content-end">
+            <div class="col">
+                <form id="recipe_title" class="form-inline">
+                    <div class="form-group mx-sm-1 mb-1 ">
+                        {{ form.title.label}}
+                        {{ form.title(class_="form-control")}}
+                    </div>
+                    <button type="submit" class="btn btn-outline-success mb-1">Next</button>
                 </form>
                 <hr>
                 <div id="ingr" class="is-hidden">
-                    <h3>Which ingredients?</h3>
-                    <form action="" id="add_links">
-                        <label for="text">
-                          Search for ingredient
-                          <input type="text" id="text" name="text">
-                        </label>
-                          <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#ingredientModal">Submit</button>
-                          <a href="" id="done-ing" class="btn btn-outline-success is-hidden">Next</a>
-                      </form>
-                      {% include 'table_ingredients.html'%}
+                    <h3 class="text-center">Which ingredients?</h3>
+                    <form id="add_links" class="form-inline">
+                        <div class="form-group mx-sm-1 mb-1">
+                            <label for="text">Search for ingredient</label>
+                            <input type="text" id="text" name="text" class="form-control">
+                        </div>
+                          <button type="submit" class="btn btn-outline-primary mb-1 mx-sm-1" data-toggle="modal" data-target="#ingredientModal">Submit</button>
+                          <button id="done-ing" class="btn btn-outline-success mb-1 mx-sm-1 is-hidden">Next</button>
+                    </form>
+                    {% include 'table_ingredients.html'%}
                 </div>
                 <div id="yield" class="is-hidden">
-                    <form action="" id="serving-form">
-                        <h3>How many servings?</h3>
-                        <input type="number" id="serving" name="serving" min="1" max="200">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <a href="" id="done-yield" class="btn btn-outline-success">Next</a>
+                    <h3 class="text-center">How many servings?</h3>
+                    <form id="serving-form" class="form-inline">
+                        <div class="form-group mx-sm-1 mb-1">
+                            <label for="text">#Servings</label>
+                            <input type="number" class="form-control" id="serving" name="serving" min="1" max="200">
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary mx-sm-1 mb-1">Submit</button>
+                        <button id="done-yield" class="btn btn-outline-success mx-sm-1 mb-1 is-hidden">Next</button>
                     </form>
                 </div>
                 <div id="inst" class="is-hidden">

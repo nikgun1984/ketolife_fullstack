@@ -19,7 +19,7 @@ class AddInstructionForm(Form):
     step = TextAreaField('Directions', validators=[InputRequired("Please Enter the Directions to prepare your recipe")])
 
 class TitleRecipeForm(FlaskForm):
-    title = StringField("Recipe Title", validators=[InputRequired("Please Enter the Recipe Title")])
+    title = StringField("Recipe Title", validators=[InputRequired("Please Enter the Recipe Title")],render_kw={"placeholder": "Title your recipe"})
 
 class OtherDetailsForm(Form):
     servings = IntegerField('How many servings', validators=[InputRequired("Please enter the number of servings")])

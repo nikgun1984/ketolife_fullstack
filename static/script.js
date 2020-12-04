@@ -19,15 +19,24 @@ $("#recipe_title").on("submit",function(evt){
     $("#ingr").show();
     evt.preventDefault();
     title = $('#title').val();
-    console.log(title);
+    $("#recipe_title").append(addCheckmark());
+});
+
+$("#serving-form").on("submit",function(evt){
+    evt.preventDefault();
+    if($("#title").val()){
+        $("#serving-form").append(addCheckmark());
+        $("#done-yield").show();
+        servings = parseInt($('#serving').val());
+        calculateGenNutritionPerServing(nutriObject.nutrients);
+        calculateGenNutritionPerServing(nutriObject.vitamins);
+        console.log(nutriObject);
+    }
 });
 
 $("#done-ing").on("click",function(evt){
     evt.preventDefault();
     $("#yield").show();
-    evt.preventDefault();
-    servings = $('#serving').val();
-    console.log(servings);
 });
 
 $(document).on('click',"i.fas.fa-trash-alt",function(){
@@ -440,5 +449,26 @@ function handleFraction(val){
         result = (parseInt(split[0], 10) / parseInt(split[1], 10)).toFixed(2);
     }
     return result;
+}
+
+function addCheckmark(){
+    return `
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2" class="mx-sm-1 mb-5">
+            <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
+            <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
+        </svg>
+    `
+}
+
+function calculateGenNutritionPerServing(nutriObj){
+    const nutrients = Object.keys(nutriObj);
+    for(let obj of nutrients){
+        if(nutriObj[obj].amount){
+            nutriObj[obj].amount = Math.round(nutriObj[obj].amount /servings);
+        }
+        if(nutriObj[obj].percentOfDailyNeeds){
+            nutriObj[obj].percentOfDailyNeeds = Math.round(nutriObj[obj].percentOfDailyNeeds / servings);
+        }
+    }
 }
 
