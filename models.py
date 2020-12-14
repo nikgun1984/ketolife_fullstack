@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 
+
 class Recipe(db.Model):
 
     __tablename__ = 'recipes'
@@ -48,10 +49,11 @@ class Recipe(db.Model):
     dishtype = db.Column(
         db.Text
     )
-    
-    ingredients = db.relationship('Ingredient',secondary='recipe_has_ingredients',backref=db.backref("recipes"))
-    assignments = db.relationship('RecipeIngredient')
-    instructions = db.relationship('Instruction',backref=db.backref("recipes"), cascade="all,delete")
+    # through relationship to have an access to all ingredients of the recipe
+    ingredients = db.relationship(
+        'Ingredient', secondary='recipe_has_ingredients', backref=db.backref("recipes"))
+    # We need access to units and amounts
+    assignments = db.relationship('RecipeIngredient', backref="recipe")
 
     def serialize(self):
         """Serialize our object recipe to dictionary for json"""
@@ -68,6 +70,7 @@ class Recipe(db.Model):
             "dishtype": self.dishtype
         }
 
+
 class Ingredient(db.Model):
 
     __tablename__ = 'ingredients'
@@ -80,13 +83,16 @@ class Ingredient(db.Model):
 
     name = db.Column(
         db.Text,
-        nullable = False
+        nullable=False
     )
 
     image = db.Column(
         db.Text,
         default="/static/images/ing.png"
     )
+
+    assignments = db.relationship('RecipeIngredient', backref="ingredient")
+
 
 class Instruction(db.Model):
 
@@ -100,17 +106,20 @@ class Instruction(db.Model):
 
     step_no = db.Column(
         db.Integer,
-        nullable = False
+        nullable=False
     )
-    
+
     step = db.Column(
         db.Text,
-        nullable = False
+        nullable=False
     )
 
     recipe_id = db.Column(
         db.Integer,
         db.ForeignKey('recipes.id'))
+
+    recipe = db.relationship('Recipe', backref="instructions")
+
 
 class Unit(db.Model):
 
@@ -125,44 +134,46 @@ class Unit(db.Model):
     name = db.Column(
         db.Text,
         unique=True,
-        nullable = False
+        nullable=False
     )
 
     abbr = db.Column(
         db.Text,
-        nullable = False
+        nullable=False
     )
+
 
 class RecipeIngredient(db.Model):
 
-    __tablename__ = 'recipe_has_ingredients'
+    __tablename__ = 'recipe_ingredients'
 
     recipe_id = db.Column(
         db.Integer,
         db.ForeignKey("recipes.id"),
-        primary_key = True,
-        nullable = False
+        primary_key=True,
+        nullable=False
     )
 
     ingredient_id = db.Column(
         db.Integer,
         db.ForeignKey("ingredients.id"),
-        primary_key = True,
-        nullable = False
+        primary_key=True,
+        nullable=False
     )
 
     unit_id = db.Column(
         db.Integer,
         db.ForeignKey("units.id"),
-        nullable = False
+        nullable=False
     )
 
     amount = db.Column(
         db.Float,
-        nullable = False
+        nullable=False
     )
 
-    unit = db.relationship('Unit', backref='recipe_has_ingredients')
+    unit = db.relationship('Unit', backref='recipe_ingredient')
+
 
 class User(db.Model):
 
@@ -199,9 +210,8 @@ class User(db.Model):
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
-    
     @classmethod
-    def signup(cls, email,username,image_url,password):
+    def signup(cls, email, username, image_url, password):
         """Sign up user.
         Hashes password and adds user to system.
         """
@@ -229,7 +239,6 @@ class User(db.Model):
                 return user
 
         return False
-
 
 
 def connect_db(app):

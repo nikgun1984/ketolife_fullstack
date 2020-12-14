@@ -1,92 +1,393 @@
+body {
+  margin: 0;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: left;
+}
+
 .is-hidden {
-    display: none;
+  display: none;
 }
 
 .is-shown {
-    display: block;
+  display: block;
 }
 
-i.fas.fa-trash-alt{
-    transition: transform 0.4s;
-    transform: scale(1);
+/* Delete ingredient */
+
+i.fas.fa-trash-alt {
+  transition: transform 0.4s;
+  transform: scale(1);
 }
 
 i.fas.fa-trash-alt:hover {
-    color: red;
-    transform: scale(1.5);
+  color: red;
+  transform: scale(1.5);
 }
 
 .jumbotron {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Check mark on success */
+
 svg {
-    width: 30px;
-    display: block;
-    margin: 40px auto 0;
+  width: 30px;
+  display: block;
+  margin: 40px auto 0;
+}
+
+.path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
+}
+
+.path.circle {
+  -webkit-animation: dash 0.9s ease-in-out;
+  animation: dash 0.9s ease-in-out;
+}
+
+.path.line {
+  stroke-dashoffset: 1000;
+  -webkit-animation: dash 0.9s 0.35s ease-in-out forwards;
+  animation: dash 0.9s 0.35s ease-in-out forwards;
+}
+
+.path.check {
+  stroke-dashoffset: -100;
+  -webkit-animation: dash-check 0.9s 0.35s ease-in-out forwards;
+  animation: dash-check 0.9s 0.35s ease-in-out forwards;
+}
+
+@-webkit-keyframes dash {
+  0% {
+    stroke-dashoffset: 1000;
   }
-  .path {
-    stroke-dasharray: 1000;
+
+  100% {
     stroke-dashoffset: 0;
   }
-  .path.circle {
-    -webkit-animation: dash 0.9s ease-in-out;
-    animation: dash 0.9s ease-in-out;
-  }
-  .path.line {
+}
+
+@keyframes dash {
+  0% {
     stroke-dashoffset: 1000;
-    -webkit-animation: dash 0.9s 0.35s ease-in-out forwards;
-    animation: dash 0.9s 0.35s ease-in-out forwards;
   }
-  .path.check {
+
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@-webkit-keyframes dash-check {
+  0% {
     stroke-dashoffset: -100;
-    -webkit-animation: dash-check 0.9s 0.35s ease-in-out forwards;
-    animation: dash-check 0.9s 0.35s ease-in-out forwards;
   }
-  p {
-    text-align: center;
-    margin: 20px 0 60px;
-    font-size: 1.25em;
+
+  100% {
+    stroke-dashoffset: 900;
   }
-  p.success {
-    color: #73AF55;
+}
+
+@keyframes dash-check {
+  0% {
+    stroke-dashoffset: -100;
   }
-  p.error {
-    color: #D06079;
+
+  100% {
+    stroke-dashoffset: 900;
   }
-  @-webkit-keyframes dash {
-    0% {
-      stroke-dashoffset: 1000;
+}
+
+/* Page Header */
+.page-header {
+  height: 100vh;
+  background-position: center center;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  align-items: center;
+}
+
+.page-header .page-header-image {
+  position: absolute;
+  background-size: cover;
+  background-position: center center;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.page-header .content-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  -ms-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #FFFFFF;
+  padding: 0 15px;
+  width: 100%;
+  max-width: 880px;
+}
+
+.page-header .carousel .carousel-indicators {
+  bottom: 60px;
+}
+
+.page-header>.container {
+  color: #ffffff;
+}
+
+.page-header .title {
+  color: #ffffff;
+}
+
+.page-header.header-small {
+  height: 65vh;
+  min-height: 65vh;
+}
+
+.page-header .iframe-container iframe {
+  width: 100%;
+  box-shadow: 0 16px 38px -12px rgba(0, 0, 0, 0.56), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+.header-filter {
+  position: relative;
+}
+
+.header-filter:before,
+.header-filter:after {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: block;
+  left: 0;
+  top: 0;
+  content: "";
+}
+
+.header-filter::before {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.header-filter .container {
+  z-index: 2;
+  position: relative;
+}
+
+.clear-filter::before {
+  background: none;
+}
+
+.purple-filter:after {
+  background: rgba(219, 248, 219, 0.3);
+background: linear-gradient(45deg, rgba(219, 248, 219, 0.3) 0%, rgba(197, 252, 197, 0.639) 100%);
+
+}
+
+.nav-link {
+  display: block;
+  padding: 0.5rem 1rem;
+  font-size: medium;
+  font-weight: bold;
+  background-color: rgb(149, 245, 149, 0.4);
+  color: #050404;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  text-decoration: none;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+  color: #fff;
+  background-color: #9c27b0;
+}
+
+#search-label{
+  font-size: medium;
+  font-weight: bold;
+  align-items: center;
+}
+
+
+/*--------------------------------------------*/
+
+/*
+    code by Iatek LLC 2018 - CC 2.0 License - Attribution required
+    code customized by Azmind.com
+*/
+@media (min-width: 768px) and (max-width: 991px) {
+    /* Show 4th slide on md if col-md-4*/
+    .carousel-inner .active.col-md-4.carousel-item + .carousel-item + .carousel-item + .carousel-item {
+        position: absolute;
+        top: 0;
+        right: -33.3333%;  /*change this with javascript in the future*/
+        z-index: -1;
+        display: block;
+        visibility: visible;
     }
-    100% {
-      stroke-dashoffset: 0;
+}
+@media (min-width: 576px) and (max-width: 768px) {
+    /* Show 3rd slide on sm if col-sm-6*/
+    .carousel-inner .active.col-sm-6.carousel-item + .carousel-item + .carousel-item {
+        position: absolute;
+        top: 0;
+        right: -50%;  /*change this with javascript in the future*/
+        z-index: -1;
+        display: block;
+        visibility: visible;
     }
-  }
-  @keyframes dash {
-    0% {
-      stroke-dashoffset: 1000;
+}
+@media (min-width: 576px) {
+    .carousel-item {
+        margin-right: 0;
     }
-    100% {
-      stroke-dashoffset: 0;
+    /* show 2 items */
+    .carousel-inner .active + .carousel-item {
+        display: block;
     }
-  }
-  @-webkit-keyframes dash-check {
-    0% {
-      stroke-dashoffset: -100;
+    .carousel-inner .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left),
+    .carousel-inner .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left) + .carousel-item {
+        transition: none;
     }
-    100% {
-      stroke-dashoffset: 900;
+    .carousel-inner .carousel-item-next {
+        position: relative;
+        transform: translate3d(0, 0, 0);
     }
-  }
-  @keyframes dash-check {
-    0% {
-      stroke-dashoffset: -100;
+    /* left or forward direction */
+    .active.carousel-item-left + .carousel-item-next.carousel-item-left,
+    .carousel-item-next.carousel-item-left + .carousel-item,
+    .carousel-item-next.carousel-item-left + .carousel-item + .carousel-item {
+        position: relative;
+        transform: translate3d(-100%, 0, 0);
+        visibility: visible;
     }
-    100% {
-      stroke-dashoffset: 900;
+    /* farthest right hidden item must be also positioned for animations */
+    .carousel-inner .carousel-item-prev.carousel-item-right {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        display: block;
+        visibility: visible;
     }
-  }
-  
+    /* right or prev direction */
+    .active.carousel-item-right + .carousel-item-prev.carousel-item-right,
+    .carousel-item-prev.carousel-item-right + .carousel-item,
+    .carousel-item-prev.carousel-item-right + .carousel-item + .carousel-item {
+        position: relative;
+        transform: translate3d(100%, 0, 0);
+        visibility: visible;
+        display: block;
+        visibility: visible;
+    }
+}
+/* MD */
+@media (min-width: 768px) {
+    /* show 3rd of 3 item slide */
+    .carousel-inner .active + .carousel-item + .carousel-item {
+        display: block;
+    }
+    .carousel-inner .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left) + .carousel-item + .carousel-item {
+        transition: none;
+    }
+    .carousel-inner .carousel-item-next {
+        position: relative;
+        transform: translate3d(0, 0, 0);
+    }
+    /* left or forward direction */
+    .carousel-item-next.carousel-item-left + .carousel-item + .carousel-item + .carousel-item {
+        position: relative;
+        transform: translate3d(-100%, 0, 0);
+        visibility: visible;
+    }
+    /* right or prev direction */
+    .carousel-item-prev.carousel-item-right + .carousel-item + .carousel-item + .carousel-item {
+        position: relative;
+        transform: translate3d(100%, 0, 0);
+        visibility: visible;
+        display: block;
+        visibility: visible;
+    }
+}
+/* LG */
+@media (min-width: 991px) {
+    /* show 4th item */
+    .carousel-inner .active + .carousel-item + .carousel-item + .carousel-item {
+        display: block;
+    }
+    .carousel-inner .carousel-item.active:not(.carousel-item-right):not(.carousel-item-left) + .carousel-item + .carousel-item + .carousel-item {
+        transition: none;
+    }
+    /* Show 5th slide on lg if col-lg-3 */
+    .carousel-inner .active.col-lg-3.carousel-item + .carousel-item + .carousel-item + .carousel-item + .carousel-item {
+        position: absolute;
+        top: 0;
+        right: -25%;  /*change this with javascript in the future*/
+        z-index: -1;
+        display: block;
+        visibility: visible;
+    }
+    /* left or forward direction */
+    .carousel-item-next.carousel-item-left + .carousel-item + .carousel-item + .carousel-item + .carousel-item {
+        position: relative;
+        transform: translate3d(-100%, 0, 0);
+        visibility: visible;
+    }
+    /* right or prev direction //t - previous slide direction last item animation fix */
+    .carousel-item-prev.carousel-item-right + .carousel-item + .carousel-item + .carousel-item + .carousel-item {
+        position: relative;
+        transform: translate3d(100%, 0, 0);
+        visibility: visible;
+        display: block;
+        visibility: visible;
+    }
+}
+
+.carousel-indicators li {
+    height: 1.25rem;
+    width: 1.25rem;
+    max-width: 1.25rem;
+    background-color: rgb(120, 202, 109);
+    margin-bottom: -4rem;
+    /* -webkit-border-radius: 50%;
+    border-radius: 50%; */
+    cursor: pointer;
+}
+
+.carousel-indicators li:hover {
+    height: 1.75rem;
+    width: 1.75rem;
+    max-width: 1.75rem;
+    background-color: rgb(30, 238, 2);
+    /* border-radius: 50%; */
+}
+
+.fa.fa-angle-left,
+.fa.fa-angle-right{
+  color: white;
+  font-size: 40px;
+  height: 40px;
+  width: 40px;
+  background-color: rgb(30, 238, 2);;
+  background-size: 100%, 100%;
+  border-radius: 50%;
+  background-image: none;
+box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
