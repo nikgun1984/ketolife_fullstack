@@ -3,6 +3,8 @@ from flask import Flask, render_template, request, flash, redirect, session, g, 
 from flask_debugtoolbar import DebugToolbarExtension
 from functools import wraps
 import requests
+from sqlalchemy.exc import IntegrityError
+
 # import wtforms_json
 
 # Initialize wtforms_json
@@ -62,6 +64,67 @@ def do_logout():
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
+
+@app.route('/sigup', methods= ["GET", "POST"])
+def signup():
+    """Handle user signup.
+    Create new user and add to DB. Redirect to home user's page.
+    If form not valid, present form.
+    If the there already is a user with that username: flash message
+    and re-present form.
+    """
+
+    form = UserAddForm()
+
+    if form.validate_on_submit():
+        try:
+            user = User.signup(
+                username=form.username.data,
+                password=form.password.data,
+                email=form.email.data,
+                image_url=form.image_url.data
+            )
+            db.session.commit()
+
+        except IntegrityError:
+            flash("Username already taken", 'danger')
+            return render_template('signup.html', user_form=form)
+
+        do_login(user)
+
+        return redirect("/")
+
+    else:
+        return render_template('signup.html', form=form)
+
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    """Handle user login."""
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        user = User.authenticate(form.username.data,
+                                 form.password.data)
+
+        if user:
+            do_login(user)
+            flash(f"Hello, {user.username}!", "success")
+            return redirect("/")
+
+        flash("Invalid credentials.", 'danger')
+
+    return render_template('users/login.html', user_form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Handle logout of user."""
+    do_logout()
+    flash("See you later, alligator!!!", "success")
+    return redirect('/login')
 
 @app.route("/")
 def homepage():

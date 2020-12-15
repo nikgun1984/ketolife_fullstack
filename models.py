@@ -219,10 +219,10 @@ class User(db.Model):
         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
 
         user = User(
-            email=email,
             username=username,
-            image_url=image_url,
-            password=hashed_pwd
+            password=hashed_pwd,
+            email=email,
+            image_url=image_url
         )
 
         db.session.add(user)
