@@ -11,7 +11,7 @@ from sqlalchemy.exc import IntegrityError
 # wtforms_json.init()
 
 from models import db, connect_db, User,Recipe
-from forms import NewRecipeForm, TitleRecipeForm
+from forms import NewRecipeForm, TitleRecipeForm, LoginForm, UserAddForm
 from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
 
 CURR_USER_KEY = "curr_user"
@@ -30,6 +30,13 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 # toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
+
+@app.context_processor
+def context_processor():
+    """Now form will be available globally across all jinja templates"""
+    login_form = LoginForm()
+    signup_form = UserAddForm()
+    return dict(login_form=login_form,signup_form=signup_form)
 
 @app.before_request
 def add_user_to_g():
@@ -65,7 +72,7 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
-@app.route('/sigup', methods= ["GET", "POST"])
+@app.route('/signup', methods= ["GET", "POST"])
 def signup():
     """Handle user signup.
     Create new user and add to DB. Redirect to home user's page.
@@ -129,7 +136,7 @@ def logout():
 @app.route("/")
 def homepage():
     """Show homepage."""
-
+    
     return render_template("index.html")
 
 @app.route('/api/create-recipe', methods=['GET','POST'])

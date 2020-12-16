@@ -50,10 +50,10 @@
                         </form>
                     </li>
                     <li class="nav-item pr-3">
-                        <a href = "" class = "btn btn-outline-success big-login add_modal" data-toggle ="modal" data-target ="#loginModal">Login</a>
+                        <a href = "" class="btn btn-outline-success add_modal" data-toggle ="modal" data-target ="#loginModal" id="login-win">Login</a>
                     </li>
                     <li class="nav-item pr-3">
-                        <a href = "" class="btn btn-outline-success big-register add_modal" data-toggle="modal" data-target="#registerModal">Sign Up</a>
+                        <a href = "" class="btn btn-outline-success add_modal" data-toggle="modal" data-target="#registerModal" id="signup-win">Sign Up</a>
                     </li>
                 </ul>
             </div>
@@ -81,7 +81,8 @@
         {% block content1 %}{% endblock %}
     </div>
 
-    {% include 'login-register-modal.html' %}
+    {% include 'register-modal.html' %}
+    {% include 'login-modal.html' %}
     <script src="https://unpkg.com/axios/dist/axios.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -93,7 +94,7 @@
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
         crossorigin="anonymous"></script>
     <script src="/static/script.js"></script>
-    <!-- <script src="/static/login-register.js"></script> -->
+    <script src="/static/login-register.js"></script>
 </body>
 
 </html>

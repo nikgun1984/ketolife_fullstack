@@ -45,13 +45,13 @@ class NewRecipeForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     """Login form."""
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[Length(min=6)])
+    username = StringField('Username', render_kw={"placeholder": "Username"},validators=[DataRequired()])
+    password = PasswordField('Password', render_kw={"placeholder": "Password"},validators=[Length(min=6)])
 
 
 class UserAddForm(FlaskForm):
     """Form for adding users."""
-    username = StringField('Username', validators=[DataRequired()])
-    email = StringField('E-mail', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[Length(min=6)])
+    username = StringField('Username', render_kw={"placeholder": "Username"}, validators=[DataRequired()])
+    email = StringField('E-mail', render_kw={"placeholder": "Email Address"}, validators=[DataRequired(), Email()])
+    password = PasswordField('Password', render_kw={"placeholder": "Password"}, validators=[Length(min=6)])
     # image_url = StringField('(Optional) Image URL')
