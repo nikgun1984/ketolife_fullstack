@@ -1,78 +1,58 @@
-<div class="container">
-  <div class="modal fade login" id="loginModal">
-    <div class="modal-dialog login animated">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Login</h4>
-        </div>
-        <div class="modal-body">
-          <div class="box">
-            <div class="content">
-                <form method="" action="" accept-charset="UTF-8">
-                  <input id="email" class="form-control" type="text" placeholder="Email" name="email"/>
-                  <input id="password" class="form-control" type="password" placeholder="Password" name="password"/>
-                  <input class="btn btn-default btn-login" type="button" value="Login"/>
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+            <div class="signup-form">
+                <form action="" method="POST" class="text-center">
+                    <h2>Sign Up</h2>
+                    <p>Please fill in this form to create an account!</p>
+                    <hr/>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fa fa-user"></i></div>
+                            </div>
+                            <input type="text" class="form-control" name="username" placeholder="Username" required="required"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fa fa-paper-plane"></i></div>
+                            </div>
+                            <input type="email" class="form-control" name="email" placeholder="Email Address" required="required"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fa fa-lock"></i></div>
+                            </div>
+                            <input type="text" class="form-control" name="password" placeholder="Password" required="required"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fa fa-lock"></i><i class="fa fa-check"></i></div>
+                            </div>
+                            <input type="text" class="form-control" name="confirm_password" placeholder="Confirm Password" required="required"/>
+                        </div>
+                    </div>
+                    <!-- <div class = "form-group" > 
+                <label class="checkbox-inline">
+                    <input type = "checkbox" required = "required"> 
+                    I accept the <a href = "#"> Terms of Use </a> &amp; 
+                    <a href="#">Privacy Policy</a> 
+                </label>
+            </div> -->
+                    <div class="text-center p-2">Already have an account? <a href="#">Login here</a></div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Sign Up
+                        </button>
+                    </div>
                 </form>
-              </div>
             </div>
-          </div>
-          <!-- <div class="box">
-            <div class="content registerBox" style="display: none">
-              <div class="form">
-                <form
-                  method=""
-                  html="{:multipart=>true}"
-                  data-remote="true"
-                  action=""
-                  accept-charset="UTF-8"
-                >
-                  <input
-                    id="email"
-                    class="form-control"
-                    type="text"
-                    placeholder="Email"
-                    name="email"
-                  />
-                  <input
-                    id="password"
-                    class="form-control"
-                    type="password"
-                    placeholder="Password"
-                    name="password"
-                  />
-                  <input
-                    id="password_confirmation"
-                    class="form-control"
-                    type="password"
-                    placeholder="Repeat Password"
-                    name="password_confirmation"
-                  />
-                  <input
-                    class="btn btn-default btn-register"
-                    type="button"
-                    value="Create account"
-                    name="commit"
-                  />
-                </form>
-              </div>
-            </div>
-          </div>
         </div>
-        <div class="modal-footer">
-          <div class="forgot login-footer">
-            <span>
-              Looking to
-              <a href="javascript: showRegisterForm();"> create an account </a>
-              ?
-            </span>
-          </div> -->
-          <div class="forgot register-footer" style="display: none">
-            <span> Already have an account? </span>
-            <a href="javascript: showLoginForm();"> Login </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+	</div>
 </div>

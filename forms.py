@@ -1,5 +1,5 @@
 from wtforms import Form, FormField, StringField, IntegerField, FileField, SelectField, FieldList, TextAreaField, FloatField, PasswordField
-from wtforms.validators import InputRequired, DataRequired, Optional
+from wtforms.validators import InputRequired, DataRequired, Optional, Length, Email
 from flask_wtf import FlaskForm
 
 class AddIngredientForm(Form):

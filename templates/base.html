@@ -44,7 +44,7 @@
                         <form>
                             <div class="input-group pr-3">
                                 <label for="search-bar" id="search-label" class="control-label col-sm-3 label pt-2">Search</label>
-                                <input type="text" class="form-control " aria-label="default" aria-describedby="inputGroup-sizing-default" placeholder="Find your Keto Recipe" id="search-bar">
+                                <input type="text" class="form-control rounded" aria-label="default" aria-describedby="inputGroup-sizing-default" placeholder="Find your Keto Recipe" id="search-bar">
                                 <button type="submit" class="btn btn-white btn-raised btn-fab btn-round"><i class="fas fa-search"></i></button>
                             </div>
                         </form>
@@ -53,7 +53,7 @@
                         <a href = "" class = "btn btn-outline-success big-login add_modal" data-toggle ="modal" data-target ="#loginModal">Login</a>
                     </li>
                     <li class="nav-item pr-3">
-                        <a href = "" class="btn btn-outline-success big-register add_modal" data-toggle = "modal" data-target ="#loginModal">Register</a>
+                        <a href = "" class="btn btn-outline-success big-register add_modal" data-toggle="modal" data-target="#registerModal">Sign Up</a>
                     </li>
                 </ul>
             </div>
@@ -79,8 +79,9 @@
     </div>
     <div class="container"> 
         {% block content1 %}{% endblock %}
-        {% include 'login-register-modal.html' %}
     </div>
+
+    {% include 'login-register-modal.html' %}
     <script src="https://unpkg.com/axios/dist/axios.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
