@@ -33,7 +33,7 @@ connect_db(app)
 
 @app.context_processor
 def context_processor():
-    """Now form will be available globally across all jinja templates"""
+    """Now forms will be available globally across all jinja templates"""
     login_form = LoginForm()
     signup_form = UserAddForm()
     return dict(login_form=login_form,signup_form=signup_form)
@@ -72,7 +72,7 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
-@app.route('/signup', methods= ["GET", "POST"])
+@app.route('/', methods= ["POST"])
 def signup():
     """Handle user signup.
     Create new user and add to DB. Redirect to home user's page.
@@ -80,49 +80,53 @@ def signup():
     If the there already is a user with that username: flash message
     and re-present form.
     """
-
-    form = UserAddForm()
-
-    if form.validate_on_submit():
+    signup_form = UserAddForm()
+    if signup_form.validate_on_submit():
+        username = request.json["username"]
+        password = request.json["password"]
+        email = request.json["email"]
+        confirm = request.json["confirm"]
+        image_url = User.image_url.default.arg
         try:
-            user = User.signup(
-                username=form.username.data,
-                password=form.password.data,
-                email=form.email.data,
-                image_url=form.image_url.data
-            )
+            user = User.signup(username=username,password=password,email=email,image_url=image_url)
             db.session.commit()
-
         except IntegrityError:
             flash("Username already taken", 'danger')
-            return render_template('signup.html', user_form=form)
-
+            return redirect("/")
         do_login(user)
+        return jsonify(user=user.serialize()), 201
+    # signup_form = UserAddForm()
+    # if signup_form.validate_on_submit():
+    #     try:
+    #         user = User.signup(
+    #             username = request.json["username"],
+    #             password = request.json["password"],
+    #             email = request.json["email"]
+    #         )
+    #         db.session.add(user)
+    #         db.session.commit()
+    #         return jsonify(user=user.serialize()), 201
 
-        return redirect("/")
+    #     except IntegrityError:
+    #         flash("Username already taken", 'danger')
+    #         return redirect("/")
 
-    else:
-        return render_template('signup.html', form=form)
+    #     do_login(user)
+
+    #     return redirect("/")
 
 
-@app.route('/login', methods=["GET", "POST"])
+@app.route('/login', methods=["POST"])
 def login():
     """Handle user login."""
-
-    form = LoginForm()
-
-    if form.validate_on_submit():
-        user = User.authenticate(form.username.data,
-                                 form.password.data)
-
-        if user:
-            do_login(user)
-            flash(f"Hello, {user.username}!", "success")
-            return redirect("/")
-
+    user = User.authenticate(request.json["email"],
+                                request.json["password"])
+    if not user:
         flash("Invalid credentials.", 'danger')
-
-    return render_template('users/login.html', user_form=form)
+        return redirect('/')
+    do_login(user)
+    flash(f"Hello, {user.username}!", "success")
+    return jsonify(user_id = user.id,username = user.username), 201
 
 
 @app.route('/logout')

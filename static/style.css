@@ -496,3 +496,16 @@ background: linear-gradient(45deg, rgba(219, 248, 219, 0.3) 0%, rgba(197, 252, 1
   font-size: 7px;
   position: absolute;
 }
+
+i.fas.fa-search:hover {
+  color:rgb(252, 253, 253);
+}
+
+.error {
+    color: whitesmoke;
+    background-color: rgba(236, 85, 85, 0.6);
+    font-size: 1rem;
+    text-align: center;
+    border-radius: 5px;
+}
+

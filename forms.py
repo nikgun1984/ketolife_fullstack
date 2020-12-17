@@ -1,5 +1,5 @@
 from wtforms import Form, FormField, StringField, IntegerField, FileField, SelectField, FieldList, TextAreaField, FloatField, PasswordField
-from wtforms.validators import InputRequired, DataRequired, Optional, Length, Email
+from wtforms.validators import InputRequired, DataRequired, Optional, Length, Email, EqualTo
 from flask_wtf import FlaskForm
 
 class AddIngredientForm(Form):
@@ -45,7 +45,7 @@ class NewRecipeForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     """Login form."""
-    username = StringField('Username', render_kw={"placeholder": "Username"},validators=[DataRequired()])
+    email = StringField('E-mail', render_kw={"placeholder": "Email Address"},validators=[DataRequired(), Email()])
     password = PasswordField('Password', render_kw={"placeholder": "Password"},validators=[Length(min=6)])
 
 
@@ -53,5 +53,6 @@ class UserAddForm(FlaskForm):
     """Form for adding users."""
     username = StringField('Username', render_kw={"placeholder": "Username"}, validators=[DataRequired()])
     email = StringField('E-mail', render_kw={"placeholder": "Email Address"}, validators=[DataRequired(), Email()])
-    password = PasswordField('Password', render_kw={"placeholder": "Password"}, validators=[Length(min=6)])
+    password = PasswordField('Password', render_kw={"placeholder": "Password"}, validators=[Length(min=6),InputRequired("Please Enter your Password"),EqualTo('password_check', message="Passwords must match")])
+    password_check = PasswordField('Password', render_kw={"placeholder": "Confirm Password"}, validators=[Length(min=6)])
     # image_url = StringField('(Optional) Image URL')

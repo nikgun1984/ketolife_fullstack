@@ -145,7 +145,7 @@ class Unit(db.Model):
 
 class RecipeIngredient(db.Model):
 
-    __tablename__ = 'recipe_ingredients'
+    __tablename__ = 'recipe_has_ingredients'
 
     recipe_id = db.Column(
         db.Integer,
@@ -185,13 +185,18 @@ class User(db.Model):
         autoincrement=True
     )
 
-    email = db.Column(
+    username = db.Column(
         db.Text,
         nullable=False,
         unique=True
     )
 
-    username = db.Column(
+    password = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    email = db.Column(
         db.Text,
         nullable=False,
         unique=True
@@ -202,21 +207,19 @@ class User(db.Model):
         default="/static/images/default-pic.png"
     )
 
-    password = db.Column(
-        db.Text,
-        nullable=False
-    )
-
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
     @classmethod
-    def signup(cls, email, username, image_url, password):
+    def signup(cls, username, password, email, image_url):
         """Sign up user.
         Hashes password and adds user to system.
         """
 
         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+
+        # import pdb
+        # pdb.set_trace()
 
         user = User(
             username=username,
@@ -239,6 +242,16 @@ class User(db.Model):
                 return user
 
         return False
+
+    def serialize(self):
+        """Serialize our object message to dictionary for json"""
+        return {
+            "id": self.id,
+            "usename": self.username,
+            "email": self.email,
+            "password": self.password,
+            "image_url": self.image_url
+        }
 
 
 def connect_db(app):
