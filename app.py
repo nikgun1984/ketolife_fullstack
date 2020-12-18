@@ -140,8 +140,10 @@ def logout():
 @app.route("/")
 def homepage():
     """Show homepage."""
-    
-    return render_template("index.html")
+    recipes = Recipe.query.limit(8).all()
+    # import pdb
+    # pdb.set_trace()
+    return render_template("index.html", recipes=recipes)
 
 @app.route('/api/create-recipe', methods=['GET','POST'])
 def get_create_recipe_form():
@@ -214,9 +216,11 @@ def get_ingredient_nutrifacts(id):
 def get_recipe():
     """Get all possible recipes for query"""
 
-    query_string = request.args["search"]
+    query_string = request.args["val"]
     resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly'})
-    return jsonify(resp.json())
+    import pdb
+    pdb.set_trace()
+    return resp.json()
 
 @app.route('/api/get-instructions')
 def get_instructions():
@@ -224,7 +228,11 @@ def get_instructions():
 
     url = request.args.get('url')
     resp = requests.get(f'{BASE_URL_SP}/recipes/extract?', params={"apiKey":APP_KEY,"url":url})
+    import pdb
+    pdb.set_trace()
     return jsonify(resp.json())
+
+
 
 
 

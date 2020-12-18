@@ -26,11 +26,7 @@ class Recipe(db.Model):
         default="/static/images/default-recipe.png"
     )
 
-    no_serv = db.Column(
-        db.Integer
-    )
-
-    tprep = db.Column(
+    servings = db.Column(
         db.Integer
     )
 
@@ -49,11 +45,27 @@ class Recipe(db.Model):
     dishtype = db.Column(
         db.Text
     )
+
+    source = db.Column(
+        db.Text
+    )
+
+    url = db.Column(
+        db.Text
+    )
+
+    user_id = db.Column(
+        db.Integer, 
+        db.ForeignKey('users.id'), nullable=True)
+
     # through relationship to have an access to all ingredients of the recipe
-    ingredients = db.relationship(
-        'Ingredient', secondary='recipe_has_ingredients', backref=db.backref("recipes"))
-    # We need access to units and amounts
-    assignments = db.relationship('RecipeIngredient', backref="recipe")
+    ingredients = db.relationship('Ingredient', backref="recipe", cascade="all, delete")
+    instructions = db.relationship('Instruction', backref="recipe", cascade="all, delete")
+    nutrients = db.relationship('Nutrient', secondary='recipe_has_nutrients', backref="recipe")
+    assignments = db.relationship('RecipeNutrient', backref='recipe')
+
+    # Users ID
+    user = db.relationship('User', backref='recipes')
 
     def serialize(self):
         """Serialize our object recipe to dictionary for json"""
@@ -91,7 +103,9 @@ class Ingredient(db.Model):
         default="/static/images/ing.png"
     )
 
-    assignments = db.relationship('RecipeIngredient', backref="ingredient")
+    recipe_id = db.Column(
+        db.Integer,
+        db.ForeignKey('recipes.id'))
 
 
 class Instruction(db.Model):
@@ -118,7 +132,29 @@ class Instruction(db.Model):
         db.Integer,
         db.ForeignKey('recipes.id'))
 
-    recipe = db.relationship('Recipe', backref="instructions")
+
+class Nutrient(db.Model):
+
+    __tablename__ = 'nutrients'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    name = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    unit_id = db.Column(
+        db.Integer,
+        db.ForeignKey('units.id'),
+        nullable = True
+    )
+
+    units = db.relationship('Unit', backref='nutrient')
 
 
 class Unit(db.Model):
@@ -137,43 +173,38 @@ class Unit(db.Model):
         nullable=False
     )
 
-    abbr = db.Column(
-        db.Text,
-        nullable=False
+
+class RecipeNutrient(db.Model):
+
+    __tablename__ = 'recipe_has_nutrients'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
     )
-
-
-class RecipeIngredient(db.Model):
-
-    __tablename__ = 'recipe_has_ingredients'
 
     recipe_id = db.Column(
         db.Integer,
         db.ForeignKey("recipes.id"),
-        primary_key=True,
         nullable=False
     )
 
-    ingredient_id = db.Column(
+    nutrient_id = db.Column(
         db.Integer,
-        db.ForeignKey("ingredients.id"),
-        primary_key=True,
+        db.ForeignKey("nutrients.id"),
         nullable=False
     )
 
-    unit_id = db.Column(
+    total_daily = db.Column(
         db.Integer,
-        db.ForeignKey("units.id"),
         nullable=False
     )
 
-    amount = db.Column(
-        db.Float,
+    total_nutrients = db.Column(
+        db.Integer,
         nullable=False
     )
-
-    unit = db.relationship('Unit', backref='recipe_ingredient')
-
 
 class User(db.Model):
 

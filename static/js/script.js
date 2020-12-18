@@ -558,11 +558,9 @@ function addValuesToNutritionTable() {
         }
     }
 }
-
+/*Carousel*/
 $('#carousel-example').on('slide.bs.carousel', function (e) {
-    /*
-        CC 2.0 License Iatek LLC 2018 - Attribution required
-    */
+    
     var $e = $(e.relatedTarget);
     var idx = $e.index();
     var itemsPerSlide = 4;
@@ -597,3 +595,17 @@ $('.carousel.carousel-multi-item.v-2 .carousel-item').each(function(){
     next.children(':first-child').clone().appendTo($(this));
   }
 });
+
+/* Search for recipe*/
+
+$("form#search-recipe-form").on("submit", async function(evt){
+
+    evt.preventDefault();
+    const val = $("input#search-bar").val();
+    const response = await axios.get(`/api/get-recipe`, {
+			params: {
+				val: val
+			}
+	});
+
+})
