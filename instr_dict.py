@@ -143,7 +143,8 @@ instr_extract = {'vegetarian': True,
                                                                        'name': 'stevia',
                                                                        'localizedName': 'stevia',
                                                                        'image': 'stevia.png'}],
-                                                      'equipment': []},
+                                                      'equipment': []
+                                                     },
                                                      {'number': 2,
                                                       'step': 'Blend in chocolate until smooth',
                                                       'ingredients': [{'id': 19081,
@@ -158,7 +159,9 @@ instr_extract = {'vegetarian': True,
                                                                        'localizedName': 'ice cubes',
                                                                        'image': 'ice-cubes.png'}],
                                                       'equipment': []},
-                                                     {'number': 4, 'step': 'Serve', 'ingredients': [], 'equipment': []}]}],
+                                                     {'number': 4, 'step': 'Serve', 'ingredients': [], 'equipment': []}
+                                                    ]
+                                                    }],
                  'sourceName': None,
                  'creditsText': None,
                  'originalId': None}

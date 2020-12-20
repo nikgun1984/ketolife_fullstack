@@ -1,5 +1,5 @@
 {% extends 'base.html'%}
-{% block content %}
+{% block content1 %}
       <form action="" id="add_links">
         <label for="text">
           Search for ingredient
@@ -22,13 +22,16 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header text-center">
-          <h5 class="modal-title w-100" id="ingredientModalLabel">Choose any ingridients</h5>
+          <h5 class="modal-title w-100" id="ingredientModalLabel">Choose any ingredients</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" id="modbod">
-            <!-- <a href=""></a> -->
+        <div class="modal-body text-center" id="modbod">
+            <form action="" id="add_links">
+              <input type="text" id="text" name="text" class="form-control rounded" placeholder="Enter your ingredient">
+              <input type="submit" class="btn btn-outline-success mt-4" data-dismiss="static">
+            </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

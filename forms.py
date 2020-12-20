@@ -56,3 +56,7 @@ class UserAddForm(FlaskForm):
     password = PasswordField('Password', render_kw={"placeholder": "Password"}, validators=[Length(min=6),InputRequired("Please Enter your Password"),EqualTo('password_check', message="Passwords must match")])
     password_check = PasswordField('Password', render_kw={"placeholder": "Confirm Password"}, validators=[Length(min=6)])
     # image_url = StringField('(Optional) Image URL')
+
+class SearchIngredientForm(FlaskForm):
+    """Ingredient Search Form"""
+    item = StringField('Ingredient', render_kw={"placeholder": "Search for your ingredient"}, validators=[DataRequired()])
