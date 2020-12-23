@@ -1,8 +1,7 @@
 <nav class="navbar navbar-expand-md navbar-light bg-fade fixed-top">
-    <!-- <nav class="navbar-expand-md navbar navbar-default fixed-top"> -->
     <div class="container-fluid">
         <!-- Logo/Home Link -->
-        <a class="navbar-brand" href=""> <img src="/static/images/logo.png" alt="" id="logo"></a>
+        <a class="navbar-brand" href="/"> <img src="/static/images/logo.png" alt="" id="logo"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span
                 class="navbar-toggler-icon"></span></button>
@@ -10,15 +9,15 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
                 <li class="active nav-item p-3">
-                    <a href="" class="btn btn-outline-dark"><b>Home</b></a>
+                    <a href="/" class="btn btn-outline-dark"><b>Home</b></a>
                 </li>
                 <li class="active nav-item p-3">
-                    <a href="" class="btn btn-outline-dark"><b>About Keto</b></a>
+                    <a href="/#about-page" class="btn btn-outline-dark"><b>About Keto</b></a>
                 </li>
                 <li class="nav-item p-3">
-                    <a href="" class="btn btn-outline-dark" data-toggle="modal"
-                        data-target="#ingredientModal"><b>Ingredient Nutrition Facts</b></a>
+                    <a href="/#ingredient-page" class="btn btn-outline-dark"><b>Ingredient Nutrition Facts</b></a>
                 </li>
+                <!-- data-toggle="modal" data-target="#ingredientModal" -->
             </ul>
 
             <ul class="navbar-nav">
@@ -26,7 +25,7 @@
                     <form action="/api/get-recipe" id="search-recipe-form">
                         <div class="input-group pr-3">
                             <label for="search-bar" id="search-label"
-                                class="control-label col-sm-3 label pt-2">Search</label>
+                                class="control-label col-sm-3 label pt-2"><b>Search</b></label>
                             <input type="text" class="form-control rounded" aria-label="default"
                                 aria-describedby="inputGroup-sizing-default" placeholder="Find your Keto Recipe"
                                 id="search-bar" name="search-bar">

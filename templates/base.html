@@ -18,72 +18,35 @@
 <body>
     {% include 'navbar.html' %}
 
-        <section class="module parallax parallax-1" data-type="background" data-speed="10">
-            <div class="parallax-container">
-                <h1 class="m-0">Keto Life</h1>
-                <p class="text-center">The diet that should reward you</p>
-                {% include 'carousel.html' %}
-            </div>
-        </section>
+    {% block content %} {% endblock %}
 
-        <section class="module content">
-            <div class="parallax-container">
-                <h2>This section is all about Keto Diet</h2>
-                <p>Lorem ipsum dolor...</p>
-            </div>
-        </section>
-
-        <section class="module parallax parallax-2" data-type="background" data-speed="10">
-            <div class="parallax-container">
-                <h1>Shape</h1>
-            </div>
-        </section>
-
-        <section class="module content">
-            <div class="parallax-container">
-                <h2>Lorem Ipsum Dolor</h2>
-                <p>Lorem ipsum dolor...</p>
-            </div>
-        </section>
-
-        <section class="module parallax parallax-3" data-type="background" data-speed="10">
-            <div class="parallax-container">
-                <h1>Color</h1>
-            </div>
-        </section>
-
-        <section class="module content">
-            <div class="parallax-container">
-                <h2>Lorem Ipsum Dolor</h2>
-                <p>Lorem ipsum dolor...</p>
-            </div>
-        </section>
-        <footer class="footer">
-            <div class="container-fluid bg-primary">
-                <div class="row">
-                    <div class="col-xs-6 col-md-4 left">
-                        <p>&copy; MySite.com</p>
-                    </div>
-                    <div class="col-xs-6 col-md-4 left">
-                        <a href="#">Terms &amp;Conditions</a>
-                        <a href="#">About Us</a>
-                    </div>
-                    <div class="col-xs-6 col-md-4 right">
-                        <a href="#" class="btn btn-social-icon btn-twitter">
-                            <span class="fa fa-twitter"></span>
-                        </a>
-                        <a href="#" class="btn btn-social-icon btn-facebook">
-                            <span class="fa fa-facebook"></span>
-                        </a>
-                        <a href="#" class="btn btn-social-icon btn-instagram">
-                            <span class="fa fa-instagram"></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </footer>
     {% include 'register-modal.html' %}
     {% include 'login-modal.html' %}
+    {% include 'ingredient_search.html' %}
+
+    <footer class="footer">
+        <div class="container-fluid bg-secondary">
+            <div class="row">
+                <div class="col-xs-6 col-md-4 left">
+                </div>
+                <div class="col-xs-6 col-md-4 center">
+                    <p>&copy; ketolife.com 2020 Completed by Nick Gundobin</p>
+                </div>
+                <div class="col-xs-6 col-md-4 right">
+                    <a href="#" class="btn btn-social-icon btn-twitter">
+                        <span class="fa fa-twitter"></span>
+                    </a>
+                    <a href="#" class="btn btn-social-icon btn-facebook">
+                        <span class="fa fa-facebook"></span>
+                    </a>
+                    <a href="#" class="btn btn-social-icon btn-instagram">
+                        <span class="fa fa-instagram"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <script src="https://unpkg.com/axios/dist/axios.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

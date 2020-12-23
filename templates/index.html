@@ -1,42 +1,152 @@
-{% extends 'base.html'%}
-{% block content1 %}
-      <form action="" id="add_links">
-        <label for="text">
-          Search for ingredient
-          <input type="text" id="text" name="text">
-        </label>
-          <button type="submit" class="btn btn-primary show-modal" data-toggle="modal" data-target="#ingredientModal">Submit</button>
-      </form>
-  
-      <form action="" id="search-recipe">
-        <label for="search">Search for recipe
-        <input type="text" id="search" name="search">
-      </label>
-        <button type="submit" class="btn btn-primary show-modal" data-toggle="modal" data-target="#ingredientModal">Search</button>
-      </form>
-    <br><br>
-    <a href="/api/create-recipe">Create Recipe</a>
-  
-  <!-- Modal -->
-  <div class="modal hide fade in" id="ingredientModal" tabindex="-1" aria-labelledby="ingredientModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header text-center">
-          <h5 class="modal-title w-100" id="ingredientModalLabel">Choose any ingredients</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body text-center" id="modbod">
-            <form action="" id="add_links">
-              <input type="text" id="text" name="text" class="form-control rounded" placeholder="Enter your ingredient">
-              <input type="submit" class="btn btn-outline-success mt-4" data-dismiss="static">
-            </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+<section class="module parallax parallax-1" data-type="background" data-speed="10">
+    <div class="parallax-container-fluid">
+        <h1 class="m-0">Keto Life</h1>
+        <p class="text-center">The diet that should reward you</p>
+        {% include 'carousel.html' %}
     </div>
+</section>
+
+<section class="module content" id="about-page">
+    <div class="parallax-container text-center">
+        <h1 class="m-4">About Keto Diet</h1>
+        <p class="pr-3 pl-3">The <b>ketogenic diet</b> is a very low carb, <b>high fat diet</b> that shares many 
+            similarities with the Atkins and low carb diets. It involves drastically 
+            <b>reducing carbohydrate intake</b> and replacing it with fat. This reduction 
+            in carbs puts your body into a metabolic state called <b>ketosis</b>.
+            A ketogenic diet primarily consists of high-fats, moderate-proteins, and very-low-carbohydrates. 
+            The dietary macronutrients are divided into approximately 55% to 60% fat, 30% to 35% protein and 
+            5% to 10% carbohydrates. Specifically, in a 2000 kcal per day diet, carbohydrates amount up to <b>20 to 
+            50 g</b> per day.
+        </p>
+        <hr>
     </div>
+</section>
+
+<section class="module parallax parallax-2" data-type="background" data-speed="10">
+    <div class="parallax-container-fluid">
+        <h1>What to eat on Keto</h1>
+        <hr>
+        <h2 class="text-center mt-4"><b>Low Carb Vegetables</b></h2>
+        <h5 class="text-center">net carb values per 3.5 oz(100 g) serving </h5>
+        <div class="container text-center">
+            {% for row in veggies %}
+            <div class="row align-items-center">
+                {% for col in row %}
+                <div class="col border border-dark rounded m-1">
+                    <p class="border border-primary rounded m-1">Net-Carbs: {{col.net_carbs}} g</p>
+                    <img src="{{col.image}}" style="width:100px;height:100px;">
+                    <p><b>{{col.name}}</b></p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        <hr>
+
+        <h2 class="text-center mt-4"><b>Low Carb Fruits</b></h2>
+        <h5 class="text-center">net carb values per 3.5 oz(100 g) serving </h5>
+
+        <div class="container text-center">
+            {% for row in fruits %}
+            <div class="row align-items-center">
+                {% for col in row %}
+                <div class="col border border-dark rounded m-1">
+                    <p class="border border-primary rounded m-1">Net-Carbs: {{col.net_carbs}} g</p>
+                    <img src="{{col.image}}" style="width:100px;height:100px;">
+                    <p><b>{{col.name}}</b></p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        <hr>
+        <h2 class="text-center mt-4"><b>Nuts and Seeds for Keto</b></h2>
+        <h5 class="text-center"><b>net carb values per 1 oz(28 g) serving</b></h5>
+
+        <div class="container text-center">
+            {% for row in nuts_seeds %}
+            <div class="row align-items-center">
+                {% for col in row %}
+                <div class="col border border-dark rounded m-1">
+                    <p class="border border-primary rounded m-1">Net-Carbs: {{col.net_carbs}} g</p>
+                    <img src="{{col.image}}" style="width:100px;height:100px;">
+                    <p><b>{{col.name}}</b></p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        <hr>
+        <h2 class="text-center mt-4"><b>Healthy Fats and Oils</b></h2>
+        <h5 class="text-center">Net-Carbs: Insignificant Amounts</h5>
+
+        <div class="container text-center">
+            {% for row in fats_oils %}
+            <div class="row align-items-center">
+                {% for col in row %}
+                <div class="col border border-dark rounded m-1">
+                    <img src="{{col.image}}" style="width:100px;height:100px;" class="mt-1">
+                    <p><b>{{col.name}}</b></p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        <hr>
+        <h2 class="text-center mt-4"><b>Keto Sweeteners</b></h2>
+        <h5 class="text-center">net carb values per a teaspoon (4.2 g) serving</h5>
+
+        <div class="container text-center">
+            {% for row in sweeteners %}
+            <div class="row align-items-center">
+                {% for col in row %}
+                <div class="col border border-dark rounded m-1">
+
+                    <p class="border border-primary rounded m-1">Net-Carbs: {{col.net_carbs}} g</p>
+                    <img src="{{col.image}}" style="width:100px;height:100px;" class="mt-1">
+                    <p><b>{{col.name}}</b></p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="module content">
+    <div class="parallax-container text-center">
+        <h1 class="m-4">Ingredient Nutrition Facts Search</h1>
+        <p >If the list of the Keto products that was provided is not enough,
+            <b>no problem</b>, just search for your ingredients down below to be
+            sure they are keto-friendly. Stay in Ketosis!!!
+        </p>
+    </div>
+</section>
+
+<section class="module parallax parallax-3" data-type="background" data-speed="10">
+    <div class="parallax-container" id="ingredient-page">
+        <h1>Ingredient Search</h1>
+    </div>
+</section>
+
+<section class="module content">
+    <div class="parallax-container text-center">
+        <form action="" id="add_links">
+            <div class="form-group row justify-content-center">
+                <div class="col-6">
+                    <label for="text">Search for Ingredient</label>
+                    <input type="text" class="form-control border rounded" id="text" aria-describedby="ingredientHelp" placeholder="Enter the name of ingredient">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-outline-dark show-modal" data-toggle="modal" data-target="#ingredientModal">Submit</button>
+        </form>
+    </div>
+</section>
+
 {% endblock %}

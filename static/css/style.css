@@ -4,6 +4,7 @@
 html {
     position: relative;
     min-height: 100%;
+    scroll-padding-top: 80px; /* height of sticky header */
 }
 
 body {
@@ -24,6 +25,22 @@ body {
 
 #logo {
     height: 80px;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: inherit;
+    /* transition: all 0.1s; */
+}
+
+.btn-dark.btn-outline {
+    color: #343a40;
+    font-weight: bold;
+}
+
+.btn-dark.btn-outline:hover {
+    color: rgb(255, 255, 255) !important;
+    font-weight: bold;
 }
 
 /* ============================================================
@@ -49,9 +66,13 @@ section.module h2 {
 }
 
 section.module p {
-    margin-bottom: 40px;
+    /* margin-bottom: 40px; */
     font-size: 16px;
     font-weight: 300;
+}
+
+#recipe-car p {
+    font-weight: bolder;
 }
 
 section.module p:last-child {
@@ -94,16 +115,16 @@ section.module.parallax-1 {
 
 section.module.parallax-2 {
     background-image: url("http://www.planwallpaper.com/static/images/Fall-Nature-Background-Pictures.jpg");
-    background-position: 50% 0;
+    background-position: 50% 0%;
     background-repeat: repeat;
     background-attachment: fixed;
     background-size: cover;
-    background-color: rgba(0, 123, 255, 0.4);
+    background-color: rgba(244, 247, 250, 0.4);
     background-blend-mode: screen;
 }
 
 section.module.parallax-3 {
-    background-image: url("http://www.psd-dude.com/tutorials/resources-images/free-rain-and-raindrop-textures-for-photoshop/raindrops-window-background.jpg");
+    background-image: url("/static/images/keto.jpg");
     background-position: 50% 0;
     background-repeat: repeat;
     background-attachment: fixed;
@@ -186,7 +207,14 @@ footer .container-fluid p {
 /* ============================================================
   CAROUSEL
 ============================================================ */
-
+.card {
+    height: 550px;
+}
+.card-img-top {
+    width: 100%;
+    /* height: 15vw; */
+    object-fit: cover;
+}
 
 @media(max-width: 768px) {
     .carousel-inner .carousel-item > div {

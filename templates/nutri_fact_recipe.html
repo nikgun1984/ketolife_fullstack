@@ -1,0 +1,68 @@
+<div class="performance-facts">
+    <header class="performance-facts__header">
+        <h1 class="performance-facts__title">
+            Nutrition Facts
+        </h1>
+        <p class="servings_size">
+            Total Servings {{recipe.servings}}
+        </p>
+    </header>
+    <table class="performance-facts__table">
+        <thead>
+            <tr>
+                <th colspan="3" class="small-info">
+                    Amount Per Serving
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="Calories">
+                <th colspan="2">
+                    <b>
+                        Calories
+                    </b>
+                    <td colspan="3" class="big-info">
+                        <b>{{calories}}</b>
+                    </td>
+                </th>
+            </tr>
+            <tr class="thick-row">
+                <td colspan="3" class="small-info">
+                    <b>
+                        % Daily Value*
+                    </b>
+                </td>
+            </tr>
+            {% for nutrient in nutrients%}
+                {% if nutrient[0] in fats or nutrient[0] in carbs %}
+                <tr id = "{{nutrient[0]}}">
+                    <td class = "blank-cell"></td>
+                    <th>{{nutrient[0]}} {{nutrient[2]}}{{nutrient[3]}}</th> 
+                    <td><b>{{nutrient[1]}}%</b></td>
+                </tr>
+                {% else %}
+                    {% if nutrient[0] == nutrients[-1][0]%}
+                        <tr id = "{{nutrient[0]}}" class="thick-end">
+                    {% else %}
+                        <tr id = "{{nutrient[0]}}">
+                    {% endif %}
+                <tr id = "{{nutrient[0]}}"">
+                    <th colspan = "2"><b>{{nutrient[0]}}</b> {{nutrient[2]}}{{nutrient[3]}}</th> 
+                    <td><b>{{nutrient[1]}}%</b></td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="performance-facts__table--grid">
+        <tbody>
+            {% for vitamin in vitamins %}
+            <tr id="{{vitamin[0]}}">
+                <th colspan="2"><b>{{vitamin[0]}}</b> {{vitamin[2]}}{{vitamin[3]}}</th>
+                <td><b>{{vitamin[1]}}%</b></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

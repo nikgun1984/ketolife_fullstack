@@ -110,6 +110,8 @@ async function getInstructions(url) {
 	};
 }
 
+/* Ingredient form */
+
 async function processForm(evt) {
 	evt.preventDefault();
 	const ing = $("#text").val();
@@ -124,11 +126,21 @@ async function processForm(evt) {
 
 function handleResponse(res) {
 	//$('#modbod').empty()
-	$("form#addlinks").hide();
 	$("#modbod").append("<div id='options'></div>");
-	for (let val in res.data) {
+	console.log(res.data);
+	console.log(Object.keys(res.data).length === 0)
+
+	if (Object.keys(res.data).length !== 0) {
+		for (let val in res.data) {
+			$("#options").append(
+				`<div data-id="${res.data[val]}"><a href="">${val}</a></div>`
+			);
+		}
+	} else {
 		$("#options").append(
-			`<div data-id="${res.data[val]}"><a href="">${val}</a></div>`
+			`<h3>Sorry, nothing was found</h3>
+		<p>This is usually due to mispelling or server error :(</p>
+		`
 		);
 	}
 }
@@ -171,29 +183,33 @@ function formNutritionLookUp(
             </div>
             <div class="row justify-content-center">
                 <div class="col-8 text-center">
-                    <p>Category: ${category1}, ${category2}</p>
+                    <h6>Category: ${category1}/${category2}</h6>
                     <p>
-                        <form id="units_form">
-                            <label for="units">Choose a unit:</label>
-                            <select name="units" id="units" data-id="${id}">
-                            </select><br>
-                            <label for="amount">Choose amount:</label>
-                            <input type="text" id="amount" name="amount">
-                            <button id="unit-form-btn" type="submit" class="btn btn-primary">Submit</button>
+						<form id="units_form" action="/api/get-ingredient/${id}/nutrifacts">
+							<div class="form-group">
+								<label for="units"><b>Choose a unit:</b></label>
+								<select id="units" name="units" data-id="${id}" class="form-control">
+								</select>
+							</div>
+							<div class="form-group">
+    							<label for="amount"><b>Choose amount:</b></label>
+    							<input type="text" class="form-control" id="amount" name="amount" placeholder="Enter the amount">
+  							</div>
+                            <button id="unit-form-btn" type="submit" class="btn btn-outline-dark">Submit</button>
                         </form>
                     </p>
                 </div>
             </div>
         </div>
     `);
-	$("#units_form").on("submit", getInfoIngredient);
+	$("#units_form").on("submit", getIngredientNutriFacts);
 	const sb = document.querySelector("#units");
 	for (let unit of units) {
 		let newOption = new Option(unit, unit);
 		sb.add(newOption, undefined);
 	}
 	$(".modal-footer").prepend(
-		'<button type="button" class="btn btn-primary" id="back">Back</button>'
+		'<button type="button" class="btn btn-outline-dark" id="back">Back</button>'
 	);
 	$("#back").on("click", function () {
 		$("#options").show();
@@ -209,22 +225,29 @@ async function getIngredientUnits(evt) {
 	console.log(response.data);
 	handleResponseInfo(response.data);
 }
-
+// FOR INGREDIENT
 async function getIngredientNutriFacts(evt) {
-	evt.preventDefault();
+	// evt.preventDefault();
 	const id = $("#units").attr("data-id");
-	const amount = $("input[type=number]").val();
+	const amount = $("#amount").val();
 	const unit = $("select#units").val();
 	console.log(id, amount, unit);
 	const response = await axios.get(`/api/get-ingredient/${id}/nutrifacts`, {
 		params: {
 			amount,
-			units: unit,
-		},
+			units: unit
+		}
 	});
-	handleNutrifacts(response.data);
+	const data = response.data;
+	handleNutrifacts(data);
+	$("#ingredient-header").text(`Ingredient: ${data.name}`);
+	$("#ingr-unit").text(`${data.amount} ${data.amount} per serving`);
+    calculateGenNutritionPerServing(nutriObject.nutrients);
+	calculateGenNutritionPerServing(nutriObject.vitamins);
+	addValuesToNutritionTable();
+	$("section.performance-facts").show();
 }
-
+// FOR CREATING RECIPE
 async function getInfoIngredient(evt) {
 	evt.preventDefault();
 	const id = $("#units").attr("data-id");
@@ -247,8 +270,8 @@ async function getInfoIngredient(evt) {
 	const response = await axios.get(`/api/get-ingredient/${id}/nutrifacts`, {
 		params: {
 			amount,
-			units: unit,
-		},
+			units: unit
+		}
 	});
 	//console.log(response.data);
 	handleNutrifacts(response.data);
@@ -465,6 +488,10 @@ function nutritionObject() {
 function handleNutrifacts(data) {
 	//const price = data.cost;
 	const nutrients = data.nutrients;
+	const cost = data.cost;
+	const unit = data.unit;
+	const amount = data.amount;
+	const name = data.name;
 	for (let obj of nutrients) {
 		if (obj.title in nutriObject.nutrients) {
 			nutriObject.nutrients[obj.title].amount += obj.amount;
@@ -479,7 +506,19 @@ function handleNutrifacts(data) {
 		}
 	}
 	console.log(nutriObject);
+	console.log(name);
+	console.log(unit);
+	console.log(amount);
+	console.log(cost);
+
 	$("#ingredientModal").modal("hide");
+	return {
+		nutriObject,
+		name,
+		unit,
+		amount,
+		cost
+	};
 }
 
 function isFraction(val) {
@@ -589,8 +628,7 @@ function addValuesToNutritionTable() {
 
 /* Search for recipe*/
 
-$("form#search-recipe-form").on("submit", async function (evt) {
-	evt.preventDefault();
+$("form#search-recipe-form").on("submit", async function () {
 	const val = $("input#search-bar").val();
 	const response = await axios.get(`/api/get-recipe`, {
 		params: {

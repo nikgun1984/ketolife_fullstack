@@ -1,4 +1,4 @@
-import os
+import os, math
 from flask import Flask, render_template, request, flash, redirect, session, g, jsonify, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from functools import wraps
@@ -10,13 +10,15 @@ from sqlalchemy.exc import IntegrityError
 # Initialize wtforms_json
 # wtforms_json.init()
 
-from models import db, connect_db, User,Recipe
+from models import db, connect_db, User,Recipe, Product
 from forms import NewRecipeForm, TitleRecipeForm, LoginForm, UserAddForm
 from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
+from utilities import get_carousel_card_info, partition_list, split_nutritional_fact_data, get_nutrients_recipe, save_recipe_to_database
 
 CURR_USER_KEY = "curr_user"
 BASE_URL_SP = "https://api.spoonacular.com"
 BASE_URL_ED = "https://api.edamam.com"
+BASE_IMG_LINK = "https://spoonacular.com/cdn/ingredients_250x250";
 
 app = Flask(__name__)
 
@@ -71,6 +73,22 @@ def do_logout():
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
+
+@app.route("/")
+def homepage():
+    """Show homepage."""
+    recipes = Recipe.query.limit(11).all()
+    veggies = partition_list(db.session.query(Product).filter_by(product_type='veggies').all(),6)
+    fruits = partition_list(db.session.query(Product).filter_by(product_type='fruits').all(),6)
+    nuts_seeds = partition_list(Product.query.filter(db.or_(Product.product_type == 'nuts', Product.product_type == 'seeds')).all(),6)
+    fats_oils = partition_list(Product.query.filter(db.or_(Product.product_type == 'healthy fats', Product.product_type == 'healthy oils')).all(),6)
+    sweeteners = partition_list(db.session.query(Product).filter_by(product_type='sweetener').all(),6)
+    
+    result_rec = get_carousel_card_info(recipes)
+    # import pdb
+    # pdb.set_trace()
+
+    return render_template("index.html", recipes=result_rec, veggies=veggies, fruits=fruits, nuts_seeds=nuts_seeds,fats_oils=fats_oils,sweeteners=sweeteners,flag=True,state='active')
 
 @app.route('/', methods= ["POST"])
 def signup():
@@ -137,14 +155,6 @@ def logout():
     flash("See you later, alligator!!!", "success")
     return redirect('/login')
 
-@app.route("/")
-def homepage():
-    """Show homepage."""
-    recipes = Recipe.query.limit(8).all()
-    # import pdb
-    # pdb.set_trace()
-    return render_template("index.html", recipes=recipes)
-
 @app.route('/api/create-recipe', methods=['GET','POST'])
 def get_create_recipe_form():
     """Create a new recipe and add it to the database"""
@@ -202,25 +212,45 @@ def get_ingredient_info(id):
 @app.route("/api/get-ingredient/<id>/nutrifacts")
 def get_ingredient_nutrifacts(id):
     """Nutritional Data of an ingredient"""
-
     unit = request.args.get('units')
     amount = request.args.get('amount')
     resp = requests.get(f'{BASE_URL_SP}/food/ingredients/{id}/information', params={"apiKey":APP_KEY,"amount":amount,"unit":unit})
     res = resp.json()
+    name = res["name"].capitalize()
+    img = f"{BASE_IMG_LINK}/{res['image']}"
+    category = res["categoryPath"]
     cost = round(res['estimatedCost']['value']/100,3)
-    nutrients = res['nutrition']['nutrients']
+    nutrients,vitamins = split_nutritional_fact_data(res['nutrition']['nutrients'])
+    fats = set(["Trans Fat","Saturated Fat","Mono Unsaturated Fat","Poly Unsaturated Fat"])
+    carbs = set(["Sugar Alcohol","Sugar","Fiber","Net Carbohydrates"])
     unit = res['unit']
-    return jsonify(cost=cost,nutrients=nutrients,unit=unit)
+    # import pdb
+    # pdb.set_trace()
+    return render_template("ingredient-info.html", name=name,cost=cost,nutrients=nutrients,vitamins=vitamins,unit=unit, amount=amount,carbs=carbs,fats=fats,img=img,category=category)
+
+@app.route('/get-recipe-database/<int:id>')
+def get_recipe_database(id):
+    recipe = Recipe.query.get(id)
+    nutrients,vitamins = get_nutrients_recipe(recipe,recipe.servings)
+    fats = set(["Trans Fat","Saturated Fat","Saturated","Trans","Polyunsaturated","Mono Unsaturated Fat","Poly Unsaturated Fat","Monounsaturated"])
+    carbs = set(["Sugar Alcohol","Sugar","Fiber","Net Carbohydrates"])
+    calories = math.ceil(recipe.calories/recipe.servings)
+    return render_template("recipe-check.html", recipe=recipe, nutrients=nutrients, vitamins=vitamins,fats=fats,carbs=carbs,calories=calories)
 
 @app.route('/api/get-recipe')
 def get_recipe():
     """Get all possible recipes for query"""
-
-    query_string = request.args["val"]
-    resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly'})
-    import pdb
-    pdb.set_trace()
-    return resp.json()
+    query_string = request.args.get("search-bar")
+    resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":20})
+    save_recipe_to_database(resp)
+    # import pdb
+    # pdb.set_trace()
+    rec = Recipe.query.filter(Recipe.title.ilike(f"%{query_string}%")).all()
+    size = len(rec)
+    recipes = partition_list(rec,3)
+    # import pdb
+    # pdb.set_trace() 
+    return render_template('recipe-result.html', recipes=recipes, size=size)
 
 @app.route('/api/get-instructions')
 def get_instructions():

@@ -1,43 +1,51 @@
 <div class="row">
     <div class="col-12">
-    <!-- <h4 class="text-center mt-2"><i class="fas fa-utensils"></i> Most recent added Keto Recipes <i class="fas fa-utensils"></i></h5> -->
         <div class="container text-center">
             <div class="row mt-3 justify-content-center">
                 <div id="recipeCarousel" class="carousel slide w-100" data-ride="carousel">
                     <div class="carousel-inner w-100" role="listbox">
-                        <div class="carousel-item active">
+                        {% set glob={} %}
+                        {% for card in recipes %}
+                        {% if not glob %}
+                            {% set _ = glob.update({'skip': True}) %}
+                        {% else %}
+                            {% set state = '' %}
+                            {% endif %}
+                        <div class="carousel-item {{state}}">
                             <div class="col-md-4">
                                 <div class="card mb-2 text-center">
-                                    <div class="card card-body">
-                                        <img class="card-img-top" src="{{recipes[0].image}}">
-                                        <h6 class="card-title mt-2">
-                                             {{recipes[0].title}}
-                                        </h6>
-                                        <a class="btn btn-outline-success btn-sm px-0">
-                                            Check it Out
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% for card in recipes[1:] %}
-                        <div class="carousel-item">
-                            <div class="col-md-4">
-                                <div class="card mb-2 text-center">
-                                    <div class="card card-body">
-                                        <img class="card-img-top" src="{{card.image}}">
-                                        <h6 class="card-title mt-2">
-                                            {{card.title}} 
-                                        </h6>
-                                        <a class="btn btn-outline-success btn-sm px-0">
-                                            Check it Out
-                                        </a>
+                                    <img class="card-img-top p-3" src="{{card[1]}}">
+                                    <div class="card h-100 card-body">
+                                        <h5 class="card-title mt-2">
+                                            {{card[0]}} 
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-12 m-2">
+                                                <h6><b>servings: {{card[2]}}</b></h6>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <h6><b>Net Carbs Per Serving: {{card[3]}}g</b></h6>
+                                            </div>
+                                        </div>
+                                        <form action="/get-recipe-database/{{card[4]}}">
+                                            <button class="btn btn-dark btn-outline mt-auto">Check it Out</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
+                    <a class="carousel-control-prev w-auto" href="#recipeCarousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon bg-dark border border-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next w-auto" href="#recipeCarousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon bg-dark border border-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
                 </div>
             </div>
         </div>

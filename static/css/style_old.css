@@ -174,8 +174,8 @@ background: linear-gradient(45deg, rgba(219, 248, 219, 0.3) 0%, rgba(197, 252, 1
 }
 
 #search-label{
-  font-size: medium;
-  font-weight: bold;
+  font-size: 5px !important;
+  font-weight: bolder;
   align-items: center;
 }
 

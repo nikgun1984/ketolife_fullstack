@@ -18,7 +18,6 @@ class Recipe(db.Model):
     title = db.Column(
         db.Text,
         nullable=False
-
     )
 
     image = db.Column(
@@ -32,6 +31,10 @@ class Recipe(db.Model):
 
     tcook = db.Column(
         db.Integer
+    )
+
+    calories = db.Column(
+        db.Float
     )
 
     cuisine = db.Column(
@@ -204,6 +207,34 @@ class RecipeNutrient(db.Model):
     total_nutrients = db.Column(
         db.Integer,
         nullable=False
+    )
+
+class Product(db.Model):
+
+    __tablename__ = 'products'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    name = db.Column(
+        db.Text,
+        nullable=False,
+        unique=True
+    )
+
+    image = db.Column(
+        db.Text
+    )
+
+    product_type = db.Column(
+        db.Text
+    )
+
+    net_carbs = db.Column(
+        db.Float
     )
 
 class User(db.Model):
