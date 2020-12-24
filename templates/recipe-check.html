@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} {% endblock %}
+{% block title %} {{recipe.title}} {% endblock %}
 
 {% block content %}
     <section class="module parallax parallax-1" data-type="background" data-speed="10">
@@ -17,9 +17,9 @@
                         <div class="col-7 text-left" id="recipe-car">
                             <h1>{{recipe.title}}</h1>
                             <img src="{{recipe.image}}" alt="" class="p-2 mb-2 border border-dark rounded">
-                            <p>
+                            <p id="ratings">
                                 {% for star in range(5)%}
-                                <i class="far fa-star text-center"></i>
+                                <i class="far fa-star text-center" data-id="{{loop.index}}" id="{{loop.index}}"></i>
                                 {% endfor %}
                                 <span class="ml-4">Comments: 0</span>
                             </p>
@@ -35,17 +35,22 @@
                             {% if recipe.dishtype %}
                             <p>Dish Type: {{recipe.dishtype}}</p>
                             {% endif%}
-                            <p>Link to the recipe: <a href="{{recipe.url}}">{{recipe.url}}</a></p>
                             <hr>
                             <h4>Ingredients</h4>
+                            <ul class="circles">
                             {% for ingredient in recipe.ingredients %}
-                            <li>{{ingredient.name}}</li>
+                            <li class="m-1">{{ingredient.name}}</li>
                             {% endfor%}
+                            </ul>
                             <hr>
                             <h4>Directions</h4>
+                            <ol class="text-left">
                             {% for instruction in recipe.instructions %}
-                            <li>{{instruction.step_no}}. {{instruction.step}}</li>
+                            <li class="m-1">  {{instruction.step}}</li>
+                            <hr>
                             {% endfor%}
+                            </ol>
+                            <p>Link to the recipe: <a href="{{recipe.url}}">{{recipe.url}}</a></p>
                             <hr>
                             <form action="">
                                 <div class="form-group w-75">

@@ -8,65 +8,65 @@ import requests
 
 # # Script to load data
 
-BASE_URL_SP = "https://api.spoonacular.com"
-BASE_URL_ED = "https://api.edamam.com"
+# BASE_URL_SP = "https://api.spoonacular.com"
+# BASE_URL_ED = "https://api.edamam.com"
 
-import json
+# import json
 
-resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto salmon',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":1})
+# resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto salmon',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":1})
 
-json_file = resp.json()
+# json_file = resp.json()
 
-mapping = json.dumps(json_file)
-rec = json.loads(mapping) 
+# mapping = json.dumps(json_file)
+# rec = json.loads(mapping) 
 
-for rec_num in rec["hits"]:
-    # Recipe 1
-    recipe = rec_num['recipe']
-    # //////////////////////////////////
-    title = recipe['label']
-    if bool(db.session.query(Recipe).filter_by(title=title).first()):
-        print("SORRY it's already in database...")
-        continue
-    image = recipe['image']
-    servings = recipe['yield']
-    tcook = recipe['totalTime']
-    source = recipe['source']
-    url = recipe['url']
-    ingredients = recipe['ingredients']
-    calories = recipe['calories']
-    total_nutrients = recipe['totalNutrients']
-    total_daily = recipe['totalDaily']
+# for rec_num in rec["hits"]:
+#     # Recipe 1
+#     recipe = rec_num['recipe']
+#     # //////////////////////////////////
+#     title = recipe['label']
+#     if bool(db.session.query(Recipe).filter_by(title=title).first()):
+#         print("SORRY it's already in database...")
+#         continue
+#     image = recipe['image']
+#     servings = recipe['yield']
+#     tcook = recipe['totalTime']
+#     source = recipe['source']
+#     url = recipe['url']
+#     ingredients = recipe['ingredients']
+#     calories = recipe['calories']
+#     total_nutrients = recipe['totalNutrients']
+#     total_daily = recipe['totalDaily']
 
-    instr_resp = requests.get(f'{BASE_URL_SP}/recipes/extract?', params={"apiKey":APP_KEY,"url":url})
-    json_file1 = instr_resp.json()
-    mapping1 = json.dumps(json_file1)
-    rec1 = json.loads(mapping1)
-    instrs = rec1["analyzedInstructions"][0]["steps"]
+#     instr_resp = requests.get(f'{BASE_URL_SP}/recipes/extract?', params={"apiKey":APP_KEY,"url":url})
+#     json_file1 = instr_resp.json()
+#     mapping1 = json.dumps(json_file1)
+#     rec1 = json.loads(mapping1)
+#     instrs = rec1["analyzedInstructions"][0]["steps"]
 
-    recipe_obj = Recipe(title=title, image=image, servings=servings,tcook=tcook, source=source, url=url,calories=calories)
+#     recipe_obj = Recipe(title=title, image=image, servings=servings,tcook=tcook, source=source, url=url,calories=calories)
 
-    for i, inst in enumerate(instrs):
-        instruction = Instruction(step_no=i+1, step=inst['step'])
-        recipe_obj.instructions.append(instruction)
+#     for i, inst in enumerate(instrs):
+#         instruction = Instruction(step_no=i+1, step=inst['step'])
+#         recipe_obj.instructions.append(instruction)
 
-    for ingr in ingredients:
-        ingredient = Ingredient(name=ingr["text"], image=ingr["image"])
-        recipe_obj.ingredients.append(ingredient)
+#     for ingr in ingredients:
+#         ingredient = Ingredient(name=ingr["text"], image=ingr["image"])
+#         recipe_obj.ingredients.append(ingredient)
 
-    total_nutri_keys = list(total_nutrients.keys())
+#     total_nutri_keys = list(total_nutrients.keys())
 
-    for key in total_nutri_keys:
-        if key in total_daily:
-            nutrient = Nutrient.query.filter_by(name=total_daily[key]["label"]).first()
-            if nutrient:
-                association = RecipeNutrient(total_daily=int(total_daily[key]["quantity"]),total_nutrients=int(total_nutrients[key]["quantity"]))
-                association.nutrient_id = nutrient.id
-                recipe_obj.assignments.append(association)
+#     for key in total_nutri_keys:
+#         if key in total_daily:
+#             nutrient = Nutrient.query.filter_by(name=total_daily[key]["label"]).first()
+#             if nutrient:
+#                 association = RecipeNutrient(total_daily=int(total_daily[key]["quantity"]),total_nutrients=int(total_nutrients[key]["quantity"]))
+#                 association.nutrient_id = nutrient.id
+#                 recipe_obj.assignments.append(association)
 
-    db.session.add(recipe_obj)
-    print('Successfully Added!!!')
-db.session.commit()
+#     db.session.add(recipe_obj)
+#     print('Successfully Added!!!')
+# db.session.commit()
 # keto_veggies = ['beets','red onion','carrots','artichoke']
 # for veggie in keto_veggies:
 #     resp = requests.get(f"{BASE_URL_SP}/food/ingredients/search?", params={"apiKey":APP_KEY,"query":veggie})    

@@ -1,19 +1,19 @@
 {% from 'macros/render_form_fields.html' import render_field %}
 
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="registerModalLabel" role="dialog" aria-hidden="true">
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
-            <div class="signup-form" id="login-id">
+            <div class="login-form" id="signin-id">
                 <form action="/login" method="POST" class="text-center" enctype="multipart/form-data" id="login-form">
-                    {{login_form.hidden_tag()}}
+                    {{ login_form.csrf_token }}
                     <h2 id="login-title">Login</h2>
-                    <p id="login-prompt">Please fill in this form to login into your account!</p>
+                    <p id="login-prompt">Please fill in this form to create an account!</p>
                     <hr/>
                     {% for field in login_form if field.widget.input_type != 'hidden'%}
-                        {{render_field(field)}}
+                        {{render_field(field,classes[loop.index])}}
                     {% endfor %}
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-lg" id="login-btn">
+                        <button type="submit" class="btn btn-outline-dark" id="login-btn">
                             Login
                         </button>
                     </div>
@@ -22,3 +22,5 @@
         </div>
 	</div>
 </div>
+
+

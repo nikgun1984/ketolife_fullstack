@@ -187,6 +187,10 @@ VALUES ('Calories', NULL),
     (
         'Folate equivalent (total)',
         2
+    ),
+    (
+        'Sugars',
+        1
     )
 
     ;

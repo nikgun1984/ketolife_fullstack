@@ -114,7 +114,6 @@ section.module.parallax-1 {
 }
 
 section.module.parallax-2 {
-    background-image: url("http://www.planwallpaper.com/static/images/Fall-Nature-Background-Pictures.jpg");
     background-position: 50% 0%;
     background-repeat: repeat;
     background-attachment: fixed;
@@ -372,13 +371,13 @@ svg {
     border-radius: 3px;
 }
 
-.signup-form {
+.signup-form,.login-form {
     width: 390px;
     margin: 0 auto;
     padding: 30px 0;
 }
 
-.signup-form form {
+.signup-form form, .login-form form {
     color: #999;
     border-radius: 3px;
     margin-bottom: 15px;
@@ -388,31 +387,31 @@ svg {
     border-top: 1px solid #e1e1e1;
 }
 
-.signup-form h2 {
+.signup-form h2, .login-form h2 {
     color: #333;
     font-weight: bold;
     margin-top: 0;
 }
 
-.signup-form hr {
+.signup-form hr, .login-form hr {
     margin: 0 -30px 20px;
 }
 
-.signup-form .form-group {
+.signup-form .form-group, .login-form .form-group {
     margin-bottom: 20px;
 }
 
-.signup-form label {
+.signup-form label, .login-form label {
     font-weight: normal;
     font-size: 13px;
 }
 
-.signup-form .form-control {
+.signup-form .form-control, .login-form .form-control {
     min-height: 38px;
     box-shadow: none !important;
 }
 
-.signup-form .input-group-addon {
+.signup-form .input-group-addon, .login-form .input-group-addon {
     max-width: 42px;
     text-align: center;
 }
@@ -421,19 +420,6 @@ svg {
     margin-top: 2px;
 }
 
-.signup-form .btn {
-    font-size: 16px;
-    font-weight: bold;
-    background: #19aa8d;
-    border: none;
-    min-width: 140px;
-}
-
-.signup-form .btn:hover,
-.signup-form .btn:focus {
-    background: #179b81;
-    outline: none;
-}
 
 .signup-form a {
     color: #fff;
@@ -453,20 +439,86 @@ svg {
     text-decoration: underline;
 }
 
-.signup-form .fa {
+.signup-form .fa, .login-form .fa {
     font-size: 21px;
 }
 
-.signup-form .fa-paper-plane {
+.signup-form .fa-paper-plane, .login-form .fa-paper-plane{
     font-size: 18px;
 }
 
-.signup-form .fa-check {
+.signup-form .fa-check, .login-form .fa-check {
     color: #fff;
     left: 17px;
     top: 18px;
     font-size: 7px;
     position: absolute;
+}
+
+/* ============================================================
+  List Styling
+============================================================ */
+
+ol {
+  list-style: none;
+  counter-reset: my-awesome-counter;
+  /* margin: 1; */
+  padding: 0;
+}
+ol li {
+  counter-increment: my-awesome-counter;
+  font-size: medium;
+
+}
+ol li::before {
+  content: counter(my-awesome-counter) ". ";
+  color: rgb(7, 6, 6);
+  font-weight: bold;
+}
+
+ul.circles {
+  list-style-type: circle;
+  font-size: medium;
+}
+
+/* ============================================================
+  Flash Messages
+============================================================ */
+
+
+.alert {
+    color: whitesmoke;
+    background-color: rgba(24, 23, 23, 0.6);
+    font-size: 2rem;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.navbar-toggle{margin-top:20px !important;}
+.dropdown-menu{background:#fff !important;}
+.navbar-login
+{
+    width: 350px;
+    padding: 10px;
+    padding-bottom: 0px;
+}
+
+.navbar-login-session
+{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.icon-size
+{
+    font-size: 87px;
+}
+
+.star-red {
+    color: yellow;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: orange;
 }
 
 

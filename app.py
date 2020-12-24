@@ -4,6 +4,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 from functools import wraps
 import requests
 from sqlalchemy.exc import IntegrityError
+from flask_wtf.csrf import CSRFProtect
+
 
 # import wtforms_json
 
@@ -20,6 +22,7 @@ BASE_URL_SP = "https://api.spoonacular.com"
 BASE_URL_ED = "https://api.edamam.com"
 BASE_IMG_LINK = "https://spoonacular.com/cdn/ingredients_250x250";
 
+csrf = CSRFProtect()
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -31,6 +34,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 # toolbar = DebugToolbarExtension(app)
 
+csrf.init_app(app)
 connect_db(app)
 
 @app.context_processor
@@ -38,7 +42,8 @@ def context_processor():
     """Now forms will be available globally across all jinja templates"""
     login_form = LoginForm()
     signup_form = UserAddForm()
-    return dict(login_form=login_form,signup_form=signup_form)
+    classes = ["fa fa-user","fa fa-paper-plane","fa fa-lock","fa fa-check-circle"]
+    return dict(login_form=login_form,signup_form=signup_form,classes=classes)
 
 @app.before_request
 def add_user_to_g():
@@ -64,7 +69,7 @@ def login_required(f):
         if CURR_USER_KEY in session:
             return f(*args,**kwargs)
         else:
-            flash("Access unauthorized.", "danger")
+            flash("Access unauthorized.", "success")
             return redirect("/")
     return wrap
 
@@ -77,7 +82,8 @@ def do_logout():
 @app.route("/")
 def homepage():
     """Show homepage."""
-    recipes = Recipe.query.limit(11).all()
+    recipes = db.session.query(Recipe).order_by(Recipe.id.desc()).limit(15).all()[::-1]
+    # recipes = Recipe.query.limit(11).all()
     veggies = partition_list(db.session.query(Product).filter_by(product_type='veggies').all(),6)
     fruits = partition_list(db.session.query(Product).filter_by(product_type='fruits').all(),6)
     nuts_seeds = partition_list(Product.query.filter(db.or_(Product.product_type == 'nuts', Product.product_type == 'seeds')).all(),6)
@@ -90,7 +96,7 @@ def homepage():
 
     return render_template("index.html", recipes=result_rec, veggies=veggies, fruits=fruits, nuts_seeds=nuts_seeds,fats_oils=fats_oils,sweeteners=sweeteners,flag=True,state='active')
 
-@app.route('/', methods= ["POST"])
+@app.route('/signup', methods= ["POST"])
 def signup():
     """Handle user signup.
     Create new user and add to DB. Redirect to home user's page.
@@ -100,51 +106,38 @@ def signup():
     """
     signup_form = UserAddForm()
     if signup_form.validate_on_submit():
-        username = request.json["username"]
-        password = request.json["password"]
-        email = request.json["email"]
-        confirm = request.json["confirm"]
+        username = signup_form.username.data
+        password = signup_form.password.data
+        email = signup_form.email.data
+        confirm = signup_form.password_check.data
         image_url = User.image_url.default.arg
         try:
             user = User.signup(username=username,password=password,email=email,image_url=image_url)
-            db.session.commit()
+            flash(f"Welcome {user.username}!!!")
         except IntegrityError:
-            flash("Username already taken", 'danger')
+            flash("Username already taken")
             return redirect("/")
         do_login(user)
-        return jsonify(user=user.serialize()), 201
-    # signup_form = UserAddForm()
-    # if signup_form.validate_on_submit():
-    #     try:
-    #         user = User.signup(
-    #             username = request.json["username"],
-    #             password = request.json["password"],
-    #             email = request.json["email"]
-    #         )
-    #         db.session.add(user)
-    #         db.session.commit()
-    #         return jsonify(user=user.serialize()), 201
-
-    #     except IntegrityError:
-    #         flash("Username already taken", 'danger')
-    #         return redirect("/")
-
-    #     do_login(user)
-
-    #     return redirect("/")
-
+        return redirect("/")
+    flash("Password does not match confirmed password")
+    return redirect("/")
 
 @app.route('/login', methods=["POST"])
 def login():
     """Handle user login."""
-    user = User.authenticate(request.json["email"],
-                                request.json["password"])
-    if not user:
-        flash("Invalid credentials.", 'danger')
-        return redirect('/')
-    do_login(user)
-    flash(f"Hello, {user.username}!", "success")
-    return jsonify(user_id = user.id,username = user.username), 201
+    login_form = LoginForm()
+
+    if login_form.validate_on_submit():
+        user = User.authenticate(login_form.email_ver.data,
+                                    login_form.password_ver.data)
+        if not user:
+            flash("Invalid credentials.")
+            return redirect('/')
+        do_login(user)
+        flash(f"Hello, {user.username}!")
+        return redirect("/")
+    flash(f"Wrong credentials")
+    return redirect("/")
 
 
 @app.route('/logout')
@@ -152,8 +145,8 @@ def login():
 def logout():
     """Handle logout of user."""
     do_logout()
-    flash("See you later, alligator!!!", "success")
-    return redirect('/login')
+    flash("See you later, alligator!!!")
+    return redirect('/')
 
 @app.route('/api/create-recipe', methods=['GET','POST'])
 def get_create_recipe_form():
@@ -241,15 +234,11 @@ def get_recipe_database(id):
 def get_recipe():
     """Get all possible recipes for query"""
     query_string = request.args.get("search-bar")
-    resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":20})
-    save_recipe_to_database(resp)
-    # import pdb
-    # pdb.set_trace()
+    # resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":20})
+    # save_recipe_to_database(resp)
     rec = Recipe.query.filter(Recipe.title.ilike(f"%{query_string}%")).all()
     size = len(rec)
-    recipes = partition_list(rec,3)
-    # import pdb
-    # pdb.set_trace() 
+    recipes = partition_list(rec,3) 
     return render_template('recipe-result.html', recipes=recipes, size=size)
 
 @app.route('/api/get-instructions')

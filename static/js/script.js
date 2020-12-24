@@ -637,3 +637,23 @@ $("form#search-recipe-form").on("submit", async function () {
 	});
 });
 
+$(document).ready(function () {
+	$(".alert").delay(4000).slideUp(300);
+});
+
+$('#ratings').on("click", 'i', async function(evt){
+	const response = await axios.post(`/api/add-rating`, {
+
+			rating: $(this).attr("data-id"),
+			userId: like.userId,
+	});
+	for (let i = 1; i <= 5; i++) {
+		if (i <= $(this).attr("data-id")) {
+			$(`i#${i}`).addClass("star-red");
+		} else {
+			$(`i#${i}`).removeClass("star-red");
+		}
+	}
+});
+
+

@@ -5,7 +5,6 @@
 			<div class="input-group-text"><i class="{{class}}"></i></div>
 		</div>
         {{ field(class="form-control",**kwargs) | safe }}
-        <!-- <input type="text" class="form-control" name="username" placeholder="Username" required="required"/> -->
 
         {% for error in field.errors %}
             <p><em class="text-danger"><small>{{ error }}</small></em></p>

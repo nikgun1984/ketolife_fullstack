@@ -45,8 +45,8 @@ class NewRecipeForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     """Login form."""
-    email = StringField('E-mail', render_kw={"placeholder": "Email Address"},validators=[DataRequired(), Email()])
-    password = PasswordField('Password', render_kw={"placeholder": "Password"},validators=[Length(min=6)])
+    email_ver = StringField('E-mail', render_kw={"placeholder": "Email Address"},validators=[DataRequired(), Email()])
+    password_ver = PasswordField('Password', render_kw={"placeholder": "Password"},validators=[Length(min=6)])
 
 
 class UserAddForm(FlaskForm):

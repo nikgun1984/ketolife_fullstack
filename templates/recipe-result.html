@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title%} {% endblock %}
+{% block title%} Recipes {% endblock %}
 
 {% block content %}
     <section class="module parallax parallax-1" data-type="background" data-speed="10">
@@ -25,7 +25,9 @@
                                 <h5 class="card-title">{{col.title}}</h5>
                                 <hr>
                                 <h6 class="card-text">Total servings: {{col.servings}}</h6>
-                                <a href="#" class="btn btn-outline-dark mt-auto">Check it Out</a>
+                                <form action="/get-recipe-database/{{col.id}}">
+                                    <button class="btn btn-dark btn-outline mt-auto">Check it Out</button>
+                                </form>
                             </div>
                         </div>
                     </div>

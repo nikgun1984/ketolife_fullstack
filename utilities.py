@@ -79,6 +79,9 @@ def save_recipe_to_database(resp):
     mapping = json.dumps(json_file)
     rec = json.loads(mapping) 
 
+    if not rec.get("hits"):
+        return
+
     for rec_num in rec["hits"]:
         # Recipe 1
         recipe = rec_num['recipe']
@@ -102,7 +105,7 @@ def save_recipe_to_database(resp):
         json_file1 = instr_resp.json()
         mapping1 = json.dumps(json_file1)
         rec1 = json.loads(mapping1)
-        if not rec1["analyzedInstructions"][0]["steps"]:
+        if not rec1.get("analyzedInstructions"):
             continue
         instrs = rec1["analyzedInstructions"][0]["steps"]
 

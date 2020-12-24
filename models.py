@@ -66,9 +66,8 @@ class Recipe(db.Model):
     instructions = db.relationship('Instruction', backref="recipe", cascade="all, delete")
     nutrients = db.relationship('Nutrient', secondary='recipe_has_nutrients', backref="recipe")
     assignments = db.relationship('RecipeNutrient', backref='recipe')
-
-    # Users ID
-    user = db.relationship('User', backref='recipes')
+    comments = db.relationship('Comment', backref='recipe')
+    ratings = db.relationship('Rating', backref="recipe")
 
     def serialize(self):
         """Serialize our object recipe to dictionary for json"""
@@ -237,6 +236,7 @@ class Product(db.Model):
         db.Float
     )
 
+
 class User(db.Model):
 
     __tablename__ = 'users'
@@ -291,12 +291,13 @@ class User(db.Model):
         )
 
         db.session.add(user)
+        db.session.commit()
         return user
 
     @classmethod
-    def authenticate(cls, username, password):
+    def authenticate(cls, email, password):
 
-        user = cls.query.filter_by(username=username).first()
+        user = cls.query.filter_by(email=email).first()
 
         if user:
             is_auth = bcrypt.check_password_hash(user.password, password)
@@ -314,6 +315,62 @@ class User(db.Model):
             "password": self.password,
             "image_url": self.image_url
         }
+
+    recipes = db.relationship('Recipe', backref='user')
+
+
+class Rating(db.Model):
+    """Many-to-Many relationship"""
+    __tablename__ = 'ratings'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    recipe_id = db.Column(
+        db.Integer,
+        db.ForeignKey("recipes.id"),
+        nullable=False
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+    )
+
+    rating = db.Column(
+        db.Integer,
+        nullable=False
+    )
+
+class Comment(db.Model):
+
+    __tablename__ = 'comments'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    comment = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    user_id = db.Column(
+        db.Integer, 
+        db.ForeignKey('users.id'), nullable=True)
+
+    recipe_id = db.Column(
+        db.Integer, 
+        db.ForeignKey('recipes.id'), nullable=True)
+
+    recipes = db.relationship('Recipe', backref="comment", cascade="all, delete")
+    users = db.relationship('User', backref="comment", cascade="all, delete")
 
 
 def connect_db(app):
