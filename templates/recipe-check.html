@@ -10,19 +10,38 @@
         </div>
     </section>
 
-    <section class="module content" id="about-page">
+    <section class="module content" id="recipe-{{recipe.id}}">
         <div class="parallax-container-fluid text-center">
                 <div class="row justify-items-center">
                     <div class="col-2"></div>
-                        <div class="col-7 text-left" id="recipe-car">
+                        <div class="col-7 text-left">
                             <h1>{{recipe.title}}</h1>
                             <img src="{{recipe.image}}" alt="" class="p-2 mb-2 border border-dark rounded">
-                            <p id="ratings">
-                                {% for star in range(5)%}
-                                <i class="far fa-star text-center" data-id="{{loop.index}}" id="{{loop.index}}"></i>
-                                {% endfor %}
-                                <span class="ml-4">Comments: 0</span>
-                            </p>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-3" id="ratings">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }} id="token"/>
+                                        <input type="hidden" name="recipe-content-id" id="recipe-content-id" value="{{recipe.id}}"/>
+                                        Ratings  
+                                        {% if recipe.average_rate %}
+                                            <i class="fas fa-star text-warning"></i><span>{{recipe.average_rate}}</span>
+                                        {% else %}
+                                            <i class="fas fa-star text-warning"></i><span>--</span>
+                                        {% endif %}
+                                        <br>
+                                        {% if g.user %}
+                                        Rate this
+                                        {% for star in range(5)%}
+                                            <i class="far fa-star text-center" data-id="{{loop.index}}" id="{{loop.index}}"></i>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-2">
+                                        Comments: 0
+                                    </div>
+                                </div>
+                            </div>
+
                             <hr>
                             <p>Servings: {{recipe.servings}}</p>
                             <p>Total Time: {{recipe.tcook}} minutes</p>
@@ -52,6 +71,7 @@
                             </ol>
                             <p>Link to the recipe: <a href="{{recipe.url}}">{{recipe.url}}</a></p>
                             <hr>
+                            {% if g.user %}
                             <form action="">
                                 <div class="form-group w-75">
                                     <label for="comment"><strong>Leave a comment if you like it:</strong> </label>
@@ -59,6 +79,7 @@
                                 </div>
                                 <button class="btn btn-outline-dark">Submit</button>
                             </form>
+                            {% endif %}
                         </div>
                         <div class="col-3 text-center">
                             {% include 'nutri_fact_recipe.html' %}

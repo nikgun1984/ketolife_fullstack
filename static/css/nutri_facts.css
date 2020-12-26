@@ -108,6 +108,11 @@ p {
   border-bottom: 10px solid black;
 }
 
+hr.thick-end {
+  color: 10px;
+}
+
+
 .thin-end {
   border-bottom: 1px solid black;
 }

@@ -641,19 +641,54 @@ $(document).ready(function () {
 	$(".alert").delay(4000).slideUp(300);
 });
 
-$('#ratings').on("click", 'i', async function(evt){
-	const response = await axios.post(`/api/add-rating`, {
-
-			rating: $(this).attr("data-id"),
-			userId: like.userId,
-	});
+$('#ratings').on("mouseover", 'i', async function(evt){
+	// const response = await axios.post(`/api/add-rating`, {
+	// 		rating: $(this).attr("data-id"),
+	// 		userId: like.userId
+	// });
 	for (let i = 1; i <= 5; i++) {
 		if (i <= $(this).attr("data-id")) {
-			$(`i#${i}`).addClass("star-red");
+			$(`i#${i}`).addClass("star-yellow");
 		} else {
-			$(`i#${i}`).removeClass("star-red");
+			$(`i#${i}`).removeClass("star-yellow");
 		}
 	}
+	// return response.data.like;
 });
 
+$("#ratings").on("mouseout", "i", async function (evt) {
+	// const response = await axios.post(`/api/add-rating`, {
+	// 		rating: $(this).attr("data-id"),
+	// 		userId: like.userId
+	// });
+	for (let i = 1; i <= 5; i++) {
+		$(`i#${i}`).removeClass("star-yellow");
+	}
+	// return response.data.like;
+});
+	$("#ratings").on("click", "i", async function (evt) {
+		//evt.preventDefault();
+		for (let i = 1; i <= 5; i++) {
+			if (i <= $(this).attr("data-id")) {
+				$(`i#${i}`).addClass("star-red");
+			} else {
+				$(`i#${i}`).removeClass("star-red");
+			}
+		}
+		const recipe_id = $("#recipe-content-id").val();
+		const rating = $(this).attr("data-id");
 
+		const response = await axios
+			.post(`/api/add-rating`, {
+				recipe_id: recipe_id,
+				rating: rating
+			})
+			.then((response) => {
+				console.log(response);
+				csrf_token = resp.data["response"]["csrf_token"];
+				console.log(csrf_token);
+			})
+			.catch((error) => {
+				console.log(error.response);
+			});
+	})

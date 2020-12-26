@@ -5,9 +5,9 @@
 		<div class="modal-content">
             <div class="login-form" id="signin-id">
                 <form action="/login" method="POST" class="text-center" enctype="multipart/form-data" id="login-form">
-                    {{ login_form.csrf_token }}
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <h2 id="login-title">Login</h2>
-                    <p id="login-prompt">Please fill in this form to create an account!</p>
+                    <p id="login-prompt">Please fill in this form to login into your account!</p>
                     <hr/>
                     {% for field in login_form if field.widget.input_type != 'hidden'%}
                         {{render_field(field,classes[loop.index])}}

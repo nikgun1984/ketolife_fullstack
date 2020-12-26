@@ -71,10 +71,6 @@ section.module p {
     font-weight: 300;
 }
 
-#recipe-car p {
-    font-weight: bolder;
-}
-
 section.module p:last-child {
     margin-bottom: 0;
 }
@@ -515,10 +511,18 @@ ul.circles {
     font-size: 87px;
 }
 
-.star-red {
+.star-yellow {
     color: yellow;
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: orange;
+}
+
+.star-red {
+    color: red;
+}
+
+.far.fa-star:hover {
+    cursor: pointer;
 }
 
 

@@ -1,5 +1,5 @@
 from app import app
-from models import db, Unit, Recipe, Ingredient, Instruction, Nutrient, RecipeNutrient, Product
+from models import db, Unit, Recipe, Ingredient, Instruction, Nutrient, RecipeNutrient, Product, Rating
 from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
 import requests
 
@@ -35,8 +35,7 @@ import requests
 #     url = recipe['url']
 #     ingredients = recipe['ingredients']
 #     calories = recipe['calories']
-#     total_nutrients = recipe['totalNutrients']
-#     total_daily = recipe['totalDaily']
+#     nutrients = recipe['digest']
 
 #     instr_resp = requests.get(f'{BASE_URL_SP}/recipes/extract?', params={"apiKey":APP_KEY,"url":url})
 #     json_file1 = instr_resp.json()
@@ -54,8 +53,6 @@ import requests
 #         ingredient = Ingredient(name=ingr["text"], image=ingr["image"])
 #         recipe_obj.ingredients.append(ingredient)
 
-#     total_nutri_keys = list(total_nutrients.keys())
-
 #     for key in total_nutri_keys:
 #         if key in total_daily:
 #             nutrient = Nutrient.query.filter_by(name=total_daily[key]["label"]).first()
@@ -67,20 +64,21 @@ import requests
 #     db.session.add(recipe_obj)
 #     print('Successfully Added!!!')
 # db.session.commit()
-# keto_veggies = ['beets','red onion','carrots','artichoke']
-# for veggie in keto_veggies:
-#     resp = requests.get(f"{BASE_URL_SP}/food/ingredients/search?", params={"apiKey":APP_KEY,"query":veggie})    
-#     res = resp.json()
-#     veg_id = res['results'][0]["id"]
-#     name = res['results'][0]["name"]
-#     img = res['results'][0]["image"]
-#     img = f"https://spoonacular.com/cdn/ingredients_100x100/{img}"
+# # keto_veggies = ['beets','red onion','carrots','artichoke']
+# # for veggie in keto_veggies:
+# #     resp = requests.get(f"{BASE_URL_SP}/food/ingredients/search?", params={"apiKey":APP_KEY,"query":veggie})    
+# #     res = resp.json()
+# #     veg_id = res['results'][0]["id"]
+# #     name = res['results'][0]["name"]
+# #     img = res['results'][0]["image"]
+# #     img = f"https://spoonacular.com/cdn/ingredients_100x100/{img}"
 
-#     resp1 = requests.get(f'{BASE_URL_SP}/food/ingredients/{veg_id}/information', params={"apiKey":APP_KEY,"amount":"100","unit":"g"})
-#     res1 = resp1.json()
-#     import pdb
-#     pdb.set_trace()
-#     net_carbs = res1['nutrition']['nutrients'][4]['amount']
-#     product = Product(name=name,image=img,net_carbs=net_carbs)
-#     db.session.add(product)
-#     db.session.commit()
+# #     resp1 = requests.get(f'{BASE_URL_SP}/food/ingredients/{veg_id}/information', params={"apiKey":APP_KEY,"amount":"100","unit":"g"})
+# #     res1 = resp1.json()
+# #     import pdb
+# #     pdb.set_trace()
+# #     net_carbs = res1['nutrition']['nutrients'][4]['amount']
+# #     product = Product(name=name,image=img,net_carbs=net_carbs)
+# #     db.session.add(product)
+# #     db.session.commit()
+

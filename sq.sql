@@ -45,6 +45,22 @@ VALUES ('Calories', NULL),
         1
     ),
     (
+        'Sugar alcohols',
+        1
+    ),
+        (
+        'Sugars',
+        1
+    ),
+    (
+        'Carbs (net)',
+        1
+    ),
+    (
+        'Sugars, added',
+        1
+    ),
+    (
         'Protein',
         1
     ),
@@ -162,11 +178,11 @@ VALUES ('Calories', NULL),
     ),
     (
         'Saturated',
-        3
+        1
     ),
     (
         'Trans',
-        3
+        1
     ),
     (
         'Thiamin (B1)',
@@ -187,16 +203,46 @@ VALUES ('Calories', NULL),
     (
         'Folate equivalent (total)',
         2
-    ),
-    (
-        'Sugars',
-        1
     )
-
-    ;
+;
 
 
 INSERT INTO products (name,image,net_carbs,product_type) VALUES
+('spinach','https://spoonacular.com/cdn/ingredients_100x100/spinach.jpg',1.43,'veggies'),
+('swiss chard','https://spoonacular.com/cdn/ingredients_100x100/swiss-chard.jpg',2.14,'veggies'),
+('celery','https://spoonacular.com/cdn/ingredients_100x100/celery.jpg',1.37,'veggies'),
+('kale','https://spoonacular.com/cdn/ingredients_100x100/kale.jpg',8.75,'veggies'),
+('broccoli','https://spoonacular.com/cdn/ingredients_100x100/broccoli.jpg',4.04,'veggies'),
+('greenbeans','https://spoonacular.com/cdn/ingredients_100x100/green-beans-or-string-beans.jpg',4.27,'veggies'),
+('collards','https://spoonacular.com/cdn/ingredients_100x100/collard-greens.jpg',1.42,'veggies'),
+('arugula','https://spoonacular.com/cdn/ingredients_100x100/arugula-or-rocket-salad.jpg',2.05,'veggies'),
+('lettuce','https://spoonacular.com/cdn/ingredients_100x100/iceberg-lettuce.jpg',1.77,'veggies'),
+('watercress','https://spoonacular.com/cdn/ingredients_100x100/watercress.jpg',0.79,'veggies'),
+('beet greens','https://spoonacular.com/cdn/ingredients_100x100/beet-leaves.jpg',0.63,'veggies'),
+('bok choy','https://spoonacular.com/cdn/ingredients_100x100/bok-choy.jpg',1.18,'veggies'),
+('chicory','https://spoonacular.com/cdn/ingredients_100x100/escarole.jpg',0.25,'veggies'),
+('green cabbage','https://spoonacular.com/cdn/ingredients_100x100/cabbage.jpg',3.3,'veggies'),
+('cauliflower','https://spoonacular.com/cdn/ingredients_100x100/cauliflower.jpg',2.97,'veggies'),
+('spring onion','https://spoonacular.com/cdn/ingredients_100x100/spring-onions.jpg',4.74,'veggies'),
+('savoy cabbage','https://spoonacular.com/cdn/ingredients_100x100/savoy-cabbage.jpg',3,'veggies'),
+('radicchio','https://spoonacular.com/cdn/ingredients_100x100/radicchio.jpg',3.58,'veggies'),
+('mizuna','https://spoonacular.com/cdn/ingredients_100x100/mizuna.jpg',1.47,'veggies'),
+('red cabbage','https://spoonacular.com/cdn/ingredients_100x100/red-cabbage.png',5.27,'veggies'),
+('brussels sprouts','https://spoonacular.com/cdn/ingredients_100x100/brussels-sprouts.jpg',5.15,'veggies'),
+('dandelion greens','https://spoonacular.com/cdn/ingredients_100x100/dandelion-greens.jpg',5.7,'veggies'),
+('radishes','https://spoonacular.com/cdn/ingredients_100x100/radishes.jpg',1.8,'veggies'),
+('mustard greens','https://spoonacular.com/cdn/ingredients_100x100/chinese-mustard-green.jpg',1.47,'veggies'),
+('turnip','https://spoonacular.com/cdn/ingredients_100x100/turnips.png',4.63,'veggies'),
+('zucchini','https://spoonacular.com/cdn/ingredients_100x100/zucchini.jpg',2.11,'veggies'),
+('asparagus','https://cdn.shopify.com/s/files/1/2331/3573/products/asparagus.jpg?v=1505655052',1.78,'veggies'),
+('fennel','https://www.gourmetsleuth.com/images/default-source/food/fennel_300-jpg.jpg?sfvrsn=4',4.2,'veggies'),
+('eggplant','https://spoonacular.com/cdn/ingredients_100x100/eggplant.png',2.88,'veggies'),
+('sugar snap peas','https://spoonacular.com/cdn/ingredients_100x100/sugar-snap-peas.jpg',4.95,'veggies'),
+('bell peppers','https://spoonacular.com/cdn/ingredients_100x100/bell-pepper-orange.png',3.93,'veggies'),
+('cucumber','https://spoonacular.com/cdn/ingredients_100x100/cucumber.jpg',1.46,'veggies'),
+('tomatoes','https://spoonacular.com/cdn/ingredients_100x100/tomato.png',2.69,'veggies'),
+('pumpkin','https://spoonacular.com/cdn/ingredients_100x100/pumpkin.png',6,'veggies'),
+('butternut squash','https://spoonacular.com/cdn/ingredients_100x100/butternut-squash.jpg',9.69,'veggies'),
 ('jalapeno peppers','https://spoonacular.com/cdn/ingredients_250x250/jalapeno-pepper.jpg',3.7,'veggies'),
 ('portobello mushrooms','https://cdn-prod.medicalnewstoday.com/content/images/articles/278/278858/mushrooms-in-a-bowel-on-a-dark-table.jpg',2.6,'veggies'),
 ('white mushrooms','https://spoonacular.com/cdn/ingredients_100x100/mushrooms.jpg',2.3,'veggies'),
@@ -221,13 +267,13 @@ INSERT INTO products (name,image,net_carbs,product_type) VALUES
 ('peach','https://spoonacular.com/cdn/ingredients_100x100/peaches.jpg',8,'fruits'),
 ('almonds','https://spoonacular.com/cdn/ingredients_100x100/almonds.jpg',2.6,'nuts'),
 ('macadamias','https://foodtolive.com/wp-content/uploads/2014/02/Organic-Macadamia-Nuts.jpg',1.5,'nuts'),
-('hazelnuts','https://spoonacular.com/cdn/ingredients_100x100/hazelnuts.jpg',2,'nuts'),
+('hazelnuts','https://image.made-in-china.com/2f0j00GVORTZeKLNoM/Blanched-Roasted-Hazelnuts-Toasted-Hazelnut-Kernels-Inshell-Organic-Hazel-Nuts.jpg',2,'nuts'),
 ('brazil nuts','https://spoonacular.com/cdn/ingredients_100x100/brazil-nuts.jpg',1.4,'nuts'),
 ('pistachios','https://spoonacular.com/cdn/ingredients_100x100/pistachios',5,'nuts'),
 ('cashews','https://spoonacular.com/cdn/ingredients_100x100/cashews.jpg',7.6,'nuts'),
 ('pecans','https://spoonacular.com/cdn/ingredients_100x100/pecans.jpg',1.2,'nuts'),
 ('walnuts','https://spoonacular.com/cdn/ingredients_100x100/walnuts.jpg',2,'nuts'),
-('chia seeds','https://spoonacular.com/cdn/ingredients_100x100/chia-seeds.jpg',1.4,'nuts'),
+('chia seeds','https://spoonacular.com/cdn/ingredients_100x100/chia-seeds.jpg',1.4,'seeds'),
 ('sunflower seeds','https://spoonacular.com/cdn/ingredients_100x100/sunflower-seeds.jpg',3.2,'seeds'),
 ('flax seeds','https://spoonacular.com/cdn/ingredients_100x100/flax-seeds.jpg',0.4,'seeds'),
 ('sesame seeds','https://spoonacular.com/cdn/ingredients_100x100/sesame-seeds.jpg',3.3,'seeds'),
@@ -238,7 +284,7 @@ INSERT INTO products (name,image,net_carbs,product_type) VALUES
 ('herring','https://upload.wikimedia.org/wikipedia/commons/0/00/Haring_met_ui.jpg',0,'healthy fats'),
 ('pork','https://balidirectstore.com/wp-content/uploads/2019/10/Free-Range-Pork-Belly.jpg',0,'healthy fats'),
 ('lamb','https://desikasai.com.au/wp-content/uploads/2019/05/lamb-meat.jpg',0,'healthy fats'),
-('beef','https://lh3.googleusercontent.com/proxy/QUNX7NFSG6DH3ijU3_a0DHtBvzP0KDsckg7nIaAu9yMfHYfLSGs7Ut0-FfLolD7Vp7cckhMDD7-fAjaylW2sz_qSFuijCTvT-HhS5RLMfE6_WEGa9yaIATse',0,'healthy fats'),
+('beef','https://spoonacular.com/cdn/ingredients_250x250/beef-cubes-raw.png',0,'healthy fats'),
 ('duck','https://www.gourmetfoodstore.com/images/Product/large/rougie-flash-frozen-duck-breast-magret-moulard-1S-6177.jpg',0,'healthy fats'),
 ('butter','https://spoonacular.com/cdn/ingredients_100x100/butter',0,'healthy fats'),
 ('mayonnaise','https://spoonacular.com/cdn/ingredients_100x100/mayonnaise.jpg',0,'healthy fats'),
@@ -249,10 +295,9 @@ INSERT INTO products (name,image,net_carbs,product_type) VALUES
 ('lard','https://spoonacular.com/cdn/ingredients_100x100/lard.jpg',0,'healthy oils'),
 ('almond oil','https://spoonacular.com/cdn/ingredients_100x100/almond-oil.jpg',0,'healthy oils'),
 ('flaxseed oil','https://spoonacular.com/cdn/ingredients_100x100/flaxseed-oil.jpg',0,'healthy oils'),
-('allulose','https://shop.wholesomesweet.com/img/thumbs/whsm-958121.jpg',0,'sweetener'),
+('allulose','https://shop.wholesomesweet.com/img/thumbs/whsm-958121.jpg',5,'sweetener'),
 ('monk fruit','https://images-na.ssl-images-amazon.com/images/I/81Sv8evUcJL._SL1500_.jpg',0,'sweetener'),
 ('stevia','https://images-na.ssl-images-amazon.com/images/I/610sJ%2BpVB8L._SX425_.jpg',0,'sweetener'),
-('erythritol','https://images-na.ssl-images-amazon.com/images/I/91SjiTdl7LL._SL1500_.jpg',5,'sweetener'),
-('xylitol','https://focusnutrition.com/wp-content/uploads/2019/06/xylitol-2.jpg',0,'sweetener'),
-('chicory root','https://images-na.ssl-images-amazon.com/images/I/71vUAdCXh6L._SL1500_.jpg',0,'sweetener');
-
+('erythritol','https://images-na.ssl-images-amazon.com/images/I/91SjiTdl7LL._SL1500_.jpg',0,'sweetener'),
+('xylitol','https://focusnutrition.com/wp-content/uploads/2019/06/xylitol-2.jpg',4,'sweetener'),
+('chicory root','https://images-na.ssl-images-amazon.com/images/I/71vUAdCXh6L._SL1500_.jpg',5,'sweetener');

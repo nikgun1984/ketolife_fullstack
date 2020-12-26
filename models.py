@@ -60,6 +60,11 @@ class Recipe(db.Model):
     user_id = db.Column(
         db.Integer, 
         db.ForeignKey('users.id'), nullable=True)
+    
+    average_rate = db.Column(
+        db.Float
+    )
+    
 
     # through relationship to have an access to all ingredients of the recipe
     ingredients = db.relationship('Ingredient', backref="recipe", cascade="all, delete")
@@ -228,12 +233,12 @@ class Product(db.Model):
         db.Text
     )
 
-    product_type = db.Column(
-        db.Text
-    )
-
     net_carbs = db.Column(
         db.Float
+    )
+
+    product_type = db.Column(
+        db.Text
     )
 
 
@@ -323,10 +328,10 @@ class Rating(db.Model):
     """Many-to-Many relationship"""
     __tablename__ = 'ratings'
 
-    id = db.Column(
+    user_id = db.Column(
         db.Integer,
-        primary_key=True,
-        autoincrement=True
+        db.ForeignKey("users.id"),
+        primary_key=True
     )
 
     recipe_id = db.Column(
@@ -335,16 +340,12 @@ class Rating(db.Model):
         nullable=False
     )
 
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey("users.id"),
-        nullable=False
-    )
-
     rating = db.Column(
         db.Integer,
         nullable=False
     )
+
+    users = db.relationship('User', backref='rating')
 
 class Comment(db.Model):
 
@@ -369,8 +370,8 @@ class Comment(db.Model):
         db.Integer, 
         db.ForeignKey('recipes.id'), nullable=True)
 
-    recipes = db.relationship('Recipe', backref="comment", cascade="all, delete")
-    users = db.relationship('User', backref="comment", cascade="all, delete")
+    recipes = db.relationship('Recipe', backref="comment")
+    users = db.relationship('User', backref="comment")
 
 
 def connect_db(app):

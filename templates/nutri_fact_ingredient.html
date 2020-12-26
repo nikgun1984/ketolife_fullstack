@@ -34,11 +34,14 @@
                 </td>
             </tr>
             {% for nutrient in nutrients[1:]%}
+                {% if nutrient["amount"] !=0 %}
                 {% if nutrient["title"] in fats or nutrient["title"] in carbs %}
                 <tr id = "{{nutrient["title"]}}">
                     <td class = "blank-cell"></td>
-                    <th>{{nutrient["title"]}} {{nutrient["amount"]}}{{nutrient["unit"]}}</th> 
+                    <th>{{nutrient["title"]}} {{nutrient["amount"]}}{{nutrient["unit"]}}</th>
+                    {% if nutrient["title"] not in no_daily %}
                     <td><b>{{nutrient["percentOfDailyNeeds"]}}%</b></td>
+                    {% endif %}
                 </tr>
                 {% else %}
                     {% if nutrient["title"] == nutrients[-1]['title']%}
@@ -51,10 +54,11 @@
                     <td><b>{{nutrient["percentOfDailyNeeds"]}}%</b></td>
                 </tr>
                 {% endif %}
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>
-
+    <hr class="thick-end">
     <table class="performance-facts__table--grid">
         <tbody>
             {% for vitamin in vitamins %}
