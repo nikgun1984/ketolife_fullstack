@@ -106,8 +106,14 @@ APP_ID_RECIPE = 'RECIPE_ID'
 APP_KEY_RECIPE = 'RECIPE KEY'
 
 #Secret Key
-key_gen = 'YOUR SECRET KEY'
+key_gen = 'YOUR SECRET KEY' 
 ```
+
+5. You will need to preload some data to your database from backup.sql file. You can just feed it using following command
+```
+psql < backup.sql 
+``` 
+
 
 <!-- USAGE EXAMPLES -->
 ## Usage
