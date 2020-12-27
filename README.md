@@ -22,7 +22,7 @@
     <img src="/static/images/logo.png" alt="Logo" width="100">
   </a>
 
-  <h3 align="center">Ketolife - Backend</h3>
+  <h3 align="center">Ketolife</h3>
 </p>
 
 
