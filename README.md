@@ -83,9 +83,10 @@ pip install freeze
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://developer.edamam.com/)
-** [https://example.com](https://spoonacular.com/food-api)
-2. Clone the repo
+1. Get a free API Key at [https://developer.edamam.com/](https://developer.edamam.com/) and [https://spoonacular.com/food-api](https://spoonacular.com/food-api)
+
+2. Clone the repo 
+
 ```sh
 https://github.com/nikgun1984/ketolife_backend.git
 ```
