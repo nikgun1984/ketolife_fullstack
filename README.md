@@ -109,7 +109,7 @@ APP_KEY_RECIPE = 'RECIPE KEY'
 key_gen = 'YOUR SECRET KEY' 
 ```
 
-5. You will need to preload some data to your database from backup.sql file. You can just feed it using following command
+5. You will need to preload some data to your database from backup.sql file. You can just feed it using the following command:
 ```
 psql < backup.sql 
 ``` 
@@ -154,7 +154,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_email](https://twitter.com/your_username) - ngundobin@gmail.com
+Your Name - [@your_email](https://mail.google.com/mail/u/0/?view=cm&fs=1&to=ngundobin@gmail.com&su=SUBJECT&body=BODY&bcc=ngundobin@gmail.com&tf=1) - ngundobin@gmail.com
 
 Project Link: [https://github.com/nikgun1984/ketolife_backend](https://github.com/nikgun1984/ketolife_backend)
 
