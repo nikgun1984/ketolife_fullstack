@@ -23,19 +23,6 @@
   </a>
 
   <h3 align="center">Ketolife - Backend</h3>
-
-  <p align="center">
-    An awesome README template to jumpstart your projects!
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
-  </p>
 </p>
 
 
@@ -62,24 +49,21 @@
 
 ![title](static/images/screen_shot.png)
 
-There are many great README templates available on GitHub, however, I didn't find one that really suit my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need.
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should element DRY principles to the rest of your life :smile:
+Welcome to Keto Life website where you can easily find delicious recipes from breakfast to dessert, create new recipes and look up nutritional data of the ingredients. It has never been easier. In the past, i have done various diets and fastings and nothing was working for me until i found out about the Keto diet. I can tell you I saw the results after a couple of weeks. Some diets can be super painful, but not Keto. You can lead a healthy way of life on Keto and still get treats that you would never think are a part of your diet. So what is Keto diet? 
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue.
+The ketogenic diet is a high-fat, adequate-protein, low-carbohydrate diet that in medicine is used mainly to treat hard-to-control epilepsy in children. The diet forces the body to burn fats rather than carbohydrates. (Wikipedia)
 
-A list of commonly used resources that I find helpful are listed in the acknowledgements.
+Keto diet is becoming more and more popular among people who want to lose weight and see the results of this diet in just as little as 1 week. This is the main reason i have decided to build this Keto recipe website. 
 
 ### Built With
-This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+
 * [Bootstrap](https://getbootstrap.com)
 * [JQuery](https://jquery.com)
 * [SQLAlchemy](https://www.sqlalchemy.org/)
 * [Flask](https://flask.palletsprojects.com/en/1.1.x/)
 * [PostgreSQL](https://www.postgresql.org/)
+* Edamam and Spoonacular APIs
 
 
 
