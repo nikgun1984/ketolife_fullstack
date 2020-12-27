@@ -65,6 +65,7 @@ Keto diet is becoming more and more popular among people who want to lose weight
 * [PostgreSQL](https://www.postgresql.org/)
 * Edamam and Spoonacular APIs
 * Programming languages: Javascript, CSS, HTML for Front-End and Python for Backend
+* [Heroku](https://www.heroku.com/)
 
 
 
@@ -162,6 +163,7 @@ Project Link: [https://github.com/nikgun1984/ketolife_backend](https://github.co
 * [Edamame Staff](https://developer.edamam.com/edamam-recipe-api)
 * [Springboard Staff](https://springboard.com)
 * [othneildrew YOU ROCK!!!](https://github.com/othneildrew/Best-README-Template)
+* [Heroku](https://www.heroku.com/)
 
 
 
