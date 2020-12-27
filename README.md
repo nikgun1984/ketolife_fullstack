@@ -64,6 +64,7 @@ Keto diet is becoming more and more popular among people who want to lose weight
 * [Flask](https://flask.palletsprojects.com/en/1.1.x/)
 * [PostgreSQL](https://www.postgresql.org/)
 * Edamam and Spoonacular APIs
+* Programming languages: Javascript, CSS, HTML for Front-End and Python for Backend
 
 
 
