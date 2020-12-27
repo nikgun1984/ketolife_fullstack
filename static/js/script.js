@@ -6,7 +6,169 @@ let title = "",
 
 $("#add_links").on("submit", processForm);
 
+$("#add_links_cr").on("submit", processRecipeForm);
+
 $("#modbod").on("click", "div[data-id]", getIngredientUnits);
+
+$("#modbod2").on("click", "div[data-id]", getIngredientUnitsForRecipe);
+
+async function getIngredientUnits(evt) {
+	evt.preventDefault();
+	const id = $(evt.currentTarget).attr("data-id");
+	const response = await axios.get(`/api/get-ingredient/${id}`);
+	console.log(response.data);
+	handleResponseInfoForIngredient(response.data);
+}
+
+async function getIngredientUnitsForRecipe(evt) {
+	evt.preventDefault();
+	const id = $(evt.currentTarget).attr("data-id");
+	const response = await axios.get(`/api/get-ingredient/${id}`);
+	console.log(response.data);
+	handleResponseInfoForRecipe(response.data);
+}
+
+/* Ingredient form */
+
+async function processForm(evt) {
+	evt.preventDefault();
+	const ing = $("#text").val();
+	const response = await axios.get("/api/get-ingredient", {
+		params: {
+			text: ing,
+		},
+	});
+	handleResponse(response,'modbod');
+}
+
+async function processRecipeForm(evt) {
+	evt.preventDefault();
+	const ing = $("#ing-text").val();
+	const response = await axios.get("/api/get-ingredient", {
+		params: {
+			text: ing,
+		},
+	});
+	handleResponse(response, "modbod2");
+}
+
+function handleResponse(res,id) {
+	//$('#modbod').empty()
+	$(`#${id}`).append("<div id='options'></div>");
+	console.log(res.data);
+	console.log(Object.keys(res.data).length === 0);
+
+	if (Object.keys(res.data).length !== 0) {
+		for (let val in res.data) {
+			$("#options").append(
+				`<div data-id="${res.data[val]}"><a href="">${val}</a></div>`
+			);
+		}
+	} else {
+		$("#options").append(
+			`<h3>Sorry, nothing was found</h3>
+		<p>This is usually due to mispelling or server error :(</p>
+		`
+		);
+	}
+}
+
+function handleResponseInfoForIngredient(data) {
+	$("#options").hide();
+	const img = `${BASE_IMG_LINK}/${data.img}`;
+	const amtPerServing = data.price;
+	const units = data.units;
+	const name = data.name;
+	const id = data.id;
+	formNutritionLookUp(
+		img,
+		amtPerServing,
+		units,
+		name,
+		id,
+		data.category[0],
+		data.category[1],
+		getIngredientNutriFacts,
+		`/api/get-ingredient/${id}/nutrifacts`
+	);
+}
+
+function handleResponseInfoForRecipe(data) {
+	$("#options").hide();
+	const img = `${BASE_IMG_LINK}/${data.img}`;
+	const amtPerServing = data.price;
+	const units = data.units;
+	const name = data.name;
+	const id = data.id;
+	formNutritionLookUp(
+		img,
+		amtPerServing,
+		units,
+		name,
+		id,
+		data.category[0],
+		data.category[1],
+		getInfoIngredient,
+		''
+	);
+}
+
+function formNutritionLookUp(
+	img,
+	price,
+	units,
+	name,
+	id,
+	category1,
+	category2,
+	func,
+	route
+) {
+	$("h5.modal-title").text(name[0].toUpperCase() + name.slice(1));
+	$(".modal-body").append('<div id="ing-details"></div>');
+	$("#ing-details").append(`
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-8">
+                    <img src="${img}" alt="">
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-8 text-center">
+                    <h6>Category: ${category1}/${category2}</h6>
+                    <p>
+						<form id="units_form" action="${route}">
+							<div class="form-group">
+								<label for="units"><b>Choose a unit:</b></label>
+								<select id="units" name="units" data-id="${id}" class="form-control">
+								</select>
+							</div>
+							<div class="form-group">
+    							<label for="amount"><b>Choose amount:</b></label>
+    							<input type="text" class="form-control" id="amount" name="amount" placeholder="Enter the amount">
+  							</div>
+                            <button id="unit-form-btn" type="submit" class="btn btn-outline-dark" >Submit</button>
+                        </form>
+                    </p>
+                </div>
+            </div>
+        </div>
+    `);
+	$("#units_form").on("submit", func);
+	const sb = document.querySelector("#units");
+	for (let unit of units) {
+		let newOption = new Option(unit, unit);
+		sb.add(newOption, undefined);
+	}
+	$(".modal-footer").prepend(
+		'<button type="button" class="btn btn-outline-dark" id="back">Back</button>'
+	);
+	$("#back").on("click", function () {
+		$("#options").show();
+		$("#ing-details").remove();
+		$("#back").hide();
+	});
+}
 
 $(".modal").on("hidden.bs.modal", function () {
 	$(".modal-body").html("");
@@ -19,7 +181,7 @@ $("#recipe_title").on("submit", function (evt) {
 	$("#ingr").show();
 	evt.preventDefault();
 	title = $("#title").val();
-	$("#recipe_title").append(addCheckmark());
+	$("#svg-container").append(addCheckmark());
 });
 
 $("#serving-form").on("submit", function (evt) {
@@ -52,6 +214,15 @@ $(document).on("click", "i.fas.fa-trash-alt", function () {
 $(document).ready(function () {
 	$(".show-modal").click(function () {
 		$("#ingredientModal").modal({
+			backdrop: "static",
+			keyboard: false,
+		});
+	});
+});
+
+$(document).ready(function () {
+	$(".show-modal").click(function () {
+		$("#ingredientModal2").modal({
 			backdrop: "static",
 			keyboard: false,
 		});
@@ -110,121 +281,7 @@ async function getInstructions(url) {
 	};
 }
 
-/* Ingredient form */
 
-async function processForm(evt) {
-	evt.preventDefault();
-	const ing = $("#text").val();
-	console.log(ing);
-	const response = await axios.get("/api/get-ingredient", {
-		params: {
-			text: ing,
-		},
-	});
-	handleResponse(response);
-}
-
-function handleResponse(res) {
-	//$('#modbod').empty()
-	$("#modbod").append("<div id='options'></div>");
-	console.log(res.data);
-	console.log(Object.keys(res.data).length === 0)
-
-	if (Object.keys(res.data).length !== 0) {
-		for (let val in res.data) {
-			$("#options").append(
-				`<div data-id="${res.data[val]}"><a href="">${val}</a></div>`
-			);
-		}
-	} else {
-		$("#options").append(
-			`<h3>Sorry, nothing was found</h3>
-		<p>This is usually due to mispelling or server error :(</p>
-		`
-		);
-	}
-}
-
-function handleResponseInfo(data) {
-	$("#options").hide();
-	const img = `${BASE_IMG_LINK}/${data.img}`;
-	const amtPerServing = data.price;
-	const units = data.units;
-	const name = data.name;
-	const id = data.id;
-	formNutritionLookUp(
-		img,
-		amtPerServing,
-		units,
-		name,
-		id,
-		data.category[0],
-		data.category[1]
-	);
-}
-
-function formNutritionLookUp(
-	img,
-	price,
-	units,
-	name,
-	id,
-	category1,
-	category2
-) {
-	$("h5.modal-title").text(name[0].toUpperCase() + name.slice(1));
-	$(".modal-body").append('<div id="ing-details"></div>');
-	$("#ing-details").append(`
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-8">
-                    <img src="${img}" alt="">
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-8 text-center">
-                    <h6>Category: ${category1}/${category2}</h6>
-                    <p>
-						<form id="units_form" action="/api/get-ingredient/${id}/nutrifacts">
-							<div class="form-group">
-								<label for="units"><b>Choose a unit:</b></label>
-								<select id="units" name="units" data-id="${id}" class="form-control">
-								</select>
-							</div>
-							<div class="form-group">
-    							<label for="amount"><b>Choose amount:</b></label>
-    							<input type="text" class="form-control" id="amount" name="amount" placeholder="Enter the amount">
-  							</div>
-                            <button id="unit-form-btn" type="submit" class="btn btn-outline-dark">Submit</button>
-                        </form>
-                    </p>
-                </div>
-            </div>
-        </div>
-    `);
-	$("#units_form").on("submit", getIngredientNutriFacts);
-	const sb = document.querySelector("#units");
-	for (let unit of units) {
-		let newOption = new Option(unit, unit);
-		sb.add(newOption, undefined);
-	}
-	$(".modal-footer").prepend(
-		'<button type="button" class="btn btn-outline-dark" id="back">Back</button>'
-	);
-	$("#back").on("click", function () {
-		$("#options").show();
-		$("#ing-details").remove();
-		$("#back").hide();
-	});
-}
-
-async function getIngredientUnits(evt) {
-	evt.preventDefault();
-	const id = $(evt.currentTarget).attr("data-id");
-	const response = await axios.get(`/api/get-ingredient/${id}`);
-	console.log(response.data);
-	handleResponseInfo(response.data);
-}
 // FOR INGREDIENT
 async function getIngredientNutriFacts(evt) {
 	// evt.preventDefault();
@@ -239,7 +296,7 @@ async function getIngredientNutriFacts(evt) {
 		}
 	});
 	const data = response.data;
-	handleNutrifacts(data);
+	handleNutrifacts(data, "ingredientModal");
 	$("#ingredient-header").text(`Ingredient: ${data.name}`);
 	$("#ingr-unit").text(`${data.amount} ${data.amount} per serving`);
     calculateGenNutritionPerServing(nutriObject.nutrients);
@@ -253,7 +310,7 @@ async function getInfoIngredient(evt) {
 	const id = $("#units").attr("data-id");
 	let amount = $("#amount").val();
 	const unit = $("select#units").val();
-	const name = $("#ingredientModalLabel").text();
+	const name = $("#ingredientModalLabel2").text();
 	count += 1;
 	$("#done-ing").show();
 	$("#recipe_ingr_table tbody").append(`<tr id="${count}"></tr>`);
@@ -273,8 +330,8 @@ async function getInfoIngredient(evt) {
 			units: unit
 		}
 	});
-	//console.log(response.data);
-	handleNutrifacts(response.data);
+	console.log(response.data);
+	handleNutrifacts(response.data, "ingredientModal2");
 }
 
 // function handleNutrifacts(data){
@@ -485,7 +542,7 @@ function nutritionObject() {
 	};
 }
 
-function handleNutrifacts(data) {
+function handleNutrifacts(data,id) {
 	//const price = data.cost;
 	const nutrients = data.nutrients;
 	const cost = data.cost;
@@ -511,7 +568,7 @@ function handleNutrifacts(data) {
 	console.log(amount);
 	console.log(cost);
 
-	$("#ingredientModal").modal("hide");
+	$(`#${id}`).modal("hide");
 	return {
 		nutriObject,
 		name,
@@ -641,11 +698,10 @@ $(document).ready(function () {
 	$(".alert").delay(4000).slideUp(300);
 });
 
-$('#ratings').on("mouseover", 'i', async function(evt){
-	// const response = await axios.post(`/api/add-rating`, {
-	// 		rating: $(this).attr("data-id"),
-	// 		userId: like.userId
-	// });
+// HOVERING, CLICKING OVER the RATING
+let funcs = [];
+$("#ratings").on("mouseover", "i", async function (evt) {
+
 	for (let i = 1; i <= 5; i++) {
 		if (i <= $(this).attr("data-id")) {
 			$(`i#${i}`).addClass("star-yellow");
@@ -653,42 +709,57 @@ $('#ratings').on("mouseover", 'i', async function(evt){
 			$(`i#${i}`).removeClass("star-yellow");
 		}
 	}
-	// return response.data.like;
-});
-
-$("#ratings").on("mouseout", "i", async function (evt) {
-	// const response = await axios.post(`/api/add-rating`, {
-	// 		rating: $(this).attr("data-id"),
-	// 		userId: like.userId
-	// });
+}).on("click", "i", async function (evt) {
 	for (let i = 1; i <= 5; i++) {
-		$(`i#${i}`).removeClass("star-yellow");
-	}
-	// return response.data.like;
-});
-	$("#ratings").on("click", "i", async function (evt) {
-		//evt.preventDefault();
-		for (let i = 1; i <= 5; i++) {
-			if (i <= $(this).attr("data-id")) {
-				$(`i#${i}`).addClass("star-red");
-			} else {
-				$(`i#${i}`).removeClass("star-red");
-			}
+		if (i <= $(this).attr("data-id")) {
+			$(`i#${i}`).addClass("star-red");
+		} else {
+			$(`i#${i}`).removeClass("star-red");
 		}
-		const recipe_id = $("#recipe-content-id").val();
-		const rating = $(this).attr("data-id");
+	}
+	const recipe_id = $("#recipe-content-id").val();
+	const rating = $(this).attr("data-id");
 
-		const response = await axios
-			.post(`/api/add-rating`, {
-				recipe_id: recipe_id,
-				rating: rating
-			})
-			.then((response) => {
-				console.log(response);
-				csrf_token = resp.data["response"]["csrf_token"];
-				console.log(csrf_token);
-			})
-			.catch((error) => {
-				console.log(error.response);
-			});
-	})
+	const response = await axios
+		.post(`/api/add-rating`, {
+			recipe_id: recipe_id,
+			rating: rating,
+		})
+		.then(function(response){
+			console.log(response.data);
+			const avg = response.data[0].toFixed(1);
+			$("span#avg-rating").text(avg);
+			const percentages = response.data[1];
+			for(let val=4;val>-1;val--){
+				// funcs[val] = function() {
+					$(`p#stars-total-${val}`).text(`${val + 1} stars`);
+					// console.log(percentages[val]);
+					//console.log(val);
+					const perc = percentages[val];
+					// console.log(perc);
+					console.log(val);
+
+					$(`#${val}-perc`).css("width", `${perc}%`);
+					$(`#${val}-perc`).attr("aria-valuenow", perc);
+					$(`#${val}-perc`).text(`${perc}%`);
+					if (perc == 0) {
+						$(`#${val}-perc`).addClass("text-dark");
+					} else {
+						$(`#${val}-perc`).removeClass("text-dark");
+					}
+				// }
+			}
+			// for (let val=4;val>-1;val--) {
+			// 	// we can use "var" here without issue
+			// 	funcs[j]();
+			// 	console.log(funcs[j]());
+			// }
+		})
+		.catch((error) => {
+			console.log(error.response);
+		});
+}).on("mouseout", "i", async function (evt) {
+		for (let i = 1; i <= 5; i++) {
+			$(`i#${i}`).removeClass("star-yellow");
+		}
+});

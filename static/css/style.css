@@ -128,6 +128,18 @@ section.module.parallax-3 {
     background-blend-mode: screen;
 }
 
+section.module.parallax-4 {
+    background-image: url("/static/images/bg4.jpg");
+    background-position: 100% 60%;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color:  rgba(244, 247, 250, 0.4);
+    background-blend-mode: screen;
+}
+
+
+
 @media all and(min-width: 600px) {
     section.module h2 {
         font-size: 42px;

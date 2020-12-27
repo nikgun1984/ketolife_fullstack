@@ -10,7 +10,7 @@ from flask_wtf.csrf import CSRFProtect
 from models import db, connect_db, User,Recipe, Product, Rating
 from forms import NewRecipeForm, TitleRecipeForm, LoginForm, UserAddForm
 from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE, key_gen
-from utilities import get_carousel_card_info, partition_list, split_nutritional_fact_data, get_nutrients_recipe, save_recipe_to_database, calculate_average_rating, get_best_rated_recipes
+from utilities import get_carousel_card_info, partition_list, split_nutritional_fact_data, get_nutrients_recipe, save_recipe_to_database, calculate_average_rating, get_best_rated_recipes, is_already_rated, is_empty_query, calculate_percentages_stars, calculate_all_recipes_netcarbs
 
 CURR_USER_KEY = "curr_user"
 BASE_URL_SP = "https://api.spoonacular.com"
@@ -88,7 +88,6 @@ def homepage():
     sweeteners = partition_list(db.session.query(Product).filter_by(product_type='sweetener').all(),6)
     
     result_rec = get_carousel_card_info(recipes)
-
     return render_template("index.html", recipes=result_rec, veggies=veggies, fruits=fruits, nuts_seeds=nuts_seeds,fats_oils=fats_oils,sweeteners=sweeteners,flag=True,state='active')
 
 @app.route('/signup', methods= ["POST"])
@@ -177,7 +176,7 @@ def get_create_recipe_form():
     #     db.session.commit()
     #     serialized = new_recipe.serialize()
     #     return jsonify(recipe=serialized), 201
-    return render_template('create_recipe.html',form=form)
+    return render_template('create-recipe.html',form=form)
 
 @app.route("/api/get-ingredient")
 def get_ingredient_id():
@@ -221,33 +220,40 @@ def get_ingredient_nutrifacts(id):
 @app.route('/api/get-recipe-database/<int:id>')
 def get_recipe_database(id):
     recipe = Recipe.query.get(id)
-    calculate_average_rating(id,recipe.average_rate)
+    avg_rate = calculate_average_rating(id,recipe.average_rate)
+    user_rating = is_empty_query(id)
+    percentages = calculate_percentages_stars(id)
+    # import pdb
+    # pdb.set_trace()
     nutrients,vitamins = get_nutrients_recipe(recipe,recipe.servings)
     fats = tuple(["Trans Fat","Saturated Fat","Saturated","Trans","Polyunsaturated","Mono Unsaturated Fat","Poly Unsaturated Fat","Monounsaturated"])
     carbs = tuple(["Sugar Alcohol","Sugar","Fiber","Net Carbohydrates","Sugars", "Carbs (net)",'Sugar alcohols','Sugars, added'])
     no_daily = tuple(["Sugar","Sugars",'Sugars, added','Protein','Monounsaturated','Polyunsaturated'])
     calories = math.ceil(recipe.calories/recipe.servings)
-    return render_template("recipe-check.html", recipe=recipe, nutrients=nutrients, vitamins=vitamins,fats=fats,carbs=carbs,calories=calories,no_daily=no_daily)
+    return render_template("recipe-check.html", recipe=recipe, nutrients=nutrients, vitamins=vitamins,fats=fats,carbs=carbs,calories=calories,no_daily=no_daily, user_rating=user_rating, percentages=percentages)
 
 @app.route('/api/get-recipe')
 def get_recipe():
     """Get all possible recipes for query"""
     query_string = request.args.get("search-bar")
-    resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":20})
-    save_recipe_to_database(resp)
+    # resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":20})
+    # save_recipe_to_database(resp)
     rec = Recipe.query.filter(Recipe.title.ilike(f"%{query_string}%")).all()
     size = len(rec)
-    recipes = partition_list(rec,3) 
-    return render_template('recipe-result.html', recipes=recipes, size=size)
+    recipes = partition_list(rec,3)
+    n_carbs = partition_list(calculate_all_recipes_netcarbs(rec),3)
+    return render_template('recipe-result.html', recipes=recipes, size=size, n_carbs=n_carbs)
 
 @app.route('/api/your-best-recipes')
 @login_required
 def get_best_rated():
     """Get all best rated recipes """
-    best_rated, user_ratings = get_best_rated_recipes()
+    best_rated, user_ratings, net_carbs = get_best_rated_recipes()
     best = partition_list(best_rated,3)
     u_rated = partition_list(user_ratings,3)
-    return render_template('best-rated-recipes.html',best_rated=best, user_ratings=u_rated)
+    n_carbs = partition_list(net_carbs,3)
+    size = len(best_rated)
+    return render_template('best-rated-recipes.html',best_rated=best, user_ratings=u_rated,size=size,net_carbs=n_carbs)
 
 @app.route('/api/get-instructions')
 def get_instructions():
@@ -262,17 +268,12 @@ def get_instructions():
 @app.route('/api/add-rating', methods=["POST"])
 @login_required
 def add_ratings():
-    recipe_id = request.json['recipe_id']
+    recipe_id = int(request.json['recipe_id'])
     rating = int(request.json['rating'])
-    calculate_average_rating(recipe_id,rating)
-    try:
-        rate = Rating(recipe_id=recipe_id,user_id=g.user.id,rating=rating)
-        db.session.add(rate)
-    except IntegrityError:
-        rated = Rating.query.get(g.user.id)
-        rated.rating = rating
-    db.session.commit()
-    return redirect(f'/api/get-recipe-database/{recipe_id}')
+    is_already_rated(recipe_id,rating)
+    percentages = calculate_percentages_stars(recipe_id)
+    avg_rate = calculate_average_rating(recipe_id,rating)
+    return jsonify(avg_rate,percentages)
 
 
 

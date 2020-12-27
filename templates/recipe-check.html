@@ -22,18 +22,23 @@
                                     <div class="col-3" id="ratings">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }} id="token"/>
                                         <input type="hidden" name="recipe-content-id" id="recipe-content-id" value="{{recipe.id}}"/>
-                                        Ratings  
+                                        Ratings
                                         {% if recipe.average_rate %}
-                                            <i class="fas fa-star text-warning"></i><span>{{recipe.average_rate}}</span>
+                                            {% include 'all-ratings.html' %}
                                         {% else %}
-                                            <i class="fas fa-star text-warning"></i><span>--</span>
+                                            <i class="fas fa-star text-warning"></i><span id="avg-rating">--</span>
                                         {% endif %}
                                         <br>
                                         {% if g.user %}
                                         Rate this
-                                        {% for star in range(5)%}
-                                            <i class="far fa-star text-center" data-id="{{loop.index}}" id="{{loop.index}}"></i>
-                                        {% endfor %}
+                                            {% if user_rating %}
+                                                {% for star in range(user_rating)%}
+                                                    <i class="far fa-star text-center star-red" data-id="{{star+1}}" id="{{star+1}}"></i>
+                                                {% endfor %}
+                                            {% endif %}
+                                            {% for star in range(user_rating+1,6)%}
+                                                <i class="far fa-star text-center" data-id="{{star}}" id="{{star}}"></i>
+                                            {% endfor %}
                                         {% endif %}
                                     </div>
                                     <div class="col-2">
@@ -46,39 +51,39 @@
                             <p>Servings: {{recipe.servings}}</p>
                             <p>Total Time: {{recipe.tcook}} minutes</p>
                             {% if recipe.cuisine %}
-                            <p>Cuisine: {{recipe.cuisine}}</p>
+                                <p>Cuisine: {{recipe.cuisine}}</p>
                             {% endif%}
                             {% if recipe.mealtype %}
-                            <p>Meal Type: {{recipe.mealtype}}</p>
+                                <p>Meal Type: {{recipe.mealtype}}</p>
                             {% endif%}
                             {% if recipe.dishtype %}
-                            <p>Dish Type: {{recipe.dishtype}}</p>
+                                <p>Dish Type: {{recipe.dishtype}}</p>
                             {% endif%}
                             <hr>
                             <h4>Ingredients</h4>
                             <ul class="circles">
-                            {% for ingredient in recipe.ingredients %}
-                            <li class="m-1">{{ingredient.name}}</li>
-                            {% endfor%}
+                                {% for ingredient in recipe.ingredients %}
+                                    <li class="m-1">{{ingredient.name}}</li>
+                                {% endfor%}
                             </ul>
                             <hr>
                             <h4>Directions</h4>
                             <ol class="text-left">
-                            {% for instruction in recipe.instructions %}
-                            <li class="m-1">  {{instruction.step}}</li>
-                            <hr>
-                            {% endfor%}
+                                {% for instruction in recipe.instructions %}
+                                    <li class="m-1">  {{instruction.step}}</li>
+                                    <hr>
+                                {% endfor%}
                             </ol>
                             <p>Link to the recipe: <a href="{{recipe.url}}">{{recipe.url}}</a></p>
                             <hr>
                             {% if g.user %}
-                            <form action="">
-                                <div class="form-group w-75">
-                                    <label for="comment"><strong>Leave a comment if you like it:</strong> </label>
-                                    <textarea class="form-control" id="comment" rows="3"></textarea>
-                                </div>
-                                <button class="btn btn-outline-dark">Submit</button>
-                            </form>
+                                <form action="">
+                                    <div class="form-group w-75">
+                                        <label for="comment"><strong>Leave a comment if you like it:</strong> </label>
+                                        <textarea class="form-control" id="comment" rows="3"></textarea>
+                                    </div>
+                                    <button class="btn btn-outline-dark">Submit</button>
+                                </form>
                             {% endif %}
                         </div>
                         <div class="col-3 text-center">

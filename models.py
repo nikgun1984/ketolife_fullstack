@@ -328,10 +328,15 @@ class Rating(db.Model):
     """Many-to-Many relationship"""
     __tablename__ = 'ratings'
 
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey("users.id"),
-        primary_key=True
+        db.ForeignKey("users.id")
     )
 
     recipe_id = db.Column(

@@ -14,18 +14,19 @@
         <div class="parallax-container-fluid">
             <h2 class="text-center mt-4">Found Recipes ({{size}})</h2>
             <div class="container text-center">
-                {% for row in recipes %}
+                {% for i in range(recipes | length )%}
                 <div class="row justify-content-center">
-                    {% for col in row %}
+                    {% for j in range(recipes[i] | length ) %}
                     <div class="col-3 border border-dark rounded p-2 m-2">
                         <div class="card">
-                            <img class="card-img-top" src="{{col.image}}" alt="Card image cap">
+                            <img class="card-img-top" src="{{recipes[i][j].image}}" alt="Card image cap">
                             <div class="card-body d-flex flex-column">
                                 <hr>
-                                <h5 class="card-title">{{col.title}}</h5>
+                                <h5 class="card-title">{{recipes[i][j].title}}</h5>
                                 <hr>
-                                <h6 class="card-text">Total servings: {{col.servings}}</h6>
-                                <form action="/api/get-recipe-database/{{col.id}}">
+                                <h6 class="card-text">Total servings: {{recipes[i][j].servings}}</h6>
+                                <h6 class="card-text">Net Carbs per Serving: {{n_carbs[i][j]}}g</h6>
+                                <form action="/api/get-recipe-database/{{recipes[i][j].id}}">
                                     <button class="btn btn-dark btn-outline mt-auto">Check it Out</button>
                                 </form>
                             </div>

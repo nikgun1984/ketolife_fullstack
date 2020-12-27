@@ -1,0 +1,25 @@
+<span class="dropdown">
+    <a href="#" class="dropdown-toggle text-dark" data-toggle="dropdown">
+        <strong><i class="fas fa-star text-warning"></i><span id="avg-rating">{{recipe.average_rate}}</span></strong>
+    </a>
+    <ul class="dropdown-menu">
+        {% for i in range(4,-1,-1) %}
+        <div class="container mb-1">
+            <div class="row">
+                <div class="col-5">
+                    <p id="stars-total-{{i}}" style="font-size: 10px; font-weight: bolder;">{{i+1}} stars</p>
+                </div>
+                <div class="col-7">
+                    <div class="progress border border-dark">
+                        {%if percentages[i] %}
+                        <div class="progress-bar" role="progressbar" style="width: {{percentages[i]}}%;" aria-valuenow="{{percentages[i]}}" aria-valuemin="0" aria-valuemax="100" id="{{i}}-perc">{{percentages[i]}}%</div>
+                        {% else %}
+                        <div class="progress-bar text-dark" role="progressbar" style="width: {{percentages[i]}}%;" aria-valuenow="{{percentages[i]}}" aria-valuemin="0" aria-valuemax="100" id="{{i}}-perc">{{percentages[i]}}%</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </ul>
+</span>
