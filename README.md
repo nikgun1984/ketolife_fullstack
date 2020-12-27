@@ -76,28 +76,35 @@ To get a local copy up and running follow these simple example steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* npm
+* python3
 ```sh
-npm install npm@latest -g
+pip install freeze
 ```
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
+1. Get a free API Key at [https://example.com](https://developer.edamam.com/)
+** [https://example.com](https://spoonacular.com/food-api)
 2. Clone the repo
 ```sh
-git clone https://github.com/your_username_/Project-Name.git
+https://github.com/nikgun1984/ketolife_backend.git
 ```
-3. Install NPM packages
+3. Install PIP packages 
 ```sh
-npm install
+pip freeze > requirements.txt
 ```
-4. Enter your API in `config.js`
+4. Enter missing API keys and secret key key_gen(just generate any key using any algorithm)in `secrets.py`
 ```JS
-const API_KEY = 'ENTER YOUR API';
+# spoonacular_api
+APP_KEY = 'YOUR API KEY'
+
+# edamame api
+APP_ID_RECIPE = 'RECIPE_ID'
+APP_KEY_RECIPE = 'RECIPE KEY'
+
+#Secret Key
+key_gen = 'YOUR SECRET KEY'
 ```
-
-
 
 <!-- USAGE EXAMPLES -->
 ## Usage
