@@ -10,7 +10,7 @@ from flask_wtf.csrf import CSRFProtect
 from models import db, connect_db, User,Recipe, Product, Rating
 from forms import NewRecipeForm, TitleRecipeForm, LoginForm, UserAddForm
 from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE, key_gen
-from utilities import get_carousel_card_info, partition_list, split_nutritional_fact_data, get_nutrients_recipe, save_recipe_to_database, calculate_average_rating, get_best_rated_recipes, is_already_rated, is_empty_query, calculate_percentages_stars, calculate_all_recipes_netcarbs
+from utilities import get_carousel_card_info, partition_list, split_nutritional_fact_data, get_nutrients_recipe, save_recipe_to_database, calculate_average_rating, get_best_rated_recipes, is_already_rated, is_empty_query, calculate_percentages_stars, calculate_all_recipes_netcarbs, calculate_per_serving
 
 CURR_USER_KEY = "curr_user"
 BASE_URL_SP = "https://api.spoonacular.com"
@@ -198,9 +198,10 @@ def get_ingredient_info(id):
     category = res['categoryPath']
     return jsonify(units=lst,img=res['image'],name=res['name'],id=id,category=category)
 
-@app.route("/api/get-ingredient/<id>/nutrifacts")
-def get_ingredient_nutrifacts(id):
+@app.route("/api/get-ingredient/<id>/info")
+def ingredient_nutrifacts(id):
     """Nutritional Data of an ingredient"""
+
     unit = request.args.get('units')
     amount = request.args.get('amount')
     resp = requests.get(f'{BASE_URL_SP}/food/ingredients/{id}/information', params={"apiKey":APP_KEY,"amount":amount,"unit":unit})
@@ -210,12 +211,26 @@ def get_ingredient_nutrifacts(id):
     category = res["categoryPath"]
     cost = round(res['estimatedCost']['value']/100,3)
     nutrients,vitamins = split_nutritional_fact_data(res['nutrition']['nutrients'])
+    # import pdb
+    # pdb.set_trace()
     fats = tuple(["Trans Fat","Saturated Fat","Mono Unsaturated Fat","Poly Unsaturated Fat"])
     carbs = tuple(["Sugar Alcohol","Sugar","Net Carbohydrates","Sugars","Carbs (net)",'Sugar alcohols','Sugars, added'])
     no_daily = tuple(["Sugar","Sugars",'Sugars, added','Protein'])
     unit = res['unit']
 
-    return render_template("ingredient-info.html", name=name,cost=cost,nutrients=nutrients,vitamins=vitamins,unit=unit, amount=amount,carbs=carbs,fats=fats,no_daily=no_daily,img=img,category=category)
+    return render_template("ingredient-info.html", name=name,cost=cost,nutrients=nutrients,vitamins=vitamins,unit=unit, amount=amount,carbs=carbs,fats=fats,no_daily=no_daily,img=img,category=category,nutri = list(nutrients),vit=list(vitamins))
+
+@app.route("/api/get-ingredient/<id>/nutrifacts")
+def get_ingredient_for_recipe(id):
+    unit = request.args.get('units')
+    amount = request.args.get('amount')
+    servings = int(request.args.get('serving'))
+    resp = requests.get(f'{BASE_URL_SP}/food/ingredients/{id}/information', params={"apiKey":APP_KEY,"amount":amount,"unit":unit})
+    res = resp.json()
+    nutr,vits = split_nutritional_fact_data(res['nutrition']['nutrients'])
+    nutrients = calculate_per_serving(nutr,servings)
+    vitamins = calculate_per_serving(vits,servings)
+    return jsonify(nutrients,vitamins)
 
 @app.route('/api/get-recipe-database/<int:id>')
 def get_recipe_database(id):

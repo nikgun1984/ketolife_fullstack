@@ -1,9 +1,6 @@
 const BASE_IMG_LINK = "https://spoonacular.com/cdn/ingredients_250x250";
-const nutriObject = nutritionObject();
 let title = "",
-	servings = 0,
-	count = 0;
-
+	servings = 0;
 $("#add_links").on("submit", processForm);
 
 $("#add_links_cr").on("submit", processRecipeForm);
@@ -55,6 +52,7 @@ async function processRecipeForm(evt) {
 function handleResponse(res,id) {
 	//$('#modbod').empty()
 	$(`#${id}`).append("<div id='options'></div>");
+	$("h5.title-ingr").text("Choose any ingredients");
 	console.log(res.data);
 	console.log(Object.keys(res.data).length === 0);
 
@@ -89,7 +87,7 @@ function handleResponseInfoForIngredient(data) {
 		data.category[0],
 		data.category[1],
 		getIngredientNutriFacts,
-		`/api/get-ingredient/${id}/nutrifacts`
+		`/api/get-ingredient/${id}/info`
 	);
 }
 
@@ -109,7 +107,7 @@ function handleResponseInfoForRecipe(data) {
 		data.category[0],
 		data.category[1],
 		getInfoIngredient,
-		''
+		`/api/get-ingredient/${id}/nutrifacts`
 	);
 }
 
@@ -124,8 +122,8 @@ function formNutritionLookUp(
 	func,
 	route
 ) {
-	$("h5.modal-title").text(name[0].toUpperCase() + name.slice(1));
-	$(".modal-body").append('<div id="ing-details"></div>');
+	$("h5.title-ingr").text(name[0].toUpperCase() + name.slice(1));
+	$(".body-ingr").append('<div id="ing-details"></div>');
 	$("#ing-details").append(`
         <div class="container">
             <div class="row justify-content-center">
@@ -160,7 +158,7 @@ function formNutritionLookUp(
 		let newOption = new Option(unit, unit);
 		sb.add(newOption, undefined);
 	}
-	$(".modal-footer").prepend(
+	$(".footer-ingr").prepend(
 		'<button type="button" class="btn btn-outline-dark" id="back">Back</button>'
 	);
 	$("#back").on("click", function () {
@@ -170,38 +168,94 @@ function formNutritionLookUp(
 	});
 }
 
+/* Local Storage Manipulations */
+function accessToLocaStorage() {
+	let existing = localStorage.getItem("recipe");
+	existing = existing ? JSON.parse(existing) : {};
+	return existing;
+}
+
+function saveToLocStorage(key,val) {
+	let existing = accessToLocaStorage();
+	existing[key] = val;
+	localStorage.setItem("recipe", JSON.stringify(existing));
+}
+
+function saveIngInst(key,val) {
+	let existing = accessToLocaStorage();
+	existing[key] = existing[key] ? existing[key] : [];
+	existing[key].push(val);
+	localStorage.setItem("recipe", JSON.stringify(existing));
+}
+
+function deleteIngInst(key,idx) {
+	let existing = accessToLocaStorage();
+	existing[key] = existing[key] ? existing[key].split(",") : [];
+	existing[key].splice(idx,1);
+	localStorage.setItem("recipe", JSON.stringify(existing));
+}
+
+function isLowCarb(netCarbs) {
+	let existing = accessToLocaStorage();
+	return (netCarbs/parseInt(existing["servings"])<15)?true:false;
+}
+
+function lenRecipeArray(obj) {
+	let existing = accessToLocaStorage();
+	console.log(existing[obj].length);
+	return existing[obj].length;
+}
+
+function saveNutrients(nutrients,vitamins) {
+	let existing = accessToLocaStorage();
+	existing["nutrients"] = existing["nutrients"] ? existing["nutrients"] : [];
+	existing["vitamins"] = existing["vitamins"] ? existing["vitamins"] : [];
+	existing["nutrients"].push(nutrients);
+	existing["vitamins"].push(vitamins);
+	localStorage.setItem("recipe", JSON.stringify(existing));
+}
+
+
+
+////////////////////////////////////////////////////////////////////
+
 $(".modal").on("hidden.bs.modal", function () {
-	$(".modal-body").html("");
+	$(".body-ingr").html("");
 	$("#back").remove();
 });
 
 $("#search-recipe").on("submit", processRecipe);
 
 $("#recipe_title").on("submit", function (evt) {
-	$("#ingr").show();
+	$("#yield").show();
 	evt.preventDefault();
-	title = $("#title").val();
-	$("#svg-container").append(addCheckmark());
+	saveToLocStorage("title", $("#title").val());
+	$("#svg-container-1").append(addCheckmark());
 });
 
 $("#serving-form").on("submit", function (evt) {
 	evt.preventDefault();
 	if ($("#title").val()) {
-		$("#serving-form").append(addCheckmark());
 		$("#done-yield").show();
-		servings = parseInt($("#serving").val());
-		calculateGenNutritionPerServing(nutriObject.nutrients);
-		calculateGenNutritionPerServing(nutriObject.vitamins);
-		addValuesToNutritionTable();
-		$("section.performance-facts").show();
+		console.log($("#serving").val());
+		saveToLocStorage("servings", parseInt($("#serving").val()));
 	}
 });
 
 $("#done-ing").on("click", function (evt) {
 	evt.preventDefault();
-	$("#yield").show();
-	$("#add_links").append(addCheckmark());
+	$("#inst").show();
+	$("#svg-container-2").append(addCheckmark());
+	$("#done-ing").remove();
 });
+
+$("#done-yield").on("click", function (evt) {
+	evt.preventDefault();
+	$("#ingr").show();
+	$("#svg-container-3").append(addCheckmark());
+	$("#done-yield").remove();
+});
+
 
 $(document).on("click", "i.fas.fa-trash-alt", function () {
 	console.log("i am here");
@@ -284,25 +338,15 @@ async function getInstructions(url) {
 
 // FOR INGREDIENT
 async function getIngredientNutriFacts(evt) {
-	// evt.preventDefault();
 	const id = $("#units").attr("data-id");
 	const amount = $("#amount").val();
 	const unit = $("select#units").val();
-	console.log(id, amount, unit);
-	const response = await axios.get(`/api/get-ingredient/${id}/nutrifacts`, {
+	await axios.get(`/api/get-ingredient/${id}/info`, {
 		params: {
 			amount,
 			units: unit
 		}
 	});
-	const data = response.data;
-	handleNutrifacts(data, "ingredientModal");
-	$("#ingredient-header").text(`Ingredient: ${data.name}`);
-	$("#ingr-unit").text(`${data.amount} ${data.amount} per serving`);
-    calculateGenNutritionPerServing(nutriObject.nutrients);
-	calculateGenNutritionPerServing(nutriObject.vitamins);
-	addValuesToNutritionTable();
-	$("section.performance-facts").show();
 }
 // FOR CREATING RECIPE
 async function getInfoIngredient(evt) {
@@ -311,272 +355,57 @@ async function getInfoIngredient(evt) {
 	let amount = $("#amount").val();
 	const unit = $("select#units").val();
 	const name = $("#ingredientModalLabel2").text();
-	count += 1;
-	$("#done-ing").show();
-	$("#recipe_ingr_table tbody").append(`<tr id="${count}"></tr>`);
-	$(`tr#${count}`).append(`<th scope="row">${count}</th>`);
-	$(`tr#${count}`).append(`<td>${name}</td>`);
-	$(`tr#${count}`).append(`<td>${amount}</td>`);
-	$(`tr#${count}`).append(`<td>${unit}</td>`);
-	$(`tr#${count}`).append(`<td><i class="fas fa-trash-alt"></i></td>`);
-	if (isFraction(amount)) {
+
+    if (isFraction(amount)) {
 		amount = handleFraction(amount);
 	} else {
 		amount = parseFloat(amount);
 	}
+	const existing = accessToLocaStorage();
 	const response = await axios.get(`/api/get-ingredient/${id}/nutrifacts`, {
 		params: {
 			amount,
-			units: unit
+			units: unit,
+			serving: existing["servings"]
 		}
 	});
-	console.log(response.data);
-	handleNutrifacts(response.data, "ingredientModal2");
-}
 
-// function handleNutrifacts(data){
-//     const price = data.cost;
-//     const nutrients = data.nutrients;
-//     $('#ing-details').append(`<p>Price for ${data.unit}: ${price}</p>`);
-//     for(let obj of nutrients){
-//         $('#ing-details').append(`<p>${obj.title} : ${obj.amount}</p>`);
-//     }
-// }
-
-function nutritionObject() {
-	return {
-		nutrients: {
-			Calories: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Fat: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Trans Fat": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Saturated Fat": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Mono Unsaturated Fat": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Poly Unsaturated Fat": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Cholesterol: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Sodium: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Carbohydrates: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Net Carbohydrates": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Fiber: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Sugar: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Sugar Alcohol": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Alcohol: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Caffeine: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Protein: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-		},
-		vitamins: {
-			Potassium: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Calcium: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Copper: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Zinc: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Phosphorus: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Iron: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Vitamin A": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Vitamin B1": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Vitamin B2": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Vitamin B3": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Vitamin B5": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Vitamin B6": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Vitamin B12": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Vitamin C": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Vitamin D": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Vitamin E": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Vitamin K": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			"Folic Acid": {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Selenium: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Iodine: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Choline: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-			Magnesium: {
-				amount: 0,
-				unit: "",
-				percentOfDailyNeeds: 0,
-			},
-		},
-	};
-}
-
-function handleNutrifacts(data,id) {
-	//const price = data.cost;
-	const nutrients = data.nutrients;
-	const cost = data.cost;
-	const unit = data.unit;
-	const amount = data.amount;
-	const name = data.name;
-	for (let obj of nutrients) {
-		if (obj.title in nutriObject.nutrients) {
-			nutriObject.nutrients[obj.title].amount += obj.amount;
-			nutriObject.nutrients[obj.title].unit = obj.unit;
-			nutriObject.nutrients[obj.title].percentOfDailyNeeds +=
-				obj.percentOfDailyNeeds;
-		} else if (obj.title in nutriObject.vitamins) {
-			nutriObject.vitamins[obj.title].amount += obj.amount;
-			nutriObject.vitamins[obj.title].unit = obj.unit;
-			nutriObject.vitamins[obj.title].percentOfDailyNeeds +=
-				obj.percentOfDailyNeeds;
-		}
+	if(isLowCarb(response.data[0]["Net Carbohydrates"]["amount"])) {
+		const res = `${name}: ${amount} ${unit}`;
+		saveIngInst("ingredients", res);
+		saveNutrients(response.data[0],response.data[1]);
+		let count = lenRecipeArray("ingredients");
+		$("#done-ing").show();
+		$("#recipe_ingr_table tbody").append(`<tr id="${count}"></tr>`);
+		$(`tr#${count}`).append(`<th scope="row">${count}</th>`);
+		$(`tr#${count}`).append(`<td>${name}</td>`);
+		$(`tr#${count}`).append(`<td>${amount}</td>`);
+		$(`tr#${count}`).append(`<td>${unit}</td>`);
+		$(`tr#${count}`).append(`<td><i class="fas fa-trash-alt"></i></td>`);
+		////////////////////////////////////////////// Add nutrient table
+		$("div#ingr").removeClass("justify-content-center");
+		//$("div.tbl-ingredients").addClass("col-xl-6 ");
+		$("div.tbl-nutrients").removeClass("is-hidden");
+		addValuesToNutritionTable();
+	} else {
+		$("#not-keto").modal("show");
 	}
-	console.log(nutriObject);
-	console.log(name);
-	console.log(unit);
-	console.log(amount);
-	console.log(cost);
-
-	$(`#${id}`).modal("hide");
-	return {
-		nutriObject,
-		name,
-		unit,
-		amount,
-		cost
-	};
+	$("#ingredientModal2").modal("toggle");
+	$("#ing-text").val("");
 }
+
+$("form#add_instr").on("submit", function addInstruction(evt) {
+	evt.preventDefault();
+	let step = $("#inst-text").val();
+	saveIngInst("instructions", step);
+	const count  = lenRecipeArray("instructions");
+	$("#done-inst").show();
+	$("#recipe_instr_table tbody").append(`<tr id="${count}-step"></tr>`);
+	$(`tr#${count}-step`).append(`<th scope="row">${count}</th>`);
+	$(`tr#${count}-step`).append(`<td>${step}</td>`);
+	$(`tr#${count}-step`).append(`<td><i class="fas fa-trash-alt"></i></td>`);
+	$("#inst-text").val("");
+});
 
 function isFraction(val) {
 	return val.includes("/") ? true : false;
@@ -609,7 +438,7 @@ function addCheckmark() {
     `;
 }
 
-function calculateGenNutritionPerServing(nutriObj) {
+function calculateGenNutritionPerServing(nutriObj, servings) {
 	const nutrients = Object.keys(nutriObj);
 	for (let obj of nutrients) {
 		if (nutriObj[obj].amount) {
@@ -621,65 +450,31 @@ function calculateGenNutritionPerServing(nutriObj) {
 			);
 		}
 	}
+	return nutriObj;
 }
 
 function addValuesToNutritionTable() {
+	const existing = accessToLocaStorage();
+	const nutrients = existing["nutrients"][existing["nutrients"].length-1];
+	console.log(nutrients);
 	const servingsPerRecipe = $("p.servings_recipe");
 	const caloriesField = $("#Calories td b");
-	servingsPerRecipe.append(servings);
-	caloriesField.append(nutriObject.nutrients.Calories.amount);
+	servingsPerRecipe.append(existing["servings"]);
+	caloriesField.append(nutrients.Calories.amount);
 	const nutrientsTable = $(".performance-facts__table tbody");
-	const vitaminsTable = $(".performance-facts__table--grid tbody");
-	const fats = new Set([
-		"Trans Fat",
-		"Saturated Fat",
-		"Mono Unsaturated Fat",
-		"Poly Unsaturated Fat",
-	]);
-	const carbs = new Set([
-		"Sugar Alcohol",
-		"Sugar",
-		"Fiber",
-		"Net Carbohydrates",
-	]);
-	for (let nutrient in nutriObject.nutrients) {
-		const { amount, unit, percentOfDailyNeeds } = nutriObject.nutrients[
-			nutrient
-		];
-		if (parseInt(amount) && nutrient != "Calories") {
-			if (fats.has(nutrient) || carbs.has(nutrient)) {
-				nutrientsTable.append(
-					`<tr id = ${nutrient}>
-                        <td class = "blank-cell"></td>
-                        <th>${nutrient} ${amount}${unit}</th> 
-                        <td><b>${percentOfDailyNeeds}%</b></td>
-                     </tr>
-                `
-				);
-			} else {
-				nutrientsTable.append(
-					`<tr id = ${nutrient}>
-                        <th colspan = "2"><b>${nutrient}</b> ${amount}${unit}</th> 
-                        <td><b>${percentOfDailyNeeds}%</b></td>
-                    </tr>
-                `
-				);
-			}
-		}
-	}
-	$("tr#Protein").addClass("thick-end");
 
-	for (let vitamin in nutriObject.vitamins) {
-		const { amount, unit, percentOfDailyNeeds } = nutriObject.vitamins[vitamin];
-		if (amount) {
-			vitaminsTable.append(
-				`<tr id=${vitamin}>
-                    <th colspan="2"><b>${vitamin}</b> ${amount}${unit}</th>
-                    <td><b>${percentOfDailyNeeds}%</b></td>
-                </tr>
-                `
+	for (let nutrient in nutrients) {
+		const { amount, unit, percentOfDailyNeeds } = nutrients[nutrient];
+		if (parseInt(amount) && nutrient != "Calories") {
+			nutrientsTable.append(
+				`<tr id = ${nutrient}>
+					<th colspan = "2"><b>${nutrient}</b> ${amount}${unit}</th> 
+					<td><b>${percentOfDailyNeeds}%</b></td>
+				</tr>
+			`
 			);
 		}
+
 	}
 }
 

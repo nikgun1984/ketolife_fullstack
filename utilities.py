@@ -22,6 +22,16 @@ def calculate_net_carbs(recipe):
     #         res = nutrient.total_nutrients - fiber[0]
     return daily_nutrients.total_nutrients
 
+def calculate_per_serving(nutrients,servings):
+
+    for nutrient in nutrients.keys():
+        if nutrients[nutrient]["amount"]:
+            nutrients[nutrient]["amount"] = math.ceil(nutrients[nutrient]["amount"]/servings)
+        if nutrients[nutrient]["percentOfDailyNeeds"]:
+            nutrients[nutrient]["percentOfDailyNeeds"] = math.ceil(nutrients[nutrient]["percentOfDailyNeeds"]/servings)
+    return nutrients
+
+
 def calculate_all_recipes_netcarbs(recipes):
     """Calculate Net Carbs for recipe"""
     # import pdb
@@ -41,8 +51,8 @@ def partition_list(lst,n):
 def split_nutritional_fact_data(nutrients):
     """spoonacular API data to save split/convert nutrients/vitamins"""
     flag = True
-    nutri_data = []
-    vitamins = []
+    nutri_data = dict()
+    vitamins = dict()
     vit_set = set(['Calcium','Magnesium','Potassium','Zinc','Phosphorus'])
     for nutrient in nutrients:
         if nutrient["amount"] > 1:
@@ -50,18 +60,18 @@ def split_nutritional_fact_data(nutrients):
         if nutrient["percentOfDailyNeeds"] > 1:
             nutrient["percentOfDailyNeeds"] = math.ceil(nutrient["percentOfDailyNeeds"])
         if flag and nutrient["title"] not in vit_set and nutrient["title"].find("Vitamin") == -1:
-            nutri_data.append(nutrient)
+            nutri_data[nutrient["title"]] = nutrient
         else:
             flag = False
-            vitamins.append(nutrient)
+            vitamins[nutrient["title"]] = nutrient
     return nutri_data,vitamins
 
 
 def get_nutrients_recipe(recipe,servings):
     """Using database to save split/convert nutrients/vitamins"""
     flag = True
-    nutri_data = []
-    vitamins = []
+    nutri_data = dict()
+    vitamins = dict()
     vit_set = set(['Calcium','Magnesium','Potassium','Zinc','Phosphorus'])
     for el in range(len(recipe.nutrients)):
         name = recipe.nutrients[el].name
@@ -69,10 +79,10 @@ def get_nutrients_recipe(recipe,servings):
         total_nutrients = math.ceil(recipe.assignments[el].total_nutrients/servings)
         unit = recipe.nutrients[el].units.name
         if flag and name not in vit_set and name.find("Vitamin") == -1:
-            nutri_data.append((name,total_daily,total_nutrients,unit))
+            nutri_data[name] = name,total_daily,total_nutrients,unit
         else:
             flag = False
-            vitamins.append((name,total_daily,total_nutrients,unit))
+            vitamins[name] = name,total_daily,total_nutrients,unit
     return nutri_data,vitamins
 
 def save_recipe_to_database(resp):
