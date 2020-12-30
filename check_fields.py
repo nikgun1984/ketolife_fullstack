@@ -6,7 +6,7 @@ def is_empty(val,field):
     if not val:
         raise ValueError(f"{field} cannot be empty...")
 
-def is_emty(username,field):
+def is_empty(username,field):
     """Checking for username validity"""
     if len(username) < 5:
         raise ValueError(f"{field} cannot be less than 5 characters...")

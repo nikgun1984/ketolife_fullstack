@@ -19,7 +19,11 @@
                     {% for j in range(recipes[i] | length ) %}
                     <div class="col-3 border border-dark rounded p-2 m-2">
                         <div class="card">
+                            {% if recipes[i][j].local_image %}
+                            <img class="card-img-top" src="/images/{{recipes[i][j].id}}.jpg" alt="Card image cap">
+                            {% else %}
                             <img class="card-img-top" src="{{recipes[i][j].image}}" alt="Card image cap">
+                            {% endif %}
                             <div class="card-body d-flex flex-column">
                                 <hr>
                                 <h5 class="card-title">{{recipes[i][j].title}}</h5>

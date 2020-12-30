@@ -19,7 +19,11 @@
                     {% for col in range(best_rated[row] | length) %}
                     <div class="col-3 border border-dark rounded p-2 m-2">
                         <div class="card">
+                            {% if best_rated[row][col].local_image %}
+                            <img class="card-img-top" src="/images/{{best_rated[row][col].id}}.jpg" alt="Card image cap">
+                            {% else %}
                             <img class="card-img-top" src="{{best_rated[row][col].image}}" alt="Card image cap">
+                            {% endif %}
                             <div class="card-body d-flex flex-column">
                                 <hr>
                                 <h5 class="card-title">{{col.title}}</h5>

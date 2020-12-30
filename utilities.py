@@ -4,6 +4,7 @@ from models import db, Unit, Recipe, Ingredient, Instruction, Nutrient, RecipeNu
 from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
 import requests
 from flask import g
+import base64
 
 BASE_URL_SP = "https://api.spoonacular.com"
 BASE_URL_ED = "https://api.edamam.com"
@@ -11,31 +12,39 @@ BASE_URL_ED = "https://api.edamam.com"
 
 def calculate_net_carbs(recipe):
     """Calculate Net Carbs"""
-    daily_nutrients = RecipeNutrient.query.filter(RecipeNutrient.nutrient_id == 51,RecipeNutrient.recipe_id == recipe.id).one()
-    # fiber = [nutrient.total_nutrients for nutrient in recipe.assignments if nutrient.nutrient_id == 11]
-    # for nutrient in recipe.assignments:
-    #     if nutrient.nutrient_id == 10:
-    #         res = nutrient.total_nutrients
-    #     elif nutrient.nutrient_id == 9:
-    #         res = nutrient.total_nutrients - fiber[0]
-    #     elif nutrient.nutrient_id == 40:
-    #         res = nutrient.total_nutrients - fiber[0]
+    daily_nutrients = RecipeNutrient.query.filter((RecipeNutrient.nutrient_id == 51) | (RecipeNutrient.nutrient_id == 10) ,RecipeNutrient.recipe_id == recipe.id).first()
     return daily_nutrients.total_nutrients
 
 def calculate_per_serving(nutrients,servings):
 
-    for nutrient in nutrients.keys():
+    for nutrient in nutrients:
         if nutrients[nutrient]["amount"]:
             nutrients[nutrient]["amount"] = math.ceil(nutrients[nutrient]["amount"]/servings)
         if nutrients[nutrient]["percentOfDailyNeeds"]:
             nutrients[nutrient]["percentOfDailyNeeds"] = math.ceil(nutrients[nutrient]["percentOfDailyNeeds"]/servings)
     return nutrients
 
+def add_nutrients(nutrients_total,nutrients):
+
+    for nutrient in nutrients:
+        if nutrient in nutrients_total:
+            nutrients_total[nutrient]["amount"] += nutrients[nutrient]["amount"]
+            nutrients_total[nutrient]["percentOfDailyNeeds"] += nutrients[nutrient]["percentOfDailyNeeds"]
+        else:
+            nutrients_total[nutrient] = nutrients[nutrient]
+
+    return nutrients_total
+
+def subtract_nutrients(nutrients_total,nutrients):
+    for nutrient in nutrients:
+        if nutrient in nutrients_total:
+            nutrients_total[nutrient]["amount"] -= nutrients[nutrient]["amount"]
+            nutrients_total[nutrient]["percentOfDailyNeeds"] -= nutrients[nutrient]["percentOfDailyNeeds"]
+
+    return nutrients_total
+
 
 def calculate_all_recipes_netcarbs(recipes):
-    """Calculate Net Carbs for recipe"""
-    # import pdb
-    # pdb.set_trace()
     return [int(calculate_net_carbs(recipe)/recipe.servings) for recipe in recipes]
 
 def get_carousel_card_info(recipes):
@@ -122,28 +131,16 @@ def save_recipe_to_database(resp):
 
         recipe_obj = Recipe(title=title, image=image, servings=servings,tcook=tcook, source=source, url=url,calories=calories)
 
-        for i, inst in enumerate(instrs):
-            instruction = Instruction(step_no=i+1, step=inst['step'])
-            recipe_obj.instructions.append(instruction)
-
-        for ingr in ingredients:
-            ingredient = Ingredient(name=ingr["text"], image=ingr["image"])
-            recipe_obj.ingredients.append(ingredient)
-
-        for nutrient in nutrients:
-            total_daily_nutrition(nutrient,recipe_obj)
-            if nutrient.get("sub"):
-                for subnutrient in nutrient.get("sub"):
-                    total_daily_nutrition(subnutrient,recipe_obj)
+        add_relationships_to_recipe(recipe_obj,instrs,ingredients,nutrients)
 
         db.session.add(recipe_obj)
         print('Successfully Added!!!')
     db.session.commit()
 
-def total_daily_nutrition(nutrient,recipe_obj):
-    nutri = Nutrient.query.filter_by(name=nutrient["label"]).first()
+def total_daily_nutrition(nutrient,recipe_obj,total,daily,label):
+    nutri = Nutrient.query.filter_by(name=nutrient[label]).first()
     if nutri:
-        association = RecipeNutrient(total_nutrients=int(nutrient.get("total")),total_daily=int(nutrient.get("daily")))
+        association = RecipeNutrient(total_nutrients=int(nutrient.get(total)),total_daily=int(nutrient.get(daily)))
         association.nutrient_id = nutri.id
         recipe_obj.assignments.append(association)
 
@@ -181,8 +178,7 @@ def get_best_rated_recipes():
             best_rated.append(recipe)
             user_ratings.append(rated.rating)
             net_carbs.append(res[0])
-    # import pdb
-    # pdb.set_trace()
+
     return best_rated,user_ratings,net_carbs
 
 def is_empty_query(id):
@@ -211,6 +207,63 @@ def calculate_percentages_stars(id):
         percentages = [math.floor((len(row)/total)*100) for row in all_ratings]
         return percentages
     return None
+
+def add_relationships_to_recipe(recipe_obj,instructions,ingredients,nutrients):
+
+    for i, inst in enumerate(instructions):
+        instruction = Instruction(step_no=i+1, step=inst['step'])
+        recipe_obj.instructions.append(instruction)
+
+    for ingr in ingredients:
+        ingredient = Ingredient(name=ingr.get("text"), image=ingr.get("image"))
+        recipe_obj.ingredients.append(ingredient)
+
+    for nutrient in nutrients:
+        total_daily_nutrition(nutrient,recipe_obj,'total','daily','label')
+        if nutrient.get("sub"):
+            for subnutrient in nutrient.get("sub"):
+                total_daily_nutrition(subnutrient,recipe_obj,'total','daily','label')
+
+
+def handle_adding_recipe_data(data,local_image):
+    title = data['title']
+    servings = data['servings']
+    ingredients = data['ingredients']
+    instructions = data['instructions']
+    nutrients = data['total_nutrients']
+    vitamins = data['total_vitamins']
+    calories = nutrients['Calories']['amount']
+    nutrients.pop('Calories', None)
+    nutrients.update(vitamins)
+    tcook = data['ttime']
+    mealtype = data['mealType']
+    dishtype = data['dishType']
+    # import pdb
+    # pdb.set_trace()
+    # db.session.rollback()
+    new_recipe = Recipe(title=title, servings=servings,tcook=tcook, calories=calories,mealtype=mealtype,dishtype=dishtype,local_image=local_image.read(), user_id=g.user.id)
+
+    for i, inst in enumerate(instructions):
+        instruction = Instruction(step_no=i+1, step=inst)
+        new_recipe.instructions.append(instruction)
+
+    for ingr in ingredients:
+        ingredient = Ingredient(name=ingr)
+        new_recipe.ingredients.append(ingredient)
+
+    for nutrient in nutrients:
+        total_daily_nutrition(nutrients[nutrient],new_recipe,'amount','percentOfDailyNeeds','title')
+
+    db.session.add(new_recipe)
+    db.session.commit()
+
+    return new_recipe
+
+def get_fats_carbs():
+    fats = tuple(["Trans Fat","Saturated Fat","Saturated","Trans","Polyunsaturated","Mono Unsaturated Fat","Poly Unsaturated Fat","Monounsaturated"])
+    carbs = tuple(["Sugar Alcohol","Sugar","Fiber","Net Carbohydrates","Sugars", "Carbs (net)",'Sugar alcohols','Sugars, added'])
+    no_daily = tuple(["Sugar","Sugars",'Sugars, added','Protein','Monounsaturated','Polyunsaturated'])
+    return fats,carbs,no_daily
 
 
 

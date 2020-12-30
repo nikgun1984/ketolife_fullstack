@@ -37,10 +37,6 @@ class Recipe(db.Model):
         db.Float
     )
 
-    cuisine = db.Column(
-        db.Text
-    )
-
     mealtype = db.Column(
         db.Text
     )
@@ -64,6 +60,10 @@ class Recipe(db.Model):
     average_rate = db.Column(
         db.Float
     )
+
+    local_image = db.Column(
+        db.LargeBinary
+    )
     
 
     # through relationship to have an access to all ingredients of the recipe
@@ -84,7 +84,6 @@ class Recipe(db.Model):
             "image": self.image,
             "tprep": self.tprep,
             "tcook": self.tcook,
-            "cuisine": self.cuisine,
             "mealtype": self.mealtype,
             "dishtype": self.dishtype
         }

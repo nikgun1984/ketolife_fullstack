@@ -223,6 +223,12 @@ footer .container-fluid p {
     object-fit: cover;
 }
 
+#blob-image {
+    width: 40%;
+    height: auto;
+    overflow:hidden;
+}
+
 @media(max-width: 768px) {
     .carousel-inner .carousel-item > div {
         display: none;
@@ -286,6 +292,7 @@ i.fas.fa-trash-alt {
 i.fas.fa-trash-alt:hover {
     color: red;
     transform: scale(1.5);
+    cursor: pointer;
 }
 
 .jumbotron {

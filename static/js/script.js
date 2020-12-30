@@ -46,13 +46,13 @@ async function processRecipeForm(evt) {
 			text: ing,
 		},
 	});
+	$("#ingredientModalLabel2").html("Choose your Ingredients");
 	handleResponse(response, "modbod2");
 }
 
 function handleResponse(res,id) {
 	//$('#modbod').empty()
 	$(`#${id}`).append("<div id='options'></div>");
-	$("h5.title-ingr").text("Choose any ingredients");
 	console.log(res.data);
 	console.log(Object.keys(res.data).length === 0);
 
@@ -195,11 +195,6 @@ function deleteIngInst(key,idx) {
 	localStorage.setItem("recipe", JSON.stringify(existing));
 }
 
-function isLowCarb(netCarbs) {
-	let existing = accessToLocaStorage();
-	return (netCarbs/parseInt(existing["servings"])<15)?true:false;
-}
-
 function lenRecipeArray(obj) {
 	let existing = accessToLocaStorage();
 	console.log(existing[obj].length);
@@ -215,7 +210,18 @@ function saveNutrients(nutrients,vitamins) {
 	localStorage.setItem("recipe", JSON.stringify(existing));
 }
 
+function deleteFromIngredientList(id,nutrients,vitamins) {
+	let existing = accessToLocaStorage();
+	existing["ingredients"].splice(id, 1);
+	existing["nutrients"].splice(id, 1);
+	existing["vitamins"].splice(id, 1);
+	saveToLocStorage("total_nutrients", nutrients);
+	saveToLocStorage("total_vitamins", vitamins);
+}
 
+window.onbeforeunload = function (e) {
+	localStorage.clear();
+};
 
 ////////////////////////////////////////////////////////////////////
 
@@ -226,20 +232,28 @@ $(".modal").on("hidden.bs.modal", function () {
 
 $("#search-recipe").on("submit", processRecipe);
 
-$("#recipe_title").on("submit", function (evt) {
+$(document).on("submit", "#recipe_title",function (evt) {
 	$("#yield").show();
 	evt.preventDefault();
 	saveToLocStorage("title", $("#title").val());
 	$("#svg-container-1").append(addCheckmark());
 });
 
-$("#serving-form").on("submit", function (evt) {
+$(document).on("submit", '#serving-form', function (evt) {
 	evt.preventDefault();
 	if ($("#title").val()) {
 		$("#done-yield").show();
-		console.log($("#serving").val());
+		const servingsPerRecipe = $("p.servings_recipe");
 		saveToLocStorage("servings", parseInt($("#serving").val()));
+		const existing = accessToLocaStorage();
+		servingsPerRecipe.html(`Servings Per Recipe ${existing["servings"]}`);
 	}
+});
+
+$("#cooking-time").on("submit", function (evt) {
+	evt.preventDefault();
+	$("#done-ttime").show();
+	saveToLocStorage("ttime", parseInt($("#ctime").val()));
 });
 
 $("#done-ing").on("click", function (evt) {
@@ -256,14 +270,32 @@ $("#done-yield").on("click", function (evt) {
 	$("#done-yield").remove();
 });
 
-
-$(document).on("click", "i.fas.fa-trash-alt", function () {
-	console.log("i am here");
-	$(this).parents("tr").remove();
-	if (!$("#recipe_ingr_table tbody").children().length) {
-		$("#done-ing").remove();
-	}
+$("#done-inst").on("click", function (evt) {
+	evt.preventDefault();
+	$("#cuisine").show();
+	$("#svg-container-4").append(addCheckmark());
+	$("#done-inst").remove();
 });
+
+$("#done-type").on("click", function (evt) {
+	evt.preventDefault();
+	const existing = accessToLocaStorage();
+	const mealType = $("#mealtype").find(":selected").text();
+	const dishType = $("#dishtype").find(":selected").text();
+	saveToLocStorage("mealType", mealType);
+	saveToLocStorage("dishType", dishType);
+	$("#ttime").show();
+	$("#svg-container-5").append(addCheckmark());
+	$("#done-type").remove();
+});
+
+$("#done-ttime").on("click", function (evt) {
+	evt.preventDefault();
+	$("#picture").show();
+	$("#svg-container-6").append(addCheckmark());
+	$("#done-ttime").remove();
+});
+
 
 $(document).ready(function () {
 	$(".show-modal").click(function () {
@@ -280,6 +312,46 @@ $(document).ready(function () {
 			backdrop: "static",
 			keyboard: false,
 		});
+	});
+});
+
+$(document).on("click", "i.fas.fa-trash-alt", async function () {
+	const existing = accessToLocaStorage();
+	const id = parseInt($(this).closest("tr").attr("id"));
+	const response = await axios.get("/api/delete-ingredient", {
+		params: {
+			nutrients: JSON.stringify(existing["nutrients"][id-1]),
+			vitamins: JSON.stringify(existing["vitamins"][id-1]),
+			total_nutrients: JSON.stringify(existing["total_nutrients"]),
+			total_vitamins: JSON.stringify(existing["total_vitamins"])
+		},
+	});
+	deleteFromIngredientList(
+		id-1,
+		response.data[0],
+		response.data[1]
+	);
+	addValuesToNutritionTable();
+	let cache = $(this).closest("tbody");
+	$(this).parents("tr").remove();
+	cache.find("tr").attr("id", function (i) {
+		return i + 1;
+	});
+	if (!$("#recipe_ingr_table tbody").children().length) {
+		$("#done-ing").remove();
+	}
+});
+
+$(document).on("click", "i.fas.fa-trash-alt.instr", function () {
+	const existing = accessToLocaStorage();
+	const id = parseInt($(this).closest("tr").attr("id").replace(/\D/g,''));
+	existing["instructions"].splice(id-1,1);
+	saveToLocStorage("instructions", existing["instructions"]);
+	let cache = $(this).closest("tbody");
+	$(this).parents("tr").remove();
+	cache.find("tr").attr("id", function (i) {
+		const idx =  i + 1;
+		return `${idx}-step`
 	});
 });
 
@@ -304,17 +376,6 @@ async function handleRecipe(data) {
 		const totalNutrients = rec.recipe.totalNutrients;
 		const url = rec.recipe.url;
 		const { instructions, prepMins, cookMins } = await getInstructions(url);
-		console.log(calories);
-		console.log(image);
-		console.log(servings);
-		console.log(ingredients);
-		console.log(label);
-		console.log(totalDaily);
-		console.log(totalNutrients);
-		console.log(url);
-		console.log(instructions);
-		console.log(prepMins);
-		console.log(cookMins);
 	}
 }
 
@@ -355,25 +416,30 @@ async function getInfoIngredient(evt) {
 	let amount = $("#amount").val();
 	const unit = $("select#units").val();
 	const name = $("#ingredientModalLabel2").text();
-
     if (isFraction(amount)) {
 		amount = handleFraction(amount);
 	} else {
 		amount = parseFloat(amount);
 	}
 	const existing = accessToLocaStorage();
+	console.log(existing["nutrients"]);
 	const response = await axios.get(`/api/get-ingredient/${id}/nutrifacts`, {
 		params: {
 			amount,
 			units: unit,
-			serving: existing["servings"]
+			serving: existing["servings"],
+			nutrients: JSON.stringify(existing["total_nutrients"]),
+			vitamins: JSON.stringify(existing["total_vitamins"])
 		}
 	});
-
-	if(isLowCarb(response.data[0]["Net Carbohydrates"]["amount"])) {
+    const netCarbAmount = response.data[2]["Net Carbohydrates"]["amount"];
+	if (netCarbAmount < 15) {
 		const res = `${name}: ${amount} ${unit}`;
 		saveIngInst("ingredients", res);
-		saveNutrients(response.data[0],response.data[1]);
+		saveNutrients(response.data[0], response.data[1], "nutrients", "vitamins");
+		saveToLocStorage("total_nutrients", response.data[2]);
+		saveToLocStorage("total_vitamins", response.data[3]);
+		console.log();
 		let count = lenRecipeArray("ingredients");
 		$("#done-ing").show();
 		$("#recipe_ingr_table tbody").append(`<tr id="${count}"></tr>`);
@@ -403,7 +469,7 @@ $("form#add_instr").on("submit", function addInstruction(evt) {
 	$("#recipe_instr_table tbody").append(`<tr id="${count}-step"></tr>`);
 	$(`tr#${count}-step`).append(`<th scope="row">${count}</th>`);
 	$(`tr#${count}-step`).append(`<td>${step}</td>`);
-	$(`tr#${count}-step`).append(`<td><i class="fas fa-trash-alt"></i></td>`);
+	$(`tr#${count}-step`).append(`<td><i class="fas fa-trash-alt instr"></i></td>`);
 	$("#inst-text").val("");
 });
 
@@ -438,31 +504,16 @@ function addCheckmark() {
     `;
 }
 
-function calculateGenNutritionPerServing(nutriObj, servings) {
-	const nutrients = Object.keys(nutriObj);
-	for (let obj of nutrients) {
-		if (nutriObj[obj].amount) {
-			nutriObj[obj].amount = Math.ceil(nutriObj[obj].amount / servings);
-		}
-		if (nutriObj[obj].percentOfDailyNeeds) {
-			nutriObj[obj].percentOfDailyNeeds = Math.ceil(
-				nutriObj[obj].percentOfDailyNeeds / servings
-			);
-		}
-	}
-	return nutriObj;
-}
-
 function addValuesToNutritionTable() {
 	const existing = accessToLocaStorage();
-	const nutrients = existing["nutrients"][existing["nutrients"].length-1];
+	const nutrients = existing["total_nutrients"];
 	console.log(nutrients);
 	const servingsPerRecipe = $("p.servings_recipe");
-	const caloriesField = $("#Calories td b");
-	servingsPerRecipe.append(existing["servings"]);
-	caloriesField.append(nutrients.Calories.amount);
+	const caloriesField = $("td#cal b");
+	servingsPerRecipe.html(`Servings Per Recipe ${existing["servings"]}`);
+	caloriesField.html(nutrients["Calories"]["amount"]);
 	const nutrientsTable = $(".performance-facts__table tbody");
-
+    nutrientsTable.find("tr:not(:nth-child(1)):not(:nth-child(2))").remove();
 	for (let nutrient in nutrients) {
 		const { amount, unit, percentOfDailyNeeds } = nutrients[nutrient];
 		if (parseInt(amount) && nutrient != "Calories") {
@@ -474,7 +525,6 @@ function addValuesToNutritionTable() {
 			`
 			);
 		}
-
 	}
 }
 
@@ -558,3 +608,23 @@ $("#ratings").on("mouseover", "i", async function (evt) {
 			$(`i#${i}`).removeClass("star-yellow");
 		}
 });
+
+$("#recipe_submit").on("submit", async function(evt){
+	evt.preventDefault();
+	const existing = accessToLocaStorage();
+	delete existing["nutrients"];
+	delete existing["vitamins"];
+	const formData = new FormData();
+	const element = document.getElementById("uploadImage");
+	const file = element.files[0];
+	formData.append("file", file);
+	formData.append("otherData", JSON.stringify(existing));
+
+	const response = await axios
+		.post("/api/submit-recipe", formData)
+		.then(async function (response) {
+			console.log(response.data);
+			localStorage.clear();
+			await axios.get(`/api/get-recipe-database/${response.data}`);
+		});
+})

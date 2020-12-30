@@ -8,17 +8,17 @@ import requests
 
 # # Script to load data
 
-# BASE_URL_SP = "https://api.spoonacular.com"
-# BASE_URL_ED = "https://api.edamam.com"
+BASE_URL_SP = "https://api.spoonacular.com"
+BASE_URL_ED = "https://api.edamam.com"
 
-# import json
+import json
 
-# resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto salmon',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":1})
+resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto salmon',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":1})
 
-# json_file = resp.json()
+json_file = resp.json()
 
-# mapping = json.dumps(json_file)
-# rec = json.loads(mapping) 
+mapping = json.dumps(json_file)
+rec = json.loads(mapping) 
 
 # for rec_num in rec["hits"]:
 #     # Recipe 1

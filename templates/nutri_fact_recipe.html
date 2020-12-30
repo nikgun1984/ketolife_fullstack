@@ -33,25 +33,25 @@
                     </b>
                 </td>
             </tr>
-            {% for nutrient in nutrients%}
-                {% if nutrient[2] !=0 %}
-                {% if nutrient[0] in fats or nutrient[0] in carbs %}
-                <tr id = "{{nutrient[0]}}">
+            {% for nutrient in nutrients %}
+                {% if nutrients[nutrient][2] !=0 %}
+                {% if nutrients[nutrient][0] in fats or nutrients[nutrient][0] in carbs %}
+                <tr id = "{{nutrients[nutrient][0]}}">
                     <td class = "blank-cell"></td>
-                    <th>{{nutrient[0]}} {{nutrient[2]}}{{nutrient[3]}}</th>
-                    {% if nutrient[0] not in no_daily %}
-                    <td><b>{{nutrient[1]}}%</b></td>
+                    <th>{{nutrients[nutrient][0]}} {{nutrients[nutrient][2]}}{{nutrients[nutrient][3]}}</th>
+                    {% if nutrients[nutrient][0] not in no_daily %}
+                    <td><b>{{nutrients[nutrient][1]}}%</b></td>
                     {% endif %}
                 </tr>
                 {% else %}
-                    {% if nutrient == nutrients[-1] %}
-                        <tr id = "{{nutrient[0]}}" class="thick-end">
+                    {% if nutrient == nutrients[nutrient][-1] %}
+                        <tr id = "{{nutrients[nutrient][0]}}" class="thick-end">
                     {% else %}
-                        <tr id = "{{nutrient[0]}}">
+                        <tr id = "{{nutrients[nutrient][0]}}">
                     {% endif %}
-                <tr id = "{{nutrient[0]}}"">
-                    <th colspan = "2"><b>{{nutrient[0]}}</b> {{nutrient[2]}}{{nutrient[3]}}</th> 
-                    <td><b>{{nutrient[1]}}%</b></td>
+                <tr id = "{{nutrients[nutrient][0]}}"">
+                    <th colspan = "2"><b>{{nutrients[nutrient][0]}}</b> {{nutrients[nutrient][2]}}{{nutrients[nutrient][3]}}</th> 
+                    <td><b>{{nutrients[nutrient][1]}}%</b></td>
                 </tr>
                 {% endif %}
                 {% endif %}
@@ -62,10 +62,10 @@
     <table class="performance-facts__table--grid">
         <tbody>
             {% for vitamin in vitamins %}
-            {% if vitamin[2] !=0 %}
-            <tr id="{{vitamin[0]}}">
-                <th colspan="2"><b>{{vitamin[0]}}</b> {{vitamin[2]}}{{vitamin[3]}}</th>
-                <td><b>{{vitamin[1]}}%</b></td>
+            {% if vitamins[vitamin][2] !=0 %}
+            <tr id="{{vitamins[vitamin][0]}}">
+                <th colspan="2"><b>{{vitamins[vitamin][0]}}</b> {{vitamins[vitamin][2]}}{{vitamins[vitamin][3]}}</th>
+                <td><b>{{vitamins[vitamin][1]}}%</b></td>
             </tr>
             {% endif %}
             {% endfor %}
