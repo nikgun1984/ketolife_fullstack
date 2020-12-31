@@ -8,8 +8,8 @@ from flask_wtf.csrf import CSRFProtect
 import json
 from io import BytesIO
 
-from models import db, connect_db, User,Recipe, Product, Rating
-from forms import NewRecipeForm, TitleRecipeForm, LoginForm, UserAddForm
+from models import db, connect_db, User,Recipe, Product, Rating, Comment
+from forms import NewRecipeForm, TitleRecipeForm, LoginForm, UserAddForm, CommentsForm
 from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE, key_gen
 import utilities
 
@@ -220,12 +220,20 @@ def delete_ingredient_from_recipe():
     total_vitamins = utilities.subtract_nutrients(total_vitamins,vitamins)
     return jsonify(total_nutrients, total_vitamins)
     
-@app.route('/api/get-recipe-database/<int:id>')
+@app.route('/api/get-recipe-database/<int:id>', methods=['GET','POST'])
 def get_recipe_database(id):
     recipe = Recipe.query.get(id)
+    comment_form = CommentsForm()
     if not recipe:
         flash(f"Recipe Not Found...")
         return redirect('/')
+    if comment_form.validate_on_submit() and CURR_USER_KEY in session:
+        comment = Comment(comment=comment_form.comment.data,user_id=g.user.id,recipe_id=id)
+        db.session.add(comment)
+        db.session.commit()
+        return redirect(f'/api/get-recipe-database/{id}')
+    comments = recipe.comments
+    users,times = utilities.get_users(recipe)
     avg_rate = utilities.calculate_average_rating(id,recipe.average_rate)
     user_rating = utilities.is_empty_query(id)
     percentages = utilities.calculate_percentages_stars(id)
@@ -234,8 +242,9 @@ def get_recipe_database(id):
     carbs = tuple(["Sugar Alcohol","Sugar","Fiber","Net Carbohydrates","Sugars", "Carbs (net)",'Sugar alcohols','Sugars, added'])
     no_daily = tuple(["Sugar","Sugars",'Sugars, added','Protein','Monounsaturated','Polyunsaturated'])
     calories = math.ceil(recipe.calories/recipe.servings)
-
-    return render_template("recipe-check.html", recipe=recipe, nutrients=nutrients, vitamins=vitamins,fats=fats,carbs=carbs,calories=calories,no_daily=no_daily, user_rating=user_rating, percentages=percentages)
+    # import pdb
+    # pdb.set_trace()
+    return render_template("recipe-check.html", recipe=recipe, nutrients=nutrients, vitamins=vitamins,fats=fats,carbs=carbs,calories=calories,no_daily=no_daily, user_rating=user_rating, percentages=percentages,comment_form=comment_form,comments=comments, users=users,times=times)
 
 @app.route('/api/get-recipe')
 def get_recipe():
@@ -259,6 +268,16 @@ def get_best_rated():
     n_carbs = utilities.partition_list(net_carbs,3)
     size = len(best_rated)
     return render_template('best-rated-recipes.html',best_rated=best, user_ratings=u_rated,size=size,net_carbs=n_carbs)
+
+@app.route('/api/my-recipes')
+@login_required
+def get_my_recipes():
+    """Get all best rated recipes """
+    my_recipes, net_carbs = utilities.get_my_recipes()
+    my_recipes = utilities.partition_list(my_recipes,3)
+    net_carbs = utilities.partition_list(net_carbs,3)
+    size = len(my_recipes)
+    return render_template('my-recipes.html',recipes=my_recipes, net_carbs=net_carbs,size=size)
 
 #### Need to work on this one just yet
 @app.route('/api/get-instructions')
@@ -290,15 +309,17 @@ def get_create_recipe_form():
         title = form.title.data
     return render_template('create-recipe.html',form=form)
 
-@app.route('/api/submit-recipe', methods=["POST"])
+@app.route('/api/create-recipe', methods=["POST"])
 @login_required
 def submit_recipe():
     """Create Recipe and Add it to database"""
+    print('in the submit_recipe')
     file = request.files.get('file')
     other_data = json.loads(request.form.get('otherData'))
     new_recipe = utilities.handle_adding_recipe_data(other_data,file)
-    
-    return jsonify(new_recipe.id)
+    # import pdb
+    # pdb.set_trace()
+    return jsonify(f'/api/get-recipe-database/{new_recipe.id}')
 
 @app.route('/images/<int:recipe_id>.png')
 def get_image(recipe_id):

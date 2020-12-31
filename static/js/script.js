@@ -609,7 +609,7 @@ $("#ratings").on("mouseover", "i", async function (evt) {
 		}
 });
 
-$("#recipe_submit").on("submit", async function(evt){
+$("#recipe_submit").on("submit", async function (evt) {
 	evt.preventDefault();
 	const existing = accessToLocaStorage();
 	delete existing["nutrients"];
@@ -620,11 +620,8 @@ $("#recipe_submit").on("submit", async function(evt){
 	formData.append("file", file);
 	formData.append("otherData", JSON.stringify(existing));
 
-	const response = await axios
-		.post("/api/submit-recipe", formData)
-		.then(async function (response) {
-			console.log(response.data);
-			localStorage.clear();
-			await axios.get(`/api/get-recipe-database/${response.data}`);
-		});
-})
+	const resp = await axios.post("/api/create-recipe", formData);
+	window.location.href = resp.data;
+});
+
+// $("#comments-form").on("submit", async function) 

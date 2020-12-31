@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title%} Your Best Rated Recipes {% endblock %}
+{% block title%} My Best Rated Recipes {% endblock %}
 
 {% block content %}
     <section class="module parallax parallax-1" data-type="background" data-speed="10">
@@ -17,27 +17,27 @@
                 {% for row in range(best_rated | length) %}
                 <div class="row justify-content-center">
                     {% for col in range(best_rated[row] | length) %}
-                    <div class="col-3 border border-dark rounded p-2 m-2">
+                    <div class="col-lg-3 col-m-1 border border-dark rounded p-2 m-2">
                         <div class="card">
                             {% if best_rated[row][col].local_image %}
-                            <img class="card-img-top" src="/images/{{best_rated[row][col].id}}.jpg" alt="Card image cap">
+                            <img class="card-img-top" src="/images/{{best_rated[row][col].id}}.png" alt="Card image cap">
                             {% else %}
                             <img class="card-img-top" src="{{best_rated[row][col].image}}" alt="Card image cap">
                             {% endif %}
                             <div class="card-body d-flex flex-column">
                                 <hr>
-                                <h5 class="card-title">{{col.title}}</h5>
+                                <h5 class="card-title m-0">{{best_rated[row][col].title}}</h5>
                                 <hr>
-                                <h6 class="card-text">Total servings: {{best_rated[row][col].servings}}</h6>
-                                <h6 class="card-text">Net Carbs per Servings: {{net_carbs[row][col]}}g</h6>
+                                <h6 class="card-text m-0">Total servings: {{best_rated[row][col].servings}}</h6>
+                                <h6 class="card-text m-0">Net Carbs per Servings: {{net_carbs[row][col]}}g</h6>
                                 <h6 class="card-text">
                                     Your Rating: 
                                     {% for star in range(user_ratings[row][col])%}
                                         <i class="far fa-star text-center star-yellow"></i>
                                     {% endfor %}
                                 </h6>
-                                <form action="/api/get-recipe-database/{{best_rated[row][col].id}}">
-                                    <button class="btn btn-dark btn-outline mt-auto">Check it Out</button>
+                                <form action="/api/get-recipe-database/{{best_rated[row][col].id}}" class="mt-auto">
+                                    <button class="btn btn-dark btn-outline">Check it Out</button>
                                 </form>
                             </div>
                         </div>

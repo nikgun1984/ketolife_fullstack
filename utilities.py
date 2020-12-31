@@ -51,7 +51,7 @@ def get_carousel_card_info(recipes):
     """Get all information from carousel"""
     copy_recipe = recipes[:]
     netcarbs = calculate_all_recipes_netcarbs(recipes)
-    return [(copy_recipe[i].title,copy_recipe[i].image,copy_recipe[i].servings,netcarbs[i],copy_recipe[i].id) for i in range(len(netcarbs))]
+    return [(copy_recipe[i].title,copy_recipe[i].image,copy_recipe[i].servings,netcarbs[i],copy_recipe[i].id,copy_recipe[i].local_image) for i in range(len(netcarbs))]
 
 def partition_list(lst,n):
     """Divide ingredients into grid for displayong on front page"""
@@ -181,6 +181,15 @@ def get_best_rated_recipes():
 
     return best_rated,user_ratings,net_carbs
 
+def get_my_recipes():
+    user = User.query.get(g.user.id)
+    net_carbs = []
+    for recipe in user.recipes:
+        res = calculate_all_recipes_netcarbs([recipe])
+        net_carbs.append(res[0])
+
+    return user.recipes,net_carbs
+
 def is_empty_query(id):
     rated_query = Rating.query.filter((Rating.recipe_id == id) & (Rating.user_id==g.user.id)).first()
     return rated_query.rating if rated_query else 0
@@ -264,6 +273,17 @@ def get_fats_carbs():
     carbs = tuple(["Sugar Alcohol","Sugar","Fiber","Net Carbohydrates","Sugars", "Carbs (net)",'Sugar alcohols','Sugars, added'])
     no_daily = tuple(["Sugar","Sugars",'Sugars, added','Protein','Monounsaturated','Polyunsaturated'])
     return fats,carbs,no_daily
+
+def get_users(recipe):
+    all_comments = recipe.comments
+    users = []
+    times = []
+    for comment in all_comments:
+        user = User.query.get(comment.user_id)
+        users.append(user)
+        times.append(comment.created_at)
+    
+    return users,times
 
 
 

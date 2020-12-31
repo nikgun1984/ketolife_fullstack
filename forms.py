@@ -60,3 +60,8 @@ class UserAddForm(FlaskForm):
 class SearchIngredientForm(FlaskForm):
     """Ingredient Search Form"""
     item = StringField('Ingredient', render_kw={"placeholder": "Search for your ingredient"}, validators=[DataRequired()])
+
+
+class CommentsForm(FlaskForm):
+    """Comments form"""
+    comment = TextAreaField('Leave a Comment if You Like', render_kw={"rows":"3","id":"comment"},validators=[InputRequired("You cannot submit empty form")])

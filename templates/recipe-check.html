@@ -12,93 +12,123 @@
 
     <section class="module content" id="recipe-{{recipe.id}}">
         <div class="parallax-container-fluid text-left">
-                
-                    <div class="container">
-                    <div class="row justify-items-left">
-                        <div class="col-10 ">
-                            <h2>{{recipe.title}}</h2>
-                            {% if recipe.local_image %}
-                            <img class="card-img-top" src="/images/{{recipe.id}}.png" alt="Card image cap" id="blob-image">
-                            {% else %}
-                            <img class="card-img-top w-50" src="{{recipe.image}}" alt="Card image cap">
-                            {% endif %}
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-3" id="ratings">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }} id="token"/>
-                                        <input type="hidden" name="recipe-content-id" id="recipe-content-id" value="{{recipe.id}}"/>
-                                        Ratings
-                                        {% if recipe.average_rate %}
-                                            {% include 'all-ratings.html' %}
-                                        {% else %}
-                                            <i class="fas fa-star text-warning"></i><span id="avg-rating">--</span>
-                                        {% endif %}
-                                        <br>
-                                        {% if g.user %}
-                                        Rate this
-                                            {% if user_rating %}
-                                                {% for star in range(user_rating)%}
-                                                    <i class="far fa-star text-center star-red" data-id="{{star+1}}" id="{{star+1}}"></i>
-                                                {% endfor %}
-                                            {% endif %}
-                                            {% for star in range(user_rating+1,6)%}
-                                                <i class="far fa-star text-center" data-id="{{star}}" id="{{star}}"></i>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </div>
-                                    <div class="col-3 text-right">
-                                        Comments: 0
-                                    </div>
+            <div class="container">
+                <div class="row justify-items-left">
+                    <div class="col-lg-10 col-md-1">
+                        <h1 class="ml-5 pb-4">{{recipe.title}}</h2>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-5 mb-2">
+                                    {% if recipe.local_image %}
+                                        <img class="card-image-recipe border border-dark rounded" src="/images/{{recipe.id}}.png" alt="Card image cap">
+                                    {% else %}
+                                        <img class="card-image-recipe border border-dark rounded" src="{{recipe.image}}" alt="Card image cap">
+                                    {% endif %}
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-3" id="ratings">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }} id="token"/>
+                                    <input type="hidden" name="recipe-content-id" id="recipe-content-id" value="{{recipe.id}}"/>
+                                    Ratings
+                                    {% if recipe.average_rate %}
+                                        {% include 'all-ratings.html' %}
+                                    {% else %}
+                                        <i class="fas fa-star text-warning"></i><span id="avg-rating">--</span>
+                                    {% endif %}
+                                    <br>
+                                    {% if g.user %}
+                                    Rate this
+                                        {% if user_rating %}
+                                            {% for star in range(user_rating)%}
+                                                <i class="far fa-star text-center star-red" data-id="{{star+1}}" id="{{star+1}}"></i>
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% for star in range(user_rating+1,6)%}
+                                            <i class="far fa-star text-center" data-id="{{star}}" id="{{star}}"></i>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <div class="col-2 text-right">
+                                    Comments: 0
+                                </div>
+                            </div>
+                        </div>
 
-                            <hr>
-                            <p>Servings: {{recipe.servings}}</p>
-                            <p>Total Time: {{recipe.tcook}} minutes</p>
-                            {% if recipe.cuisine %}
-                                <p>Cuisine: {{recipe.cuisine}}</p>
-                            {% endif%}
-                            {% if recipe.mealtype %}
-                                <p>Meal Type: {{recipe.mealtype}}</p>
-                            {% endif%}
-                            {% if recipe.dishtype %}
-                                <p>Dish Type: {{recipe.dishtype}}</p>
-                            {% endif%}
-                            <hr>
-                            <h4>Ingredients</h4>
-                            <ul class="circles">
-                                {% for ingredient in recipe.ingredients %}
-                                    <li class="m-1">{{ingredient.name}}</li>
-                                {% endfor%}
-                            </ul>
-                            <hr>
-                            <h4>Directions</h4>
-                            <ol class="text-left">
-                                {% for instruction in recipe.instructions %}
-                                    <li class="m-1">  {{instruction.step}}</li>
-                                    <hr>
-                                {% endfor%}
-                            </ol>
+                        <hr>
+                        <p>Servings: {{recipe.servings}}</p>
+                        <p>Total Time: {{recipe.tcook}} minutes</p>
+                        {% if recipe.cuisine %}
+                            <p>Cuisine: {{recipe.cuisine}}</p>
+                        {% endif%}
+                        {% if recipe.mealtype %}
+                            <p>Meal Type: {{recipe.mealtype}}</p>
+                        {% endif%}
+                        {% if recipe.dishtype %}
+                            <p>Dish Type: {{recipe.dishtype}}</p>
+                        {% endif%}
+                        <hr>
+                        <h4>Ingredients</h4>
+                        <ul class="circles">
+                            {% for ingredient in recipe.ingredients %}
+                                <li class="m-1">{{ingredient.name}}</li>
+                            {% endfor%}
+                        </ul>
+                        <hr>
+                        <h4>Directions</h4>
+                        <ol class="text-left">
+                            {% for instruction in recipe.instructions %}
+                                <li class="m-1">  {{instruction.step}}</li>
+                                <hr>
+                            {% endfor%}
+                        </ol>
+                        {%if recipe.url%}
                             <p>Link to the recipe: <a href="{{recipe.url}}">{{recipe.url}}</a></p>
                             <hr>
-                            {% if g.user %}
-                                <form action="">
-                                    <div class="form-group w-75">
-                                        <label for="comment"><strong>Leave a comment if you like it:</strong> </label>
-                                        <textarea class="form-control" id="comment" rows="3"></textarea>
-                                    </div>
-                                    <button class="btn btn-outline-dark">Submit</button>
-                                </form>
-                            {% endif %}
-                        </div>
-                        <div class="col-2 text-center">
-                            {% include 'nutri_fact_recipe.html' %}
-                        </div>
+                        {% endif %}
+                        {% if g.user %}
+                            <form action="" id="comments-form" method="POST" enctype="multipart/form-data">
+                                {{comment_form.hidden_tag()}}
+                                <div class="form-group w-75">
+                                    {{ comment_form.comment.label}}
+                                    {{ comment_form.comment(class_="form-control border rounded")}}
+                                    {% for error in comment_form.errors %}
+                                        <p><em class="text-danger"><small>{{ error }}</small></em></p>
+                                    {% endfor %}
+                                </div>
+                                <button class="btn btn-outline-dark">Submit</button>
+                            </form>
+                        {% endif %}
                     </div>
-
+                    <div class="col-1 text-center">
+                        {% include 'nutri_fact_recipe.html' %}
                     </div>
                 </div>
-            <hr>
-        </div>
-    </section>
+                <div class="row mt-5" id="all-comments">
+                    <div class="col-12">
+                        <hr>
+                        {% for i in range(comments | length) %}
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-1 text-right">
+                                    <img src="/static/images/{{users[i].image_url}}" alt="" class="w-75 text-right border rounded">
+                                </div>
+                                <div class="col-4 text-left">
+                                    <p><small><strong>By {{users[i].username}}</strong></small></p>
+                                    <p><small><strong>Created at: {{times[i].strftime("%a %b %-d %Y, %-I:%M %p")}}</strong></small></p>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-5 ml-5"><p class="">{{comments[i].comment}}</p></div>
+                            </div>
+                        </div>
+                            <hr>
+                            {% endfor %}
+                    </div>
+                </div>
+            </div>
+         </div>
+        <hr>
+    </div>
+</section>
 {% endblock %}

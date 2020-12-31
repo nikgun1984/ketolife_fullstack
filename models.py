@@ -1,5 +1,6 @@
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
+import datetime
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -374,7 +375,11 @@ class Comment(db.Model):
         db.Integer, 
         db.ForeignKey('recipes.id'), nullable=True)
 
-    recipes = db.relationship('Recipe', backref="comment")
+    created_at = db.Column(
+        db.DateTime,
+        default = datetime.datetime.utcnow
+    )
+
     users = db.relationship('User', backref="comment")
 
 

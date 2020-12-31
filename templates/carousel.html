@@ -14,7 +14,11 @@
                         <div class="carousel-item {{state}}">
                             <div class="col-md-4">
                                 <div class="card mb-2 text-center">
+                                    {% if card[5] %}
+                                    <img class="card-img-top p-3" src="/images/{{card[4]}}.png">
+                                    {% else %}
                                     <img class="card-img-top p-3" src="{{card[1]}}">
+                                    {% endif %}
                                     <div class="card h-100 card-body">
                                         <h5 class="card-title mt-2">
                                             {{card[0]}} 
@@ -29,8 +33,8 @@
                                                 <h6><b>Net Carbs Per Serving: {{card[3]}}g</b></h6>
                                             </div>
                                         </div>
-                                        <form action="/api/get-recipe-database/{{card[4]}}">
-                                            <button class="btn btn-dark btn-outline mt-auto">Check it Out</button>
+                                        <form action="/api/get-recipe-database/{{card[4]}}" class="mt-auto">
+                                            <button class="btn btn-dark btn-outline">Check it Out</button>
                                         </form>
                                     </div>
                                 </div>
