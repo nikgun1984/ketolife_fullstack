@@ -9,7 +9,7 @@ import json
 from io import BytesIO
 
 from models import db, connect_db, User,Recipe, Product, Rating, Comment
-from forms import NewRecipeForm, TitleRecipeForm, LoginForm, UserAddForm, CommentsForm
+from forms import NewRecipeForm, TitleRecipeForm, LoginForm, UserAddForm, CommentsForm, EditProfileForm
 from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE, key_gen
 import utilities
 
@@ -133,6 +133,23 @@ def logout():
     flash(f"See you later, {name}!!!")
     return redirect('/')
 
+@app.route('/edit_profile', methods=['GET','POST'])
+@login_required
+def edit_profile():
+    """Edit User's Profile"""
+    form = EditProfileForm(obj=g.user)
+    if form.validate_on_submit():
+        user = User.authenticate(form.email.data,form.password.data)
+        if user:
+            user.username = form.username.data
+            user.email = form.email.data
+            db.session.commit()
+            flash('User Profile was successfully edited')
+            return redirect('/')
+        flash("Invalid password")
+        return redirect('/')
+    return render_template('edit-profile.html', form=form)
+
 ######################################################
 
 @app.route("/")
@@ -152,19 +169,25 @@ def homepage():
 @app.route("/api/get-ingredient")
 def get_ingredient_id():
     """Need to get ingredient ID in order to access all attributes"""
-
+    # import pdb
+    # pdb.set_trace()
     query = request.args["text"]
     resp = requests.get(f"{BASE_URL_SP}/food/ingredients/search?", params={"apiKey":APP_KEY,"query":query})
     res = resp.json()
     lst = {res['results'][i]["name"]:res['results'][i]["id"] for i in range(len(res['results']))}
+    # import pdb
+    # pdb.set_trace()
     return jsonify(lst)
 
 @app.route("/api/get-ingredient/<id>")
 def get_ingredient_info(id):
     """Resp: name, units, category"""
-
+    # import pdb
+    # pdb.set_trace()
     resp = requests.get(f'{BASE_URL_SP}/food/ingredients/{id}/information', params={"apiKey":APP_KEY})
     res = resp.json()
+    # import pdb
+    # pdb.set_trace()
     lst = [unit for unit in res['possibleUnits']]
     category = res['categoryPath']
     return jsonify(units=lst,img=res['image'],name=res['name'],id=id,category=category)
@@ -238,12 +261,14 @@ def get_recipe_database(id):
     user_rating = utilities.is_empty_query(id)
     percentages = utilities.calculate_percentages_stars(id)
     nutrients,vitamins = utilities.get_nutrients_recipe(recipe,recipe.servings)
-    fats = tuple(["Trans Fat","Saturated Fat","Saturated","Trans","Polyunsaturated","Mono Unsaturated Fat","Poly Unsaturated Fat","Monounsaturated"])
-    carbs = tuple(["Sugar Alcohol","Sugar","Fiber","Net Carbohydrates","Sugars", "Carbs (net)",'Sugar alcohols','Sugars, added'])
-    no_daily = tuple(["Sugar","Sugars",'Sugars, added','Protein','Monounsaturated','Polyunsaturated'])
-    calories = math.ceil(recipe.calories/recipe.servings)
+    nutrients = utilities.sort_nutrients(nutrients)
+    fats,carbs,no_daily = utilities.get_fats_carbs()
     # import pdb
     # pdb.set_trace()
+    # fats = tuple(["Trans Fat","Saturated Fat","Saturated","Trans","Polyunsaturated","Mono Unsaturated Fat","Poly Unsaturated Fat","Monounsaturated"])
+    # carbs = tuple(["Sugar Alcohol","Sugar","Fiber","Net Carbohydrates","Sugars", "Carbs (net)",'Sugar alcohols','Sugars, added'])
+    # no_daily = tuple(["Sugar","Sugars",'Sugars, added','Protein','Monounsaturated','Polyunsaturated'])
+    calories = math.ceil(recipe.calories/recipe.servings)
     return render_template("recipe-check.html", recipe=recipe, nutrients=nutrients, vitamins=vitamins,fats=fats,carbs=carbs,calories=calories,no_daily=no_daily, user_rating=user_rating, percentages=percentages,comment_form=comment_form,comments=comments, users=users,times=times)
 
 @app.route('/api/get-recipe')
@@ -326,3 +351,18 @@ def get_image(recipe_id):
     recipe = Recipe.query.get(recipe_id)
     image_binary = recipe.local_image
     return send_file(BytesIO(image_binary),as_attachment=False, attachment_filename=f'{recipe_id}.png')
+
+@app.route('/images/user/<int:user_id>.png')
+def get_user_image(user_id):
+    user = User.query.get(user_id)
+    image_binary = user.uploaded_image
+    return send_file(BytesIO(image_binary),as_attachment=False, attachment_filename=f'{user_id}.png')
+
+@app.route('/upload-profile-image', methods=['POST'])
+@login_required
+def upload_image():
+    file = request.files.get('file')
+    user = User.query.get(g.user.id)
+    user.uploaded_image = file.read()
+    db.session.commit()
+    return jsonify(f'/edit_profile')

@@ -47,7 +47,11 @@
                                 <div class="row mb-1 align-items-center">
                                     <div class="col-lg-4">
                                         <p class="text-center">
-                                            <span><img src="/static/images/{{g.user.image_url}}" alt="" style="width:90px;" class="p-1 border border-dark rounded"></span>
+                                            {% if g.user.uploaded_image %}
+                                                <span><img src="/images/user/{{g.user.id}}.png" alt="" style="width:90px;" class="p-1 border border-dark rounded"></span>
+                                            {% else %}
+                                                <span><img src="/static/images/{{g.user.image_url}}" alt="" style="width:90px;" class="p-1 border border-dark rounded"></span>
+                                            {% endif %}
                                         </p>
                                     </div>
                                     <div class="col-lg-8">
@@ -69,7 +73,7 @@
                                         <p>
                                             <a href="/api/my-recipes" class="btn btn-outline-primary btn-block"><strong><i class="fas fa-utensils"></i> My Recipes <i class="fas fa-utensils"></i></strong></a>
                                             <a href="/api/your-best-recipes" class="btn btn-outline-primary btn-block"><strong><i class="far fa-star"></i> My Best Rated Recipes <i class="far fa-star"></i></strong></a>
-                                            <a href="#" class="btn btn-outline-danger btn-block"><strong>Edit Profile</strong></a>
+                                            <a href="/edit_profile" class="btn btn-outline-danger btn-block"><strong>Edit Profile</strong></a>
                                         </p>
                                     </div>
                                 </div>

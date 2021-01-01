@@ -191,8 +191,11 @@ def get_my_recipes():
     return user.recipes,net_carbs
 
 def is_empty_query(id):
-    rated_query = Rating.query.filter((Rating.recipe_id == id) & (Rating.user_id==g.user.id)).first()
-    return rated_query.rating if rated_query else 0
+    if g.user:
+        rated_query = Rating.query.filter((Rating.recipe_id == id) & (Rating.user_id==g.user.id)).first()
+        return rated_query.rating if rated_query else 0
+    else:
+        return 0
 
 
 def calculate_percentages_stars(id):
@@ -269,10 +272,30 @@ def handle_adding_recipe_data(data,local_image):
     return new_recipe
 
 def get_fats_carbs():
-    fats = tuple(["Trans Fat","Saturated Fat","Saturated","Trans","Polyunsaturated","Mono Unsaturated Fat","Poly Unsaturated Fat","Monounsaturated"])
-    carbs = tuple(["Sugar Alcohol","Sugar","Fiber","Net Carbohydrates","Sugars", "Carbs (net)",'Sugar alcohols','Sugars, added'])
+    fats = tuple(["Trans Fat","Trans","Saturated Fat","Saturated","Polyunsaturated","Poly Unsaturated Fat","Mono Unsaturated Fat","Monounsaturated"])
+    carbs = tuple(["Net Carbohydrates","Carbs (net)","Fiber","Sugar Alcohol",'Sugar alcohols',"Sugar","Sugars",'Sugars, added'])
     no_daily = tuple(["Sugar","Sugars",'Sugars, added','Protein','Monounsaturated','Polyunsaturated'])
     return fats,carbs,no_daily
+
+def sort_nutrients(nutrients):
+    fats,carbs,no_daily = get_fats_carbs()
+    sorted_nutrients = {}
+    if nutrients.get("Carbs"):
+        sorted_nutrients["Carbs"] = nutrients.pop("Carbs")
+    if nutrients.get("Carbohydrates"):
+        sorted_nutrients["Carbohydrates"] = nutrients.pop("Carbohydrates")
+    for carb in carbs:
+        if carb in nutrients:
+            sorted_nutrients[carb] = nutrients.pop(carb)
+    if nutrients.get("Fat"):
+        sorted_nutrients["Fat"] = nutrients.pop("Fat")     
+    for fat in fats:
+        if fat in nutrients:
+            sorted_nutrients[fat] = nutrients.pop(fat)
+    
+    sorted_nutrients.update(nutrients)
+    return sorted_nutrients
+
 
 def get_users(recipe):
     all_comments = recipe.comments

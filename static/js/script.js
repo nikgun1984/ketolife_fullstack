@@ -30,17 +30,20 @@ async function getIngredientUnitsForRecipe(evt) {
 async function processForm(evt) {
 	evt.preventDefault();
 	const ing = $("#text").val();
+	console.log(ing)
 	const response = await axios.get("/api/get-ingredient", {
 		params: {
 			text: ing,
 		},
 	});
+	$("#ingredientModalLabel").html("Choose your Ingredients");
 	handleResponse(response,'modbod');
 }
 
 async function processRecipeForm(evt) {
 	evt.preventDefault();
 	const ing = $("#ing-text").val();
+	console.log(ing);
 	const response = await axios.get("/api/get-ingredient", {
 		params: {
 			text: ing,
@@ -622,6 +625,18 @@ $("#recipe_submit").on("submit", async function (evt) {
 
 	const resp = await axios.post("/api/create-recipe", formData);
 	window.location.href = resp.data;
+});
+
+$(document).ready(function() {
+	$('#uploadProfileImage').change(async function(){
+		const fileData = document.getElementById("uploadProfileImage");
+		const file = fileData.files[0];
+        let formData = new FormData();                  
+		formData.append('file', file);
+		
+		const resp = await axios.post("/upload-profile-image", formData);
+		window.location.href = resp.data;
+	})
 });
 
 // $("#comments-form").on("submit", async function) 

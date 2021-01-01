@@ -76,7 +76,8 @@ section.module p:last-child {
 }
 
 section.module.content {
-    padding: 40px 0;
+    padding: 40px;
+    padding-bottom: 3%;
     background-color: rgba(207, 216, 220, 0.5);
 }
 
@@ -138,7 +139,15 @@ section.module.parallax-4 {
     background-blend-mode: screen;
 }
 
-
+section.module.parallax-5 {
+    background-image: url("/static/images/edit-profile.jpg");
+    background-position: 100% 40%;
+    background-repeat: repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: rgba(0, 123, 255, 0.4);
+    background-blend-mode: screen;
+}
 
 @media all and(min-width: 600px) {
     section.module h2 {
@@ -551,6 +560,66 @@ ul.circles {
 
 .far.fa-star:hover {
     cursor: pointer;
+}
+
+.profile-picture {
+  position: relative;
+  width: 40%;
+  float:right;
+}
+
+.profile-image {
+  width: 100%;
+  height: auto;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .3s ease;
+  background-color: rgba(255, 0, 0, 0.2);;
+}
+
+.profile-picture:hover .overlay {
+  opacity: 1;
+}
+
+div.icon {
+  color: white;
+  font-size: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.fa-plus-square:hover {
+  color: #eee;
+}
+
+@media only screen and (max-width:990px) and (min-width:320px) {
+    .profile-picture {
+        position: relative;
+        width: 40%;
+        float: none;
+        text-align: center;
+        display:block; margin:0 auto;
+    }
+
+    /* .centered {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: left;
+    } */
 }
 
 

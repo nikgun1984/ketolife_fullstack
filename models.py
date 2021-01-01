@@ -274,6 +274,10 @@ class User(db.Model):
         default="/static/images/default-pic.png"
     )
 
+    uploaded_image = db.Column(
+        db.LargeBinary
+    )
+
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 

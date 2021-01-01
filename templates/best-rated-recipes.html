@@ -17,7 +17,7 @@
                 {% for row in range(best_rated | length) %}
                 <div class="row justify-content-center">
                     {% for col in range(best_rated[row] | length) %}
-                    <div class="col-lg-3 col-m-1 border border-dark rounded p-2 m-2">
+                    <div class="col-lg-3 col-m-1 border border border-dark rounded p-2 m-2">
                         <div class="card">
                             {% if best_rated[row][col].local_image %}
                             <img class="card-img-top" src="/images/{{best_rated[row][col].id}}.png" alt="Card image cap">

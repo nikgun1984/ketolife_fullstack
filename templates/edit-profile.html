@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title%} My Recipes {% endblock %}
+
+{% block content %}
+    <section class="module parallax parallax-5" data-type="background" data-speed="10">
+        <div class="parallax-container-fluid">
+            <h1 class="m-0">Edit Profile</h1>
+        </div>
+    </section>
+
+    <section class="module content">
+        <div class="parallax-container-fluid">
+            <h2 class="text-center mt-1">My User Information</h2>
+            <div class="container text-center">
+                <div class="row">
+                    <div class="container">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-lg-4 col-m-2">
+                                <!-- <img src="/static/images/{{g.user.image_url}}" class="border border-dark rounded" alt="" style="width:40%;"> -->
+                                <label class="profile-picture" for="uploadProfileImage">
+                                    {% if g.user.uploaded_image %}
+                                        <img class="profile-image border border-dark rounded" src="/images/user/{{g.user.id}}.png" alt="Card image cap">
+                                    {% else %}
+                                        <img src="/static/images/{{g.user.image_url}}" class="profile-image border border-dark rounded" alt="">
+                                    {% endif %}
+                                    <div class="overlay">
+                                        <div class="icon" title="User Profile" id="submit-image-profile">
+                                            <i class="far fa-plus-square"></i>
+                                        </div>
+                                        <input type="file" id="uploadProfileImage" name="uploadProfileImage" accept="image/*" hidden>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-lg-6 col-md-6 text-center ml-lg-5 ml-md-0 mt-4">
+                                <form action="" method="POST" enctype="multipart/form-data">
+                                    {{form.hidden_tag()}}
+                                    {% for field in form if field.widget.input_type != 'hidden'%}
+                                    <div class="form-group">
+                                        <div class="col-12">
+                                            {{field}}
+                                        </div>
+                                        {% for error in field.errors %}
+                                            <p><em class="text-danger"><small>{{ error }}</small></em></p>
+                                        {% endfor %}
+                                    </div>
+                                    {% endfor %}
+                                    <button class="btn btn-outline-dark">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

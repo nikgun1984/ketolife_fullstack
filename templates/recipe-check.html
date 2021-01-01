@@ -50,7 +50,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="col-2 text-right">
-                                    Comments: 0
+                                    Comments: {{ comments | length }}
                                 </div>
                             </div>
                         </div>
@@ -106,12 +106,17 @@
                 </div>
                 <div class="row mt-5" id="all-comments">
                     <div class="col-12">
+                        <h2>Comments:</h2>
                         <hr>
                         {% for i in range(comments | length) %}
                         <div class="container">
                             <div class="row">
                                 <div class="col-1 text-right">
-                                    <img src="/static/images/{{users[i].image_url}}" alt="" class="w-75 text-right border rounded">
+                                    {% if users[i].uploaded_image %}
+                                        <img src="/images/user/{{users[i].id}}.png" alt="" class="w-75 text-right border rounded">
+                                    {% else %}
+                                        <img src="/static/images/{{users[i].image_url}}" alt="" class="w-75 text-right border rounded">
+                                    {% endif %}
                                 </div>
                                 <div class="col-4 text-left">
                                     <p><small><strong>By {{users[i].username}}</strong></small></p>

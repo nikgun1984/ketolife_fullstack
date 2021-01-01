@@ -65,3 +65,10 @@ class SearchIngredientForm(FlaskForm):
 class CommentsForm(FlaskForm):
     """Comments form"""
     comment = TextAreaField('Leave a Comment if You Like', render_kw={"rows":"3","id":"comment"},validators=[InputRequired("You cannot submit empty form")])
+
+class EditProfileForm(FlaskForm):
+    """update and edit user's information in the database"""
+    username = StringField('Username', render_kw={"placeholder": "Email Address","class":"form-control"}, validators=[DataRequired()])
+    email = StringField('E-mail', render_kw={"placeholder": "Email Address","class":"form-control"}, validators=[DataRequired(), Email()])
+    password  = PasswordField('Password', render_kw={"placeholder": "Password","class":"form-control"}, validators=[Length(min=6),InputRequired("Please Enter your Password"),EqualTo('password_check', message="Passwords must match")])
+    password_check = PasswordField('Password', render_kw={"placeholder": "Confirm Password","class":"form-control"}, validators=[Length(min=6)])      
