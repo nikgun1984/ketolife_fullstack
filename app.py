@@ -14,7 +14,7 @@ from functools import wraps
 ################# Imported from external files
 from models import db, connect_db, User,Recipe, Product, Rating, Comment
 from forms import NewRecipeForm, TitleRecipeForm, LoginForm, UserAddForm, CommentsForm, EditProfileForm
-from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE, key_gen
+# from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE, key_gen
 import utilities
 
 csrf = CSRFProtect()
@@ -27,15 +27,15 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 # app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', key_gen)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 # Disable pre-request CSRF
 app.config["WTF_CSRF_CHECK_DEFAULT"] = False
 # Check csrf for session and http auth (but not token)
 app.config["SECURITY_CSRF_PROTECT_MECHANISMS"] = ["session", "basic"]
 # toolbar = DebugToolbarExtension(app)
-APP_KEY = os.environ.get('APP_KEY',APP_KEY)
-APP_ID_RECIPE = os.environ.get('APP_ID_RECIPE',APP_ID_RECIPE)
-APP_KEY_RECIPE = os.environ.get('APP_KEY_RECIPE',APP_KEY_RECIPE)
+APP_KEY = os.environ.get('APP_KEY')
+APP_ID_RECIPE = os.environ.get('APP_ID_RECIPE')
+APP_KEY_RECIPE = os.environ.get('APP_KEY_RECIPE')
 csrf.init_app(app)
 connect_db(app)
 
