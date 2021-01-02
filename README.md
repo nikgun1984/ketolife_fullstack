@@ -125,7 +125,7 @@ is about and see foods that you can eat during your diet. There is a long list o
 You can also search for recipe. Just enter keyword or name of the recipe in the search box and find all possible recipes based on your search.  
 ![title](static/images/screenshots/3.png)  
 You can add ratings, comments to the recipes. You need to register in order to do that. As a registered user you also can create you recipes and share it with other users to comment on. You can edit your profile as well.  
-![title](static/images/screenshots/3.png)  
+![title](static/images/screenshots/4.png)  
 
 The app was created using Javascript (Vanilla and JQuery), HTML,CSS, Twitter Bootstrap for front-end and Python programming language with Flask as framework for backend and SQLAlchemy as ORM. For this application, I used open source relational database PostgreSQL.
 <!-- ROADMAP -->
