@@ -118,12 +118,16 @@ psql < backup.sql
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Keto Life is not only desktop application but also mobile responsive. If you are new to Keto diet you can learn briefly what it 
+is about and see foods that you can eat during your diet. There is a long list of products attached to the Home page. You also can find additional information on foods that are not in the list just by going to the Ingredient Nutrition Facts page. Just follow the steps, enter your product in search box, choose units and amounts to get all necessary data to see if it is a Keto food.  
+![title](static/images/screenshots/2.png)  
+![title](static/images/screenshots/1.png)  
+You can also search for recipe. Just enter keyword or name of the recipe in the search box and find all possible recipes based on your search.  
+![title](static/images/screenshots/3.png)  
+You can add ratings, comments to the recipes. You need to register in order to do that. As a registered user you also can create you recipes and share it with other users to comment on. You can edit your profile as well.  
+![title](static/images/screenshots/3.png)  
 
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-
-
+The app was created using Javascript (Vanilla and JQuery), HTML,CSS, Twitter Bootstrap for front-end and Python programming language with Flask as framework for backend and SQLAlchemy as ORM. For this application, I used open source relational database PostgreSQL.
 <!-- ROADMAP -->
 ## Roadmap
 
