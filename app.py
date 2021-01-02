@@ -268,8 +268,8 @@ def get_recipe():
     """Get all possible recipes for query"""
 
     query_string = request.args.get("search-bar")
-    resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":20})
-    utilities.save_recipe_to_database(resp)
+    # resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":20})
+    # utilities.save_recipe_to_database(resp)
     rec = Recipe.query.filter(Recipe.title.ilike(f"%{query_string}%")).all()
     size = len(rec)
     recipes = utilities.partition_list(rec,3)
