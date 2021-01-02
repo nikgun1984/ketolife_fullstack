@@ -5,7 +5,7 @@ from models import db, Unit, Recipe, Ingredient, Instruction, Nutrient, RecipeNu
 import requests
 from flask import g
 
-from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
+from app import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
 BASE_URL_SP = "https://api.spoonacular.com"
 BASE_URL_ED = "https://api.edamam.com"
 
