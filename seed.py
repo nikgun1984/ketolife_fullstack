@@ -2,7 +2,7 @@
 
 from app import app
 from models import db, Unit, Recipe, Ingredient, Instruction, Nutrient, RecipeNutrient, Product, Rating
-from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
+# from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
 import requests
 
 db.drop_all()
