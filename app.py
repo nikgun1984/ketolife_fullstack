@@ -391,3 +391,4 @@ def get_image(recipe_id):
     recipe = Recipe.query.get(recipe_id)
     image_binary = recipe.local_image
     return send_file(BytesIO(image_binary),as_attachment=False, attachment_filename=f'{recipe_id}.png')
+

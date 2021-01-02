@@ -320,8 +320,8 @@ $(document).ready(function () {
 $(document).on("click", "i.fas.fa-trash-alt", async function () {
 	const existing = accessToLocaStorage();
 	const id = parseInt($(this).closest("tr").attr("id"));
-	const response = await axios.post("/api/delete-ingredient", {
-		data: {
+	const response = await axios.get("/api/delete-ingredient", {
+		params: {
 			nutrients: JSON.stringify(existing["nutrients"][id-1]),
 			vitamins: JSON.stringify(existing["vitamins"][id-1]),
 			total_nutrients: JSON.stringify(existing["total_nutrients"]),
@@ -367,6 +367,7 @@ async function processRecipe(evt) {
 	});
 	await handleRecipe(response.data.hits);
 }
+
 async function handleRecipe(data) {
 	for (let rec of data) {
 		const calories = rec.recipe.calories;
@@ -398,6 +399,7 @@ async function getInstructions(url) {
 	};
 }
 
+
 // FOR INGREDIENT
 async function getIngredientNutriFacts(evt) {
 	const id = $("#units").attr("data-id");
@@ -424,8 +426,8 @@ async function getInfoIngredient(evt) {
 	}
 	const existing = accessToLocaStorage();
 	console.log(existing["nutrients"]);
-	const response = await axios.post(`/api/get-ingredient/${id}/nutrifacts`, {
-		data: {
+	const response = await axios.get(`/api/get-ingredient/${id}/nutrifacts`, {
+		params: {
 			amount,
 			units: unit,
 			serving: existing["servings"],
@@ -440,7 +442,6 @@ async function getInfoIngredient(evt) {
 		saveNutrients(response.data[0], response.data[1], "nutrients", "vitamins");
 		saveToLocStorage("total_nutrients", response.data[2]);
 		saveToLocStorage("total_vitamins", response.data[3]);
-		console.log();
 		let count = lenRecipeArray("ingredients");
 		$("#done-ing").show();
 		$("#recipe_ingr_table tbody").append(`<tr id="${count}"></tr>`);
@@ -451,6 +452,7 @@ async function getInfoIngredient(evt) {
 		$(`tr#${count}`).append(`<td><i class="fas fa-trash-alt"></i></td>`);
 		////////////////////////////////////////////// Add nutrient table
 		$("div#ingr").removeClass("justify-content-center");
+		//$("div.tbl-ingredients").addClass("col-xl-6 ");
 		$("div.tbl-nutrients").removeClass("is-hidden");
 		addValuesToNutritionTable();
 	} else {
@@ -507,7 +509,6 @@ function addCheckmark() {
 function addValuesToNutritionTable() {
 	const existing = accessToLocaStorage();
 	const nutrients = existing["total_nutrients"];
-	console.log(nutrients);
 	const servingsPerRecipe = $("p.servings_recipe");
 	const caloriesField = $("td#cal b");
 	servingsPerRecipe.html(`Servings Per Recipe ${existing["servings"]}`);
@@ -539,7 +540,7 @@ $("form#search-recipe-form").on("submit", async function () {
 	});
 });
 
-// For flash
+// flash
 $(document).ready(function () {
 	$(".alert").delay(4000).slideUp(300);
 });
@@ -577,16 +578,17 @@ $("#ratings").on("mouseover", "i", async function (evt) {
 			$("span#avg-rating").text(avg);
 			const percentages = response.data[1];
 			for(let val=4;val>-1;val--){
-				$(`p#stars-total-${val}`).text(`${val + 1} stars`);
-				const perc = percentages[val];
-				$(`#${val}-perc`).css("width", `${perc}%`);
-				$(`#${val}-perc`).attr("aria-valuenow", perc);
-				$(`#${val}-perc`).text(`${perc}%`);
-				if (perc == 0) {
-					$(`#${val}-perc`).addClass("text-dark");
-				} else {
-					$(`#${val}-perc`).removeClass("text-dark");
-				}
+					$(`p#stars-total-${val}`).text(`${val + 1} stars`);
+					const perc = percentages[val];
+
+					$(`#${val}-perc`).css("width", `${perc}%`);
+					$(`#${val}-perc`).attr("aria-valuenow", perc);
+					$(`#${val}-perc`).text(`${perc}%`);
+					if (perc == 0) {
+						$(`#${val}-perc`).addClass("text-dark");
+					} else {
+						$(`#${val}-perc`).removeClass("text-dark");
+					}
 			}
 		})
 		.catch((error) => {
@@ -625,60 +627,3 @@ $(document).ready(function() {
 	})
 });
 
-
-/* Carousel*/
-$("#recipeCarousel").carousel({
-	interval: 2000
-});
-
-$(".carousel .carousel-item").each(function () {
-	const minPerSlide = 3;
-	let next = $(this).next();
-	if (!next.length) {
-		next = $(this).siblings(":first");
-	}
-	next.children(":first-child").clone().appendTo($(this));
-
-	for (let i = 0; i < minPerSlide; i++) {
-		next = next.next();
-		if (!next.length) {
-			next = $(this).siblings(":first");
-		}
-		next.children(":first-child").clone().appendTo($(this));
-	}
-});
-
-/* Parallax Transitioning */
-$(document).ready(function () {
-	const $window = $(window);
-	$('section[data-type="background"]').each(function () {
-		let $bgobj = $(this); // assigning the object
-
-		$(window).scroll(function () {
-			let yPos = -($window.scrollTop() / $bgobj.data("speed"));
-
-			// Put together our final background position
-			let coords = "50% " + yPos + "px";
-
-			// Move the background
-			$bgobj.css({ backgroundPosition: coords });
-		});
-	});
-});
-
-/* Navbar Transitioning */
-$(document).ready(function () {
-	$(window).scroll(function () {
-		const scroll = $(window).scrollTop();
-		if (scroll > 0) {
-			$(".navbar").addClass("navbar-scroll");
-		} else {
-			$(".navbar").removeClass("navbar-scroll");
-		}
-		if (scroll > 200) {
-			$(".navbar").addClass("bg-white");
-		} else {
-			$(".navbar").removeClass("bg-white");
-		}
-	});
-});
