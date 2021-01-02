@@ -214,8 +214,6 @@ def get_ingredient_info(id):
 
     resp = requests.get(f'{BASE_URL_SP}/food/ingredients/{id}/information', params={"apiKey":APP_KEY})
     res = resp.json()
-    # import pdb
-    # pdb.set_trace()
     lst = [unit for unit in res['possibleUnits']]
     category = res['categoryPath']
     return jsonify(units=lst,img=res['image'],name=res['name'],id=id,category=category)
@@ -261,9 +259,6 @@ def get_ingredient_for_recipe(id):
     else:
         nutrients_total = nutrients
         vitamins_total = vitamins
-
-    # import pdb
-    # pdb.set_trace()
     return jsonify(nutrients,vitamins, nutrients_total, vitamins_total)
 
 @app.route('/api/get-recipe')
@@ -271,8 +266,8 @@ def get_recipe():
     """Get all possible recipes for query"""
 
     query_string = request.args.get("search-bar")
-    # resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":20})
-    # save_recipe_to_database(resp)
+    resp = requests.get(f'{BASE_URL_ED}/search?', params={'q':f'keto {query_string}',"app_id":APP_ID_RECIPE,"app_key":APP_KEY_RECIPE,"healt":'keto-friendly',"from":0,"to":20})
+    utilities.save_recipe_to_database(resp)
     rec = Recipe.query.filter(Recipe.title.ilike(f"%{query_string}%")).all()
     size = len(rec)
     recipes = utilities.partition_list(rec,3)
