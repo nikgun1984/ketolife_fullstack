@@ -17,8 +17,9 @@ from forms import NewRecipeForm, TitleRecipeForm, LoginForm, UserAddForm, Commen
 # from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE, key_gen
 import utilities
 
-csrf = CSRFProtect()
-app = Flask(__name__)
+
+# with app.app_context():
+#     db.create_all()
 
 ################## Configurations
 
@@ -36,6 +37,10 @@ app.config["SECURITY_CSRF_PROTECT_MECHANISMS"] = ["session", "basic"]
 APP_KEY = os.environ.get('APP_KEY')
 APP_ID_RECIPE = os.environ.get('APP_ID_RECIPE')
 APP_KEY_RECIPE = os.environ.get('APP_KEY_RECIPE')
+
+csrf = CSRFProtect()
+app = Flask(__name__)
+
 csrf.init_app(app)
 connect_db(app)
 
