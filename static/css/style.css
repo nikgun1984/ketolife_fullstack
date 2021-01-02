@@ -23,6 +23,22 @@ body {
     .navbar {
         background-color: #ffffff !important;
     }
+
+    ul.navbar-nav {
+        text-align: center;
+    }
+    
+    #navbarNav {
+        /* overflow-x: hidden;
+        padding-right: 17px; */
+        width: 100px;
+        max-height:400px;
+	    overflow-y: scroll;
+    }
+
+    .user-information {
+        text-align: center !important;
+    }
 }
 
 #logo {

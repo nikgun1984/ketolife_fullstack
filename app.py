@@ -242,8 +242,7 @@ def ingredient_nutrifacts(id):
 @app.route("/api/get-ingredient/<id>/nutrifacts", methods=["POST"])
 def get_ingredient_for_recipe(id):
     """Ingredient for Recipe"""
-
-    data = request.json.get('data')
+    data = request.json.get('body')
     unit = data.get('units')
     amount = data.get('amount')
     nutrients_total = data.get('nutrients')
@@ -262,6 +261,9 @@ def get_ingredient_for_recipe(id):
     else:
         nutrients_total = nutrients
         vitamins_total = vitamins
+
+    # import pdb
+    # pdb.set_trace()
     return jsonify(nutrients,vitamins, nutrients_total, vitamins_total)
 
 @app.route('/api/get-recipe')

@@ -49,8 +49,14 @@ def subtract_nutrients(nutrients_total,nutrients):
 
 def calculate_all_recipes_netcarbs(recipes):
     """Calculate netcarbs for all recipes"""
-
-    return [int(calculate_net_carbs(recipe)/recipe.servings) for recipe in recipes]
+    for recipe in recipes:
+        print(recipe.title)
+        print(calculate_net_carbs(recipe))
+        print(recipe.servings)
+        print('--------------------------------')
+    # import pdb
+    # pdb.set_trace()
+    return [int(round(calculate_net_carbs(recipe))) if recipe.user_id else int(round(calculate_net_carbs(recipe)/recipe.servings)) for recipe in recipes]
 
 def get_carousel_card_info(recipes):
     """Get all information from carousel"""
@@ -92,8 +98,12 @@ def get_nutrients_recipe(recipe,servings):
     vit_set = set(['Calcium','Magnesium','Potassium','Zinc','Phosphorus'])
     for el in range(len(recipe.nutrients)):
         name = recipe.nutrients[el].name
-        total_daily = math.ceil(recipe.assignments[el].total_daily/servings)
-        total_nutrients = math.ceil(recipe.assignments[el].total_nutrients/servings)
+        if recipe.user_id:
+            total_daily = int(round(recipe.assignments[el].total_daily,0))
+            total_nutrients = int(round(recipe.assignments[el].total_nutrients,0))
+        else:
+            total_daily = int(round(recipe.assignments[el].total_daily/servings,0))
+            total_nutrients = int(round(recipe.assignments[el].total_nutrients/servings,0))
         unit = recipe.nutrients[el].units.name
         if flag and name not in vit_set and name.find("Vitamin") == -1:
             nutri_data[name] = name,total_daily,total_nutrients,unit

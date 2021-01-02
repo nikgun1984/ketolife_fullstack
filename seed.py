@@ -10,14 +10,14 @@ import requests
 
 # # Script to load data
 
-BASE_URL_SP = "https://api.spoonacular.com"
-BASE_URL_ED = "https://api.edamam.com"
+# BASE_URL_SP = "https://api.spoonacular.com"
+# BASE_URL_ED = "https://api.edamam.com"
 
-import json
-id = 9040
-resp = requests.get(f'{BASE_URL_SP}/food/ingredients/{id}/information', params={"apiKey":APP_KEY})
+# import json
+# id = 9040
+# resp = requests.get(f'{BASE_URL_SP}/food/ingredients/{id}/information', params={"apiKey":APP_KEY})
 
-json_file = resp.json()
+# json_file = resp.json()
 
 # mapping = json.dumps(json_file)
 # rec = json.loads(mapping) 

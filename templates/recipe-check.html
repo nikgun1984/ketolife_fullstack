@@ -89,6 +89,23 @@
                             <hr>
                         {% endfor%}
                     </ol>
+                    {%if recipe.url%}
+                        <p>Link to the recipe: <a href="{{recipe.url}}">{{recipe.url}}</a></p>
+                        <hr>
+                    {% endif %}
+                    {% if g.user %}
+                        <form action="" id="comments-form" method="POST" enctype="multipart/form-data">
+                            {{comment_form.hidden_tag()}}
+                            <div class="form-group w-75">
+                                {{ comment_form.comment.label}}
+                                {{ comment_form.comment(class_="form-control border rounded")}}
+                                {% for error in comment_form.errors %}
+                                    <p><em class="text-danger"><small>{{ error }}</small></em></p>
+                                {% endfor %}
+                            </div>
+                            <button class="btn btn-outline-dark">Submit</button>
+                        </form>
+                    {% endif %}
 
                     {% if comments | length %}
                     <div class="row mt-5" id="all-comments">

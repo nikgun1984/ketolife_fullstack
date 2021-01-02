@@ -425,9 +425,8 @@ async function getInfoIngredient(evt) {
 		amount = parseFloat(amount);
 	}
 	const existing = accessToLocaStorage();
-	console.log(existing["nutrients"]);
-	const response = await axios.get(`/api/get-ingredient/${id}/nutrifacts`, {
-		params: {
+	const response = await axios.post(`/api/get-ingredient/${id}/nutrifacts`, {
+		body: {
 			amount,
 			units: unit,
 			serving: existing["servings"],
@@ -682,5 +681,12 @@ $(document).ready(function () {
 			$(".navbar").removeClass("bg-white");
 		}
 	});
+});
+
+//Dropdown nav for mobile
+$('.navbar-nav li a').on('click', function(){
+    if(!$( this ).hasClass('dropdown-toggle')){
+        $('.navbar-collapse').collapse('hide');
+    }
 });
 
