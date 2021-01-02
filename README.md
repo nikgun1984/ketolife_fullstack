@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -194,5 +193,3 @@ Project Link: [https://github.com/nikgun1984/ketolife_backend](https://github.co
 [linkedin-url]: https://www.linkedin.com/in/nick-gundobin-5b905931/
 [product-screenshot]: images/screenshot.png
 =======
-# ketolife_backend
->>>>>>> 77a6548440ba9bad9f8ec5991e6b7fc3b731c3e9
