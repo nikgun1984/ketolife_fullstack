@@ -1,11 +1,11 @@
+"""File for other computations,querying, sorting and other app functionalities"""
+
 import math, json
-# from app import app
 from models import db, Unit, Recipe, Ingredient, Instruction, Nutrient, RecipeNutrient, Product, User, Rating
-from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
 import requests
 from flask import g
-import base64
 
+from secrets import APP_KEY, APP_ID_RECIPE, APP_KEY_RECIPE
 BASE_URL_SP = "https://api.spoonacular.com"
 BASE_URL_ED = "https://api.edamam.com"
 
@@ -16,6 +16,7 @@ def calculate_net_carbs(recipe):
     return daily_nutrients.total_nutrients
 
 def calculate_per_serving(nutrients,servings):
+    """Compute Nutrients per serving"""
 
     for nutrient in nutrients:
         if nutrients[nutrient]["amount"]:
@@ -25,6 +26,7 @@ def calculate_per_serving(nutrients,servings):
     return nutrients
 
 def add_nutrients(nutrients_total,nutrients):
+    """Calculate total amount of all nutrients of ingredients after adding the ingredient"""
 
     for nutrient in nutrients:
         if nutrient in nutrients_total:
@@ -36,6 +38,7 @@ def add_nutrients(nutrients_total,nutrients):
     return nutrients_total
 
 def subtract_nutrients(nutrients_total,nutrients):
+    """Calculate total of all nutrients of ingrerdients after deletion the ingredient"""
     for nutrient in nutrients:
         if nutrient in nutrients_total:
             nutrients_total[nutrient]["amount"] -= nutrients[nutrient]["amount"]
@@ -45,20 +48,25 @@ def subtract_nutrients(nutrients_total,nutrients):
 
 
 def calculate_all_recipes_netcarbs(recipes):
+    """Calculate netcarbs for all recipes"""
+
     return [int(calculate_net_carbs(recipe)/recipe.servings) for recipe in recipes]
 
 def get_carousel_card_info(recipes):
     """Get all information from carousel"""
+
     copy_recipe = recipes[:]
     netcarbs = calculate_all_recipes_netcarbs(recipes)
     return [(copy_recipe[i].title,copy_recipe[i].image,copy_recipe[i].servings,netcarbs[i],copy_recipe[i].id,copy_recipe[i].local_image) for i in range(len(netcarbs))]
 
 def partition_list(lst,n):
-    """Divide ingredients into grid for displayong on front page"""
+    """Divide ingredients into grid for displaying on front page"""
+
     return [lst[i * n:(i + 1) * n] for i in range((len(lst) + (n-1)) // n )]
 
 def split_nutritional_fact_data(nutrients):
     """spoonacular API data to save split/convert nutrients/vitamins"""
+
     flag = True
     nutri_data = dict()
     vitamins = dict()
@@ -75,9 +83,9 @@ def split_nutritional_fact_data(nutrients):
             vitamins[nutrient["title"]] = nutrient
     return nutri_data,vitamins
 
-
 def get_nutrients_recipe(recipe,servings):
     """Using database to save split/convert nutrients/vitamins"""
+
     flag = True
     nutri_data = dict()
     vitamins = dict()
@@ -96,6 +104,7 @@ def get_nutrients_recipe(recipe,servings):
 
 def save_recipe_to_database(resp):
     """Will save recipe to database"""
+
     json_file = resp.json()
 
     mapping = json.dumps(json_file)
@@ -105,9 +114,8 @@ def save_recipe_to_database(resp):
         return
 
     for rec_num in rec["hits"]:
-    # Recipe 1
+
         recipe = rec_num['recipe']
-        # //////////////////////////////////
         title = recipe['label']
         if bool(db.session.query(Recipe).filter_by(title=title).first()):
             print("SORRY it's already in database...")
@@ -138,13 +146,17 @@ def save_recipe_to_database(resp):
     db.session.commit()
 
 def total_daily_nutrition(nutrient,recipe_obj,total,daily,label):
+    """Add association to the many to many relationship RecipeNutrient"""
+
     nutri = Nutrient.query.filter_by(name=nutrient[label]).first()
     if nutri:
         association = RecipeNutrient(total_nutrients=int(nutrient.get(total)),total_daily=int(nutrient.get(daily)))
         association.nutrient_id = nutri.id
         recipe_obj.assignments.append(association)
 
-def is_already_rated(recipe_id,rating):
+def rate_recipe(recipe_id,rating):
+    """Rate the recipe only for registered and athenticated users"""
+
     rated_query = Rating.query.filter((Rating.recipe_id == recipe_id) & (Rating.user_id==g.user.id)).first()
     if rated_query:
         rated_query.rating = rating
@@ -153,8 +165,9 @@ def is_already_rated(recipe_id,rating):
         db.session.add(rating)
     db.session.commit()
     
-
 def calculate_average_rating(recipe_id,rating):
+    """Calculate average rating of recipe and add it to the database"""
+
     recipe = Recipe.query.get(recipe_id)
     if recipe.ratings:
         ratings = [r.rating for r in recipe.ratings]
@@ -165,6 +178,8 @@ def calculate_average_rating(recipe_id,rating):
     return recipe.average_rate
 
 def get_best_rated_recipes():
+    """Get best rated recipes by the user"""
+
     user = User.query.get(g.user.id)
     rated_recipes = user.rating
     best_rated = []
@@ -182,6 +197,7 @@ def get_best_rated_recipes():
     return best_rated,user_ratings,net_carbs
 
 def get_my_recipes():
+    """Get Recipes created by a user"""
     user = User.query.get(g.user.id)
     net_carbs = []
     for recipe in user.recipes:
@@ -191,14 +207,16 @@ def get_my_recipes():
     return user.recipes,net_carbs
 
 def is_empty_query(id):
+    """Get rating if exists otherwise return 0"""
+
     if g.user:
         rated_query = Rating.query.filter((Rating.recipe_id == id) & (Rating.user_id==g.user.id)).first()
         return rated_query.rating if rated_query else 0
     else:
         return 0
 
-
 def calculate_percentages_stars(id):
+    """Calculate the percent of the stars per recipe"""
 
     recipe = Recipe.query.get(id)
     if recipe.ratings:
@@ -221,6 +239,7 @@ def calculate_percentages_stars(id):
     return None
 
 def add_relationships_to_recipe(recipe_obj,instructions,ingredients,nutrients):
+    """Append relationships: instructions,ingreedients, nutrients to object recipe"""
 
     for i, inst in enumerate(instructions):
         instruction = Instruction(step_no=i+1, step=inst['step'])
@@ -238,6 +257,8 @@ def add_relationships_to_recipe(recipe_obj,instructions,ingredients,nutrients):
 
 
 def handle_adding_recipe_data(data,local_image):
+    """Add all data firstly to a newly created recipe then recipe to the database"""
+
     title = data['title']
     servings = data['servings']
     ingredients = data['ingredients']
@@ -250,9 +271,7 @@ def handle_adding_recipe_data(data,local_image):
     tcook = data['ttime']
     mealtype = data['mealType']
     dishtype = data['dishType']
-    # import pdb
-    # pdb.set_trace()
-    # db.session.rollback()
+
     new_recipe = Recipe(title=title, servings=servings,tcook=tcook, calories=calories,mealtype=mealtype,dishtype=dishtype,local_image=local_image.read(), user_id=g.user.id)
 
     for i, inst in enumerate(instructions):
@@ -272,12 +291,16 @@ def handle_adding_recipe_data(data,local_image):
     return new_recipe
 
 def get_fats_carbs():
+    """Get objects fats, carbs and nutrients that do not have daily amounts"""
+
     fats = tuple(["Trans Fat","Trans","Saturated Fat","Saturated","Polyunsaturated","Poly Unsaturated Fat","Mono Unsaturated Fat","Monounsaturated"])
     carbs = tuple(["Net Carbohydrates","Carbs (net)","Fiber","Sugar Alcohol",'Sugar alcohols',"Sugar","Sugars",'Sugars, added'])
     no_daily = tuple(["Sugar","Sugars",'Sugars, added','Protein','Monounsaturated','Polyunsaturated'])
     return fats,carbs,no_daily
 
 def sort_nutrients(nutrients):
+    """Sort our nutrients for Nutrition Table"""
+
     fats,carbs,no_daily = get_fats_carbs()
     sorted_nutrients = {}
     if nutrients.get("Carbs"):
@@ -298,6 +321,8 @@ def sort_nutrients(nutrients):
 
 
 def get_users(recipe):
+    """Get all users and times for comments"""
+
     all_comments = recipe.comments
     users = []
     times = []
@@ -307,10 +332,4 @@ def get_users(recipe):
         times.append(comment.created_at)
     
     return users,times
-
-
-
-
-        
-
 

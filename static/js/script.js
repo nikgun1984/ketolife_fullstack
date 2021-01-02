@@ -1,6 +1,5 @@
 const BASE_IMG_LINK = "https://spoonacular.com/cdn/ingredients_250x250";
-let title = "",
-	servings = 0;
+
 $("#add_links").on("submit", processForm);
 
 $("#add_links_cr").on("submit", processRecipeForm);
@@ -321,8 +320,8 @@ $(document).ready(function () {
 $(document).on("click", "i.fas.fa-trash-alt", async function () {
 	const existing = accessToLocaStorage();
 	const id = parseInt($(this).closest("tr").attr("id"));
-	const response = await axios.get("/api/delete-ingredient", {
-		params: {
+	const response = await axios.post("/api/delete-ingredient", {
+		data: {
 			nutrients: JSON.stringify(existing["nutrients"][id-1]),
 			vitamins: JSON.stringify(existing["vitamins"][id-1]),
 			total_nutrients: JSON.stringify(existing["total_nutrients"]),
@@ -399,7 +398,6 @@ async function getInstructions(url) {
 	};
 }
 
-
 // FOR INGREDIENT
 async function getIngredientNutriFacts(evt) {
 	const id = $("#units").attr("data-id");
@@ -426,8 +424,8 @@ async function getInfoIngredient(evt) {
 	}
 	const existing = accessToLocaStorage();
 	console.log(existing["nutrients"]);
-	const response = await axios.get(`/api/get-ingredient/${id}/nutrifacts`, {
-		params: {
+	const response = await axios.post(`/api/get-ingredient/${id}/nutrifacts`, {
+		data: {
 			amount,
 			units: unit,
 			serving: existing["servings"],
@@ -453,7 +451,6 @@ async function getInfoIngredient(evt) {
 		$(`tr#${count}`).append(`<td><i class="fas fa-trash-alt"></i></td>`);
 		////////////////////////////////////////////// Add nutrient table
 		$("div#ingr").removeClass("justify-content-center");
-		//$("div.tbl-ingredients").addClass("col-xl-6 ");
 		$("div.tbl-nutrients").removeClass("is-hidden");
 		addValuesToNutritionTable();
 	} else {
@@ -542,6 +539,7 @@ $("form#search-recipe-form").on("submit", async function () {
 	});
 });
 
+// For flash
 $(document).ready(function () {
 	$(".alert").delay(4000).slideUp(300);
 });
@@ -579,29 +577,17 @@ $("#ratings").on("mouseover", "i", async function (evt) {
 			$("span#avg-rating").text(avg);
 			const percentages = response.data[1];
 			for(let val=4;val>-1;val--){
-				// funcs[val] = function() {
-					$(`p#stars-total-${val}`).text(`${val + 1} stars`);
-					// console.log(percentages[val]);
-					//console.log(val);
-					const perc = percentages[val];
-					// console.log(perc);
-					console.log(val);
-
-					$(`#${val}-perc`).css("width", `${perc}%`);
-					$(`#${val}-perc`).attr("aria-valuenow", perc);
-					$(`#${val}-perc`).text(`${perc}%`);
-					if (perc == 0) {
-						$(`#${val}-perc`).addClass("text-dark");
-					} else {
-						$(`#${val}-perc`).removeClass("text-dark");
-					}
-				// }
+				$(`p#stars-total-${val}`).text(`${val + 1} stars`);
+				const perc = percentages[val];
+				$(`#${val}-perc`).css("width", `${perc}%`);
+				$(`#${val}-perc`).attr("aria-valuenow", perc);
+				$(`#${val}-perc`).text(`${perc}%`);
+				if (perc == 0) {
+					$(`#${val}-perc`).addClass("text-dark");
+				} else {
+					$(`#${val}-perc`).removeClass("text-dark");
+				}
 			}
-			// for (let val=4;val>-1;val--) {
-			// 	// we can use "var" here without issue
-			// 	funcs[j]();
-			// 	console.log(funcs[j]());
-			// }
 		})
 		.catch((error) => {
 			console.log(error.response);
@@ -639,4 +625,60 @@ $(document).ready(function() {
 	})
 });
 
-// $("#comments-form").on("submit", async function) 
+
+/* Carousel*/
+$("#recipeCarousel").carousel({
+	interval: 2000
+});
+
+$(".carousel .carousel-item").each(function () {
+	const minPerSlide = 3;
+	let next = $(this).next();
+	if (!next.length) {
+		next = $(this).siblings(":first");
+	}
+	next.children(":first-child").clone().appendTo($(this));
+
+	for (let i = 0; i < minPerSlide; i++) {
+		next = next.next();
+		if (!next.length) {
+			next = $(this).siblings(":first");
+		}
+		next.children(":first-child").clone().appendTo($(this));
+	}
+});
+
+/* Parallax Transitioning */
+$(document).ready(function () {
+	const $window = $(window);
+	$('section[data-type="background"]').each(function () {
+		let $bgobj = $(this); // assigning the object
+
+		$(window).scroll(function () {
+			let yPos = -($window.scrollTop() / $bgobj.data("speed"));
+
+			// Put together our final background position
+			let coords = "50% " + yPos + "px";
+
+			// Move the background
+			$bgobj.css({ backgroundPosition: coords });
+		});
+	});
+});
+
+/* Navbar Transitioning */
+$(document).ready(function () {
+	$(window).scroll(function () {
+		const scroll = $(window).scrollTop();
+		if (scroll > 0) {
+			$(".navbar").addClass("navbar-scroll");
+		} else {
+			$(".navbar").removeClass("navbar-scroll");
+		}
+		if (scroll > 200) {
+			$(".navbar").addClass("bg-white");
+		} else {
+			$(".navbar").removeClass("bg-white");
+		}
+	});
+});

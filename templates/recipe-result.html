@@ -17,7 +17,7 @@
                 {% for i in range(recipes | length )%}
                 <div class="row justify-content-center">
                     {% for j in range(recipes[i] | length ) %}
-                    <div class="col-3 border border-dark rounded p-2 m-2">
+                    <div class="col-lg-3 col-m-1 border border-dark rounded p-2 m-2">
                         <div class="card">
                             {% if recipes[i][j].local_image %}
                             <img class="card-img-top" src="/images/{{recipes[i][j].id}}.png" alt="Card image cap">
@@ -27,11 +27,10 @@
                             <div class="card-body d-flex flex-column">
                                 <hr>
                                 <h5 class="card-title">{{recipes[i][j].title}}</h5>
-                                <hr>
-                                <h6 class="card-text">Total servings: {{recipes[i][j].servings}}</h6>
-                                <h6 class="card-text">Net Carbs per Serving: {{n_carbs[i][j]}}g</h6>
-                                <form action="/api/get-recipe-database/{{recipes[i][j].id}}">
-                                    <button class="btn btn-dark btn-outline mt-auto">Check it Out</button>
+                                <h6 class="card-text m-0">Total servings: {{recipes[i][j].servings}}</h6>
+                                <h6 class="card-text m-0">Net Carbs per Serving: {{n_carbs[i][j]}}g</h6>
+                                <form action="/api/get-recipe-database/{{recipes[i][j].id}}" class="mt-auto">
+                                    <button class="btn btn-dark btn-outline">Check it Out</button>
                                 </form>
                             </div>
                         </div>

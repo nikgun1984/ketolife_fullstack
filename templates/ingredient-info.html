@@ -12,28 +12,27 @@
 
     <section class="module content" id="about-page">
         <div class="parallax-container-fluid text-center">
-                <div class="row justify-items-center">
-                    <div class="col-1"></div>
-                    <div class="col-7 text-center">
-                        <div class="card text-center">
-                            <div class="card-header">
-                                <h1 class="m-4" id="ingredient-header">{{name}}</h1>
-                            </div>
-                            <div class="card-body">
-                                <img src="{{img}}" alt="">
-                                <h4 id="ingr-unit">Measurement: {{amount}} {{unit}}</h4>
-                                <h4 id="ingr-cost" class="mb-2">The approximate cost of the measurement: $ {{cost}}</h4>
-                            </div>
-                            <div class="card-footer text-muted">
-                                Category: {{category[0]}}
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-8 col-lg-11 col-md-12 mb-5">
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    <h1 class="m-4" id="ingredient-header">{{name}}</h1>
+                                </div>
+                                <div class="card-body">
+                                    <img src="{{img}}" alt="">
+                                    <h4 id="ingr-unit">Measurement: {{amount}} {{unit}}</h4>
+                                    <h4 id="ingr-cost" class="mb-2">The approximate cost of the measurement: $ {{cost}}</h4>
+                                </div>
+                                <div class="card-footer text-muted">
+                                    Category: {{category[0]}}
+                                </div>
                             </div>
                         </div>
-                                            </div>
-
-                        <div class="col-3 text-center">
-                        {% include 'nutri_fact_ingredient.html' %}
-
+                        <div class="col-xl-4 col-lg-5 col-md-7 col-sm-8 text-center">
+                            {% include 'nutri_fact_ingredient.html' %}
                         </div>
+                    </div>
                 </div>
             <hr>
         </div>

@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %} {{recipe.title}} {% endblock %}
+
+{% block content %}
+    <section class="module parallax parallax-1" data-type="background" data-speed="10">
+        <div class="parallax-container-fluid">
+            <h1 class="m-0">Keto Life</h1>
+            <p class="text-center">The diet that should reward you</p>
+        </div>
+    </section>
+
+    <section class="module content" id="recipe-{{recipe.id}}">
+        <div class="parallax-container-fluid text-left">
+            <div class="container">
+                <div class="row justify-items-left">
+                    <div class="col-xl-8 col-lg-11 col-md-12">
+                        <h1 class="ml-5 pb-4">{{recipe.title}}</h2>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-7 mb-2">
+                                    {% if recipe.local_image %}
+                                        <img class="card-image-recipe border border-dark rounded" src="/images/{{recipe.id}}.png" alt="Card image cap">
+                                    {% else %}
+                                        <img class="card-image-recipe border border-dark rounded" src="{{recipe.image}}" alt="Card image cap">
+                                    {% endif %}
+
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }} id="token"/>
+                                    <input type="hidden" name="recipe-content-id" id="recipe-content-id" value="{{recipe.id}}"/>
+                                    <div class="mt-3" id="ratings">
+                                        <span class="mr-4 font-weight-bold">
+                                            Ratings
+                                            {% if recipe.average_rate %}
+                                                {% include 'all-ratings.html' %}
+                                            {% else %}
+                                                <i class="fas fa-star text-warning"></i><span id="avg-rating">--</span>
+                                            {% endif %}
+                                        </span>
+                                        <span class="mr-5 font-weight-bold">
+                                            {% if g.user %}
+                                                Rate this
+                                                {% if user_rating %}
+                                                    {% for star in range(user_rating)%}
+                                                        <i class="far fa-star text-center star-red" data-id="{{star+1}}" id="{{star+1}}"></i>
+                                                    {% endfor %}
+                                                {% endif %}
+                                                {% for star in range(user_rating+1,6)%}
+                                                    <i class="far fa-star text-center" data-id="{{star}}" id="{{star}}"></i>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </span>
+                                        <span class="font-weight-bold">
+                                            Comments: {{ comments | length }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <p><span class="font-weight-bold">Servings:</span> {{recipe.servings}}</p>
+                        <p><span class="font-weight-bold">Total Time:</span> {{recipe.tcook}} minutes</p>
+                        {% if recipe.mealtype %}
+                            <p><span class="font-weight-bold">Meal Type:</span> {{recipe.mealtype}}</p>
+                        {% endif%}
+                        {% if recipe.dishtype %}
+                            <p><span class="font-weight-bold">Dish Type:</span> {{recipe.mealtype}}</p>
+                        {% endif%}
+                        <hr>
+                        <h4>Ingredients</h4>
+                        <ul class="circles">
+                            {% for ingredient in recipe.ingredients %}
+                                <li class="m-1">{{ingredient.name}}</li>
+                            {% endfor%}
+                        </ul>
+                        <hr>
+                        <h4>Directions</h4>
+                        <ol class="text-left">
+                            {% for instruction in recipe.instructions %}
+                                <li class="m-1">  {{instruction.step}}</li>
+                                <hr>
+                            {% endfor%}
+                        </ol>
+                        {%if recipe.url%}
+                            <p>Link to the recipe: <a href="{{recipe.url}}">{{recipe.url}}</a></p>
+                            <hr>
+                        {% endif %}
+                        {% if g.user %}
+                            <form action="" id="comments-form" method="POST" enctype="multipart/form-data">
+                                {{comment_form.hidden_tag()}}
+                                <div class="form-group w-75">
+                                    {{ comment_form.comment.label}}
+                                    {{ comment_form.comment(class_="form-control border rounded")}}
+                                    {% for error in comment_form.errors %}
+                                        <p><em class="text-danger"><small>{{ error }}</small></em></p>
+                                    {% endfor %}
+                                </div>
+                                <button class="btn btn-outline-dark">Submit</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                    <div class="col-xl-4 col-lg-2 col-md-1 text-center">
+                        {% include 'nutri_fact_recipe.html' %}
+                    </div>
+                </div>
+                {% if comments | length %}
+                <div class="row mt-5" id="all-comments">
+                    <div class="col-12">
+                        <h2>Comments:</h2>
+                        <hr>
+                        {% for i in range(comments | length) %}
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-1 text-right">
+                                    {% if users[i].uploaded_image %}
+                                        <img src="/images/user/{{users[i].id}}.png" alt="" class="w-75 text-right border rounded">
+                                    {% else %}
+                                        <img src="/static/images/{{users[i].image_url}}" alt="" class="w-75 text-right border rounded">
+                                    {% endif %}
+                                </div>
+                                <div class="col-4 text-left">
+                                    <p><small><strong>By {{users[i].username}}</strong></small></p>
+                                    <p><small><strong>Created at: {{times[i].strftime("%a %b %-d %Y, %-I:%M %p")}}</strong></small></p>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-5 ml-5"><p class="">{{comments[i].comment}}</p></div>
+                            </div>
+                        </div>
+                            <hr>
+                            {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+         </div>
+        <hr>
+    </div>
+</section>
+{% endblock %}

@@ -1,5 +1,6 @@
-<div class="performance-facts">
-    <header class="performance-facts__header">
+<div class="jumbotron-fluid bg-light border border-dark p-1">
+    <div class="container">
+        <header class="performance-facts__header">
         <h1 class="performance-facts__title">
             Nutrition Facts
         </h1>
@@ -59,7 +60,7 @@
         </tbody>
     </table>
     <hr class="thick-end">
-    <table class="performance-facts__table--grid">
+    <table class="performance-facts__table--grid table">
         <tbody>
             {% for vitamin in vitamins %}
             {% if vitamins[vitamin][2] !=0 %}
@@ -71,4 +72,5 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
