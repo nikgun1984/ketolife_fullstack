@@ -7,6 +7,7 @@ db = SQLAlchemy()
 
 
 class Recipe(db.Model):
+    """Recipe Model"""
 
     __tablename__ = 'recipes'
 
@@ -18,7 +19,8 @@ class Recipe(db.Model):
 
     title = db.Column(
         db.Text,
-        nullable=False
+        nullable=False,
+        unique=True
     )
 
     image = db.Column(
@@ -27,7 +29,8 @@ class Recipe(db.Model):
     )
 
     servings = db.Column(
-        db.Integer
+        db.Integer,
+        nullable=False
     )
 
     tcook = db.Column(
@@ -66,14 +69,14 @@ class Recipe(db.Model):
         db.LargeBinary
     )
     
-
     # through relationship to have an access to all ingredients of the recipe
     ingredients = db.relationship('Ingredient', backref="recipe", cascade="all, delete")
     instructions = db.relationship('Instruction', backref="recipe", cascade="all, delete")
     nutrients = db.relationship('Nutrient', secondary='recipe_has_nutrients', backref="recipe")
-    assignments = db.relationship('RecipeNutrient', backref='recipe')
     comments = db.relationship('Comment', backref='recipe')
     ratings = db.relationship('Rating', backref="recipe")
+    # Many-to-Many Relationship (access to associatin table)
+    assignments = db.relationship('RecipeNutrient', backref='recipe')
 
     def serialize(self):
         """Serialize our object recipe to dictionary for json"""
@@ -91,6 +94,7 @@ class Recipe(db.Model):
 
 
 class Ingredient(db.Model):
+    """Ingredient Model"""
 
     __tablename__ = 'ingredients'
 
@@ -116,6 +120,7 @@ class Ingredient(db.Model):
 
 
 class Instruction(db.Model):
+    """Instructions Model"""
 
     __tablename__ = 'instructions'
 
@@ -141,6 +146,7 @@ class Instruction(db.Model):
 
 
 class Nutrient(db.Model):
+    """Nutrients Model"""
 
     __tablename__ = 'nutrients'
 
@@ -165,6 +171,7 @@ class Nutrient(db.Model):
 
 
 class Unit(db.Model):
+    """Unit Model"""
 
     __tablename__ = 'units'
 
@@ -182,6 +189,7 @@ class Unit(db.Model):
 
 
 class RecipeNutrient(db.Model):
+    """Recipe-Nutrient Model Association table"""
 
     __tablename__ = 'recipe_has_nutrients'
 
@@ -214,6 +222,7 @@ class RecipeNutrient(db.Model):
     )
 
 class Product(db.Model):
+    """Product table for Home Page products"""
 
     __tablename__ = 'products'
 
@@ -243,6 +252,7 @@ class Product(db.Model):
 
 
 class User(db.Model):
+    """User Model"""
 
     __tablename__ = 'users'
 
@@ -305,6 +315,7 @@ class User(db.Model):
 
     @classmethod
     def authenticate(cls, email, password):
+        """Need to authenticate the person who he/she claims is/Also needed for edit user's info"""
 
         user = cls.query.filter_by(email=email).first()
 
@@ -329,7 +340,8 @@ class User(db.Model):
 
 
 class Rating(db.Model):
-    """Many-to-Many relationship"""
+    """Rating table Association table"""
+
     __tablename__ = 'ratings'
 
     id = db.Column(
@@ -357,6 +369,7 @@ class Rating(db.Model):
     users = db.relationship('User', backref='rating')
 
 class Comment(db.Model):
+    """User's comments table"""
 
     __tablename__ = 'comments'
 
@@ -373,11 +386,13 @@ class Comment(db.Model):
 
     user_id = db.Column(
         db.Integer, 
-        db.ForeignKey('users.id'), nullable=True)
+        db.ForeignKey('users.id')
+    )
 
     recipe_id = db.Column(
         db.Integer, 
-        db.ForeignKey('recipes.id'), nullable=True)
+        db.ForeignKey('recipes.id')
+    )
 
     created_at = db.Column(
         db.DateTime,
@@ -388,5 +403,6 @@ class Comment(db.Model):
 
 
 def connect_db(app):
+    """Connect to our database"""
     db.app = app
     db.init_app(app)

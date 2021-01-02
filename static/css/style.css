@@ -10,6 +10,8 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
+    font-size: small;
+    line-height: 1.4;
 }
 
 .navbar-scroll {
@@ -76,9 +78,21 @@ section.module p:last-child {
 }
 
 section.module.content {
-    padding: 40px;
-    padding-bottom: 3%;
+    padding: 40px 0;
+    /* padding-bottom: 3%; */
     background-color: rgba(207, 216, 220, 0.5);
+}
+
+section.module.recipe-content {
+    padding: 40px 0;
+    /* padding-bottom: 3%; */
+    background-color: rgb(255, 255, 255);
+}
+
+section.module.recipe-create {
+    padding: 40px 0;
+    padding-bottom: 9%;
+    background-color: rgb(207, 216, 220, 0.5);
 }
 
 section.module.content:last-child {
@@ -87,6 +101,11 @@ section.module.content:last-child {
 
 section.module.parallax {
     padding: 150px 0;
+    background-position: 0 0;
+}
+
+section.module.parallax-recipe {
+    padding: 50px 0;
     background-position: 0 0;
 }
 
@@ -543,10 +562,11 @@ ul.circles {
     padding-top: 0px;
 }
 
-.icon-size
-{
-    font-size: 87px;
-}
+
+/* ============================================================
+  Ratings
+============================================================ */
+
 
 .star-yellow {
     color: yellow;
@@ -557,6 +577,11 @@ ul.circles {
 .star-red {
     color: red;
 }
+
+/* ============================================================
+  PROFILE PICTURE
+============================================================ */
+
 
 .far.fa-star:hover {
     cursor: pointer;
@@ -614,16 +639,113 @@ div.icon {
         display:block; margin:0 auto;
     }
 
-    /* .centered {
-        margin-top: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: left;
-    } */
+    img#prof-img {
+        width: 25%!important;
+    }
+
+    #logo-footer {
+        width: 25% !important;
+    }
 }
 
+/* ============================================================
+  NUTRI FACTS
+============================================================ */
 
+.performance-facts__title {
+  font-weight: bold;
+  font-size: 2rem;
+  margin: 0 0 0.25rem 0;
+}
 
+.performance-facts__header {
+  border-bottom: 10px solid black;
+  padding: 0 0 0.25rem 0;
+  margin: 0 0 0.5rem 0;
+}
 
+.performance-facts__header p {
+  margin: 0;
+}
 
+.performance-facts__table,
+.performance-facts__table--grid {
+  width: 100%;
+}
 
+.performance-facts__table thead tr th,
+.performance-facts__table--small thead tr th,
+.performance-facts__table--grid thead tr th,
+.performance-facts__table thead tr td,
+.performance-facts__table--small thead tr td,
+.performance-facts__table--grid thead tr td {
+  border: 0;
+}
+
+.performance-facts__table th,
+.performance-facts__table--small th,
+.performance-facts__table--grid th,
+.performance-facts__table td,
+.performance-facts__table--small td,
+.performance-facts__table--grid td {
+  font-weight: normal;
+  text-align: left;
+  padding: 0.25rem 0;
+  border-top: 1px solid black;
+  white-space: nowrap;
+}
+
+.performance-facts__table td:last-child,
+.performance-facts__table--grid td:last-child {
+  text-align: right;
+}
+
+.performance-facts__table .blank-cell,
+.performance-facts__table--grid .blank-cell {
+  width: 1rem;
+  border-top: 0;
+}
+
+.performance-facts__table .thick-row th,
+.performance-facts__table--grid .thick-row th,
+.performance-facts__table .thick-row td,
+.performance-facts__table--grid .thick-row td {
+  border-top-width: 5px;
+}
+
+.small-info {
+  font-size: 0.7rem;
+}
+
+.big-info {
+  font-size: 1.5rem;
+}
+
+.performance-facts__table--grid {
+  margin: 0 0 0.5rem 0;
+}
+
+.performance-facts__table--grid td:last-child {
+  text-align: right;
+}
+
+.performance-facts__table--grid td:last-child::before {
+  font-weight: bold;
+  margin: 0 0.25rem 0 0;
+}
+
+.thick-end {
+  border-bottom: 10px solid black;
+}
+
+hr.thick-end {
+  color: 10px;
+}
+
+.thin-end {
+  border-bottom: 1px solid black;
+}
+
+#Calories {
+  font-size: 1.5rem;
+}

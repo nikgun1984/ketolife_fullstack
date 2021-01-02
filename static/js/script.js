@@ -1,6 +1,5 @@
 const BASE_IMG_LINK = "https://spoonacular.com/cdn/ingredients_250x250";
-let title = "",
-	servings = 0;
+
 $("#add_links").on("submit", processForm);
 
 $("#add_links_cr").on("submit", processRecipeForm);
@@ -368,6 +367,7 @@ async function processRecipe(evt) {
 	});
 	await handleRecipe(response.data.hits);
 }
+
 async function handleRecipe(data) {
 	for (let rec of data) {
 		const calories = rec.recipe.calories;
@@ -442,7 +442,6 @@ async function getInfoIngredient(evt) {
 		saveNutrients(response.data[0], response.data[1], "nutrients", "vitamins");
 		saveToLocStorage("total_nutrients", response.data[2]);
 		saveToLocStorage("total_vitamins", response.data[3]);
-		console.log();
 		let count = lenRecipeArray("ingredients");
 		$("#done-ing").show();
 		$("#recipe_ingr_table tbody").append(`<tr id="${count}"></tr>`);
@@ -510,7 +509,6 @@ function addCheckmark() {
 function addValuesToNutritionTable() {
 	const existing = accessToLocaStorage();
 	const nutrients = existing["total_nutrients"];
-	console.log(nutrients);
 	const servingsPerRecipe = $("p.servings_recipe");
 	const caloriesField = $("td#cal b");
 	servingsPerRecipe.html(`Servings Per Recipe ${existing["servings"]}`);
@@ -542,6 +540,7 @@ $("form#search-recipe-form").on("submit", async function () {
 	});
 });
 
+// flash
 $(document).ready(function () {
 	$(".alert").delay(4000).slideUp(300);
 });
@@ -579,13 +578,8 @@ $("#ratings").on("mouseover", "i", async function (evt) {
 			$("span#avg-rating").text(avg);
 			const percentages = response.data[1];
 			for(let val=4;val>-1;val--){
-				// funcs[val] = function() {
 					$(`p#stars-total-${val}`).text(`${val + 1} stars`);
-					// console.log(percentages[val]);
-					//console.log(val);
 					const perc = percentages[val];
-					// console.log(perc);
-					console.log(val);
 
 					$(`#${val}-perc`).css("width", `${perc}%`);
 					$(`#${val}-perc`).attr("aria-valuenow", perc);
@@ -595,13 +589,7 @@ $("#ratings").on("mouseover", "i", async function (evt) {
 					} else {
 						$(`#${val}-perc`).removeClass("text-dark");
 					}
-				// }
 			}
-			// for (let val=4;val>-1;val--) {
-			// 	// we can use "var" here without issue
-			// 	funcs[j]();
-			// 	console.log(funcs[j]());
-			// }
 		})
 		.catch((error) => {
 			console.log(error.response);
@@ -639,4 +627,3 @@ $(document).ready(function() {
 	})
 });
 
-// $("#comments-form").on("submit", async function) 
