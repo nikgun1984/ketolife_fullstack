@@ -18,12 +18,12 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://ketolifeapp.herokuapp.com/">
     <img src="/static/images/logo.png" alt="Logo" width="100">
   </a>
-
   <h3 align="center">Ketolife</h3>
 </p>
+
 
 
 
@@ -47,7 +47,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![title](static/images/screen_shot.png)
+![title](static/images/screen_shot.png)  
+https://ketolifeapp.herokuapp.com/
 
 
 Welcome to Keto Life website where you can easily find delicious recipes from breakfast to dessert, create new recipes and look up nutritional data of the ingredients. It has never been easier. In the past, i have done various diets and fastings and nothing was working for me until i found out about the Keto diet. I can tell you I saw the results after a couple of weeks. Some diets can be super painful, but not Keto. You can lead a healthy way of life on Keto and still get treats that you would never think are a part of your diet. So what is Keto diet? 
@@ -116,7 +117,9 @@ psql < backup.sql
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## Usage. 
+
+https://ketolifeapp.herokuapp.com/
 
 Keto Life is not only desktop application but also mobile responsive. If you are new to Keto diet you can learn briefly what it 
 is about and see foods that you can eat during your diet. There is a long list of products attached to the Home page. You also can find additional information on foods that are not in the list just by going to the Ingredient Nutrition Facts page. Just follow the steps, enter your product in search box, choose units and amounts to get all necessary data to see if it is a Keto food.  
