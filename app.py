@@ -56,6 +56,15 @@ def context_processor():
     classes = ["fa fa-user","fa fa-paper-plane","fa fa-lock","fa fa-check-circle"]
     return dict(login_form=login_form,signup_form=signup_form,classes=classes)
 
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('404.html'), 404
+
+@app.errorhandler(405)
+def resource_not_found(e):
+    # note that we set the 405 status explicitly
+    return render_template('405.html'), 405
 
 ######################### Users Methods ######################################
 
