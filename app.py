@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, flash, redirect, session, g, jsonify, url_for, send_file
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
+from werkzeug.exceptions import InternalServerError
 from flask_wtf.csrf import CSRFProtect
 
 ################# Other libraries
@@ -65,6 +66,17 @@ def page_not_found(e):
 def resource_not_found(e):
     # note that we set the 405 status explicitly
     return render_template('405.html'), 405
+
+@app.errorhandler(InternalServerError)
+def handle_500(e):
+    original = getattr(e, "original_exception", None)
+
+    if original is None:
+        # direct 500 error, such as abort(500)
+        return render_template("500.html"), 500
+
+    # wrapped unhandled error
+    return render_template("500_unhandled.html", e=original), 500
 
 ######################### Users Methods ######################################
 
