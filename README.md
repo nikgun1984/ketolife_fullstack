@@ -19,7 +19,7 @@
 <br />
 <p align="center">
   <a href="https://ketolifeapp.herokuapp.com/">
-    <img src="/static/images/logo.png" alt="Logo" width="100">
+    <img src="app/static/images/logo.png" alt="Logo" width="100">
   </a>
   <h3 align="center">Ketolife</h3>
 </p>
@@ -47,7 +47,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![title](static/images/screen_shot.png)  
+![title](app/static/images/screen_shot.png)  
 https://ketolifeapp.herokuapp.com/
 
 
@@ -114,6 +114,11 @@ key_gen = 'YOUR SECRET KEY'
 ```
 psql < backup.sql 
 ``` 
+6. Run app 
+
+```
+flask run
+```
 
 
 <!-- USAGE EXAMPLES -->
@@ -123,12 +128,12 @@ https://ketolifeapp.herokuapp.com/
 
 Keto Life is not only desktop application but also mobile responsive. If you are new to Keto diet you can learn briefly what it 
 is about and see foods that you can eat during your diet. There is a long list of products attached to the Home page. You also can find additional information on foods that are not in the list just by going to the Ingredient Nutrition Facts page. Just follow the steps, enter your product in search box, choose units and amounts to get all necessary data to see if it is a Keto food.  
-![title](static/images/screenshots/2.png)  
-![title](static/images/screenshots/1.png)  
+![title](app/static/images/screenshots/2.png)  
+![title](app/static/images/screenshots/1.png)  
 You can also search for recipe. Just enter keyword or name of the recipe in the search box and find all possible recipes based on your search.  
-![title](static/images/screenshots/3.png)  
+![title](app/static/images/screenshots/3.png)  
 You can add ratings, comments to the recipes. You need to register in order to do that. As a registered user you also can create you recipes and share it with other users to comment on. You can also edit your profile: change your username,email,upload a user profile picture.  
-![title](static/images/screenshots/4.png)  
+![title](app/static/images/screenshots/4.png)  
 
 The app was created using Javascript (Vanilla and JQuery), HTML,CSS, Twitter Bootstrap for front-end and Python programming language with Flask as framework for backend and SQLAlchemy as ORM. For this application, I used open source relational database PostgreSQL.
 <!-- ROADMAP -->
