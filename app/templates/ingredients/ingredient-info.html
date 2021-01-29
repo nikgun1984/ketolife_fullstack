@@ -1,0 +1,41 @@
+{% extends 'base.html' %} {% block title%} Ingredient "{{name}}" Fact {%
+endblock %} {% block content %}
+<section
+	class="module parallax parallax-1"
+	data-type="background"
+	data-speed="10"
+>
+	<div class="parallax-container-fluid">
+		<h1 class="m-0">Keto Life</h1>
+		<p class="text-center">The diet that should reward you</p>
+	</div>
+</section>
+
+<section class="module content" id="about-page">
+	<div class="parallax-container-fluid text-center">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-xl-8 col-lg-11 col-md-12 mb-5">
+					<div class="card text-center">
+						<div class="card-header">
+							<h1 class="m-4" id="ingredient-header">{{name}}</h1>
+						</div>
+						<div class="card-body">
+							<img src="{{img}}" alt="" />
+							<h4 id="ingr-unit">Measurement: {{amount}} {{unit}}</h4>
+							<h4 id="ingr-cost" class="mb-2">
+								The approximate cost of the measurement: $ {{cost}}
+							</h4>
+						</div>
+						<div class="card-footer text-muted">Category: {{category[0]}}</div>
+					</div>
+				</div>
+				<div class="col-xl-4 col-lg-5 col-md-7 col-sm-8 text-center">
+					{% include 'nutrients/nutri_fact_ingredient.html' %}
+				</div>
+			</div>
+		</div>
+		<hr />
+	</div>
+</section>
+{% endblock %}

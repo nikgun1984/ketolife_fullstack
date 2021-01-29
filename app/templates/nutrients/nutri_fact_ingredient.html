@@ -1,0 +1,69 @@
+<div class="jumbotron-fluid bg-light border border-dark p-1">
+    <div class="container">
+    <header class="performance-facts__header">
+        <h1 class="performance-facts__title">
+            Nutrition Facts
+        </h1>
+        <p class="servings_size">
+            Serving size {{amount}} {{unit}}
+        </p>
+    </header>
+    <table class="performance-facts__table">
+        <thead>
+            <tr>
+                <th colspan="3" class="small-info">
+                    Amount Per Serving
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="Calories">
+                <th colspan="2">
+                    <b>
+                        Calories
+                    </b>
+                    <td colspan="3" class="big-info">
+                        <b>{{calories["amount"]}}</b>
+                    </td>
+                </th>
+            </tr>
+            <tr class="thick-row">
+                <td colspan="3" class="small-info">
+                    <b>
+                        % Daily Value*
+                    </b>
+                </td>
+            </tr>
+            {% for nutrient in nutri%}
+                {% if nutrients[nutrient]["amount"] !=0 %}
+                {% if nutrients[nutrient]["title"] in fats or nutrients[nutrient]["title"] in carbs %}
+                <tr id = "{{nutrients[nutrient]["title"]}}">
+                    <td class = "blank-cell"></td>
+                    <th>{{nutrients[nutrient]["title"]}} {{nutrients[nutrient]["amount"]}}{{nutrients[nutrient]["unit"]}}</th>
+                    {% if nutrients[nutrient]["title"] not in no_daily %}
+                    <!-- <td><b>{{nutrients[nutrient]["percentOfDailyNeeds"]}}%</b></td> -->
+                    {% endif %}
+                </tr>
+                {% else %}
+                    <tr id = "{{nutrients[nutrient]["title"]}}"">
+                    <th colspan = "2"><b>{{nutrients[nutrient]["title"]}}</b> {{nutrients[nutrient]["amount"]}}{{nutrients[nutrient]["unit"]}}</th> 
+                    <!-- <td><b>{{nutrients[nutrient]["percentOfDailyNeeds"]}}%</b></td> -->
+                </tr>
+                {% endif %}
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr class="thick-end">
+    <table class="performance-facts__table--grid">
+        <tbody>
+            {% for vitamin in vit %}
+            <tr id="{{vitamins[vitamin]["title"]}}">
+                <th colspan="2"><b>{{vitamins[vitamin]["title"]}}</b> {{vitamins[vitamin]["amount"]}}{{vitamins[vitamin]["unit"]}}</th>
+                <!-- <td><b>{{vitamins[vitamin]["percentOfDailyNeeds"]}}%</b></td> -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
