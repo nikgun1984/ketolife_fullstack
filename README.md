@@ -135,7 +135,9 @@ You can also search for recipe. Just enter keyword or name of the recipe in the 
 You can add ratings, comments to the recipes. You need to register in order to do that. As a registered user you also can create you recipes and share it with other users to comment on. You can also edit your profile: change your username,email,upload a user profile picture.  
 ![title](app/static/images/screenshots/4.png)  
 
-The app was created using Javascript (Vanilla and JQuery), HTML,CSS, Twitter Bootstrap for front-end and Python programming language with Flask as framework for backend and SQLAlchemy as ORM. For this application, I used open source relational database PostgreSQL.
+The app was created using Javascript (Vanilla and JQuery), HTML,CSS, Twitter Bootstrap for front-end and Python programming language with Flask as framework for backend and SQLAlchemy as ORM. For this application, I used open source relational database PostgreSQL.  
+The following is the schema for the Keto Life App  
+![title](app/static/images/schema.png)  
 <!-- ROADMAP -->
 ## Roadmap
 
