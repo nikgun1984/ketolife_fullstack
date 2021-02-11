@@ -37,6 +37,11 @@ def calculate_per_serving(nutrients,servings):
             nutrients[nutrient]["percentOfDailyNeeds"] = math.ceil(nutrients[nutrient]["percentOfDailyNeeds"]/servings)
     return nutrients
 
+def calculate_percent_daily_needs(amount, nutrient_name):
+    query_data = Nutrient.query.filter((Nutrient.daily_value == nutrient_name))
+    return int((amount/query_data.daily_value)*100) if query_data else None 
+
+
 def subtract_nutrients(nutrients_total,nutrients):
     """Calculate total of all nutrients of ingrerdients after deletion the ingredient"""
     for nutrient in nutrients:

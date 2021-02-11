@@ -1,5 +1,5 @@
 import math
-from models import db, Recipe, User, Rating
+from models import db, Recipe, Rating
 from flask import g
 
 def rate_recipe(recipe_id,rating):

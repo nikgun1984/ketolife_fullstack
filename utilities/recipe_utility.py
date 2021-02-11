@@ -3,7 +3,7 @@ import json
 import requests
 from flask import g
 ##########################
-from models import db, Recipe, Ingredient, Instruction, Nutrient, RecipeNutrient, User, Rating
+from models import db, Recipe, Ingredient, Instruction, User, Rating
 from utilities import nutrient_utility as util
 from settings import BASE_URL_SP,APP_KEY
 ##########################################

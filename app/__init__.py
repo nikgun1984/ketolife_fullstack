@@ -19,4 +19,5 @@ csrf.init_app(app)
 connect_db(app)
 
 # import all the views below Flask initialization to avoid circular import
-from app import home_view, users_views, recipes_views, ingredients_views, errors_views
+from app.views import home_view, users_views, recipes_views, ingredients_views, errors_views
+

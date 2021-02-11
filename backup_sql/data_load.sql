@@ -3,206 +3,194 @@ VALUES ('g'),
     ('mg'),
     ('µg'),
     ('%');
-INSERT INTO nutrients (name, unit_id)
-VALUES ('Calories', NULL),
-    ('Fat', 1),
-    ('Trans Fat', 1),
-    ('Saturated Fat', 1),
+INSERT INTO nutrients (name, unit_id, daily_value)
+VALUES ('Calories', NULL, NULL),
+    ('Fat', 1, 78),
+    ('Trans Fat', 1, NULL),
+    ('Saturated Fat', 1, 20),
     (
         'Mono Unsaturated Fat',
-        1
+        1, NULL
     ),
     (
         'Poly Unsaturated Fat',
-        1
+        1, NULL
     ),
     (
         'Cholesterol',
-        2
+        2, 300
     ),
     (
         'Sodium',
-        2
+        2, 2300
     ),
     (
         'Carbohydrates',
-        1
+        1, 275
     ),
     (
         'Net Carbohydrates',
-        1
+        1, NULL
     ),
     (
         'Fiber',
-        1
+        1, 28
     ),
     (
         'Sugar',
-        1
+        1, NULL
     ),
     (
         'Sugar Alcohol',
-        1
+        1, NULL
     ),
     (
         'Sugar alcohols',
-        1
+        1, NULL
     ),
         (
         'Sugars',
-        1
+        1, NULL
     ),
     (
         'Carbs (net)',
-        1
+        1, NULL
     ),
     (
         'Sugars, added',
-        1
+        1, 50
     ),
     (
         'Protein',
-        1
+        1, 50
     ),
     (
         'Caffeine',
-        2
+        2, NULL
     ),
     (
         'Calcium',
-        2
+        2, 1300
     ),
     (
         'Magnesium',
-        3
+        3, 420
     ),
     (
         'Potassium',
-        2
+        2, 4700
     ),
     (
         'Copper',
-        2
+        2,0.9
     ),
     (
         'Zinc',
-        2
+        2, 11
     ),
     (
         'Phosphorus',
-        2
+        2, 1250
     ),
     (
         'Iron',
-        2
+        2, 18
     ),
     (
         'Vitamin A',
-        3
+        3, 900
     ),
     (
         'Vitamin B1',
-        3
+        3, NULL
     ),
     (
         'Vitamin B2',
-        3
-    ),
-    (
-        'Vitamin B1',
-        3
-    ),
-    (
-        'Vitamin B1',
-        3
+        3, NULL
     ),
     (
         'Vitamin B3',
-        3
+        3, NULL
     ),
     (
         'Vitamin B5',
-        3
+        3, NULL
     ),
     (
         'Vitamin B6',
-        3
+        3, 1.7
     ),
     (
         'Vitamin B12',
-        3
+        3, 2.4
     ),
     (
         'Vitamin C',
-        3
+        3, 90
     ),
     (
         'Vitamin D',
-        3
+        3, 20
     ),
     (
        'Vitamin E',
-        3
+        3, 15
     ),
     (
         'Vitamin K',
-        3
+        3, 120
     ),
     (
         'Folic Acid',
-        3
+        3, 400
     ),
     (
         'Selenium',
-        3
+        3, 55
     ),
     (
         'Choline',
-        3
+        3, 550
     ),
     (
         'Iodine',
-        3
+        3, 150
     ),
     (
         'Carbs',
-        1
+        1, 275
     ),
     (
         'Monounsaturated',
-        1
+        1, NULL
     ),
     (
         'Polyunsaturated',
-        1
+        1, NULL
     ),
     (
         'Saturated',
-        1
+        1, 20
     ),
     (
         'Trans',
-        1
+        1, NULL
     ),
     (
         'Thiamin (B1)',
-        2
+        2, 1.2
     ),
     (
         'Riboflavin (B2)',
-        2
+        2, 1.3
     ),
     (
         'Niacin (B3)',
-        2
-    ),
-    (
-        'Niacin (B3)',
-        2
+        2, 16
     ),
     (
         'Folate equivalent (total)',
-        2
+        2, 400
     )
 ;
 
