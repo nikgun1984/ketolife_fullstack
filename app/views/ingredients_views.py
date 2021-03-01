@@ -39,8 +39,10 @@ def ingredient_nutrifacts(id):
     img = f"{BASE_IMG_LINK}/{res['image']}"
     category = res["categoryPath"]
     cost = round(res['estimatedCost']['value']/100,3)
-    nutrients,vitamins = util.split_nutritional_fact_data(res['nutrition']['nutrients'])
-    calories = nutrients.pop('Calories')
+    nutrients,vitamins,calories = util.split_nutritional_fact_data(res['nutrition']['nutrients'])
+    # import pdb
+    # pdb.set_trace()
+    # calories = nutrients.pop('Calories')
     fats,carbs,no_daily = util.get_fats_carbs()
     unit = res['unit']
 

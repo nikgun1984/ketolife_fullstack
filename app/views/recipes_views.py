@@ -25,7 +25,7 @@ def get_ingredient_for_recipe(id):
     servings = int(data.get('serving'))
     resp = requests.get(f'{BASE_URL_SP}/food/ingredients/{id}/information', params={"apiKey":APP_KEY,"amount":amount,"unit":unit})
     res = resp.json()
-    nutr,vits = n_util.split_nutritional_fact_data(res['nutrition']['nutrients'])
+    nutr,vits, calories = n_util.split_nutritional_fact_data(res['nutrition']['nutrients'])
     nutrients = n_util.calculate_per_serving(nutr,servings)
     vitamins = n_util.calculate_per_serving(vits,servings)
     if nutrients_total and vitamins_total:

@@ -93,11 +93,20 @@ pip install freeze
 ```sh
 https://github.com/nikgun1984/ketolife_backend.git
 ```
-3. Install PIP packages 
+3. Create virtual environment  
 ```sh
-pip freeze > requirements.txt
+python3 -m venv venv  
+```  
+then enter your environment
+```sh
+source venv/bin/activate
 ```
-4. Enter missing API keys and secret key key_gen(just generate any key using any algorithm)in `secrets.py`
+
+4. Install PIP packages 
+```sh
+pip install -r requirements.txt
+```
+4. Create ```secrets.py``` and in there enter missing API keys and secret key key_gen(just generate any key using any algorithm)
 ```JS
 # spoonacular_api
 APP_KEY = 'YOUR API KEY'

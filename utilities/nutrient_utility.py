@@ -33,7 +33,7 @@ def calculate_per_serving(nutrients,servings):
     for nutrient in nutrients:
         if nutrients[nutrient]["amount"]:
             nutrients[nutrient]["amount"] = math.ceil(nutrients[nutrient]["amount"]/servings)
-        if nutrients[nutrient]["percentOfDailyNeeds"]:
+        if nutrients[nutrient].get("percentOfDailyNeeds"):
             nutrients[nutrient]["percentOfDailyNeeds"] = math.ceil(nutrients[nutrient]["percentOfDailyNeeds"]/servings)
     return nutrients
 
@@ -61,17 +61,26 @@ def split_nutritional_fact_data(nutrients):
 
     nutri_data = dict()
     vitamins = dict()
-    nutri_set = set(['Calories','Fat','Trans Fat','Saturated fat','Mono Saturated Fat', 'Protein','Cholesterol','Carbohydrates','Fiber','Sugar'])
+    nutri_set = set(['Fat','Trans Fat','Saturated fat','Mono Saturated Fat', 'Protein','Cholesterol','Carbohydrates','Fiber','Sugar'])
+    # import pdb
+    # pdb.set_trace()
     for idx,nutrient in enumerate(nutrients):
+        print(nutrient.get("title"))
+        if nutrient.get("title") == 'Calories':
+            # import pdb
+            # pdb.set_trace()
+            calories = nutrient
+            calories['amount'] = math.ceil(calories["amount"])
+            continue
         if nutrient["amount"] > 1:
             nutrient["amount"] = math.ceil(nutrient["amount"])
         if nutrient.get("percentOfDailyNeeds") and nutrient["percentOfDailyNeeds"] > 1:
             nutrient["percentOfDailyNeeds"] = math.ceil(nutrient["percentOfDailyNeeds"])
         if nutrient["title"] in nutri_set:
-            nutri_data[nutrient["title"]] = nutrients.pop(idx)
+            nutri_data[nutrient["title"]] = nutrient
         else:
-            vitamins[nutrient["title"]] = nutrients.pop(idx)
-    return nutri_data,vitamins
+            vitamins[nutrient["title"]] = nutrient
+    return nutri_data,vitamins, calories
 
 def total_daily_nutrition(nutrient,recipe_obj,total,daily,label):
     """Add association to the many to many relationship RecipeNutrient"""
